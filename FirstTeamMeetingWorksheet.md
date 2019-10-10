@@ -60,7 +60,7 @@ Legally classified as an addiction. But also getting good reviews from students 
 
 
 ## III. Survey the State of the Art
-*Do some research — this will be fleshed out further in a full milestone but do some now quickly all together to get started. Try to find what else is out there that is similar, either products, or technical papers that are related.*
+Other apps like Guitar Hero, Yousician, and Modacity provide the functionality of either a game or a practice app, but none of them quite meet the definition of what we hope to create for our project: a game AND practice app. 
 
 ### Similar Goals
 Similar apps already exist, but they're targeted towards an older audience and are more about correctness than encouragement. They aren't gamified and might not be as ideal for younger audiences as our idea is. 
