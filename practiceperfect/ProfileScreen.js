@@ -32,17 +32,7 @@ export default class ProfileScreen extends React.Component {
                         borderHeight={3}
                     />
                     <Hoshi
-                        label={'Dog(s\') Name(s)'}
-                        borderColor="#e75480"
-                        borderHeight={3}
-                    />
-                    <Hoshi
-                        label="Neighborhood"
-                        borderColor="#e75480"
-                        borderHeight={3}
-                    />
-                    <Hoshi
-                        label="Desired Distance"
+                        label="Instrument"
                         borderColor="#e75480"
                         borderHeight={3}
                     />
