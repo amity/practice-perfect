@@ -10,11 +10,13 @@ Practice Perfect is a mobile app to help musicians (especially young students in
 * Heroku
 * HAPI library
 
+Our back end repo: https://github.com/dartmouth-cs98/19f-practiceperfect-api/
+
 
 
 ## Setup
 
-* Set up React-Native:
+* Set up React Native:
     * `brew install node`
     * `brew install watchman`
     * `npm install expo-cli --global`
@@ -23,7 +25,7 @@ Practice Perfect is a mobile app to help musicians (especially young students in
 
 ## Deployment
 
-* After installation, `expo start` in your directory containing app.js.
+* After React Native installation, `expo start` in your directory containing app.js.
 
 
 
