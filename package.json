@@ -1,14 +1,15 @@
 {
   "devDependencies": {
     "babel-eslint": "^10.0.3",
-    "eslint": "^6.5.0",
+    "eslint": "^6.6.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-loader": "^3.0.2",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.14.3"
+    "eslint-plugin-react": "^7.16.0"
   },
   "dependencies": {
+    "eslint-plugin-prettier": "^3.1.1",
     "react-native-textinput-effects": "^0.5.1",
     "react-navigation": "^4.0.10",
     "react-navigation-stack": "^1.9.3"
