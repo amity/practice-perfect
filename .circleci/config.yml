@@ -6,6 +6,7 @@
      steps:
        - checkout
        - run: cd practiceperfect
+       - run: yarn
        - run: yarn lint
        # TEST
        # DEPLOY
