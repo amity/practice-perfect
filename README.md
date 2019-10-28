@@ -11,6 +11,7 @@ Practice Perfect is a mobile app to help musicians (especially young students in
 * HAPI library
 
 Our back end repo: https://github.com/dartmouth-cs98/19f-practiceperfect-api/
+CircleCI: https://circleci.com/gh/dartmouth-cs98
 
 
 

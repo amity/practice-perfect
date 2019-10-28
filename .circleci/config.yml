@@ -5,6 +5,6 @@ jobs:
       - image: circleci/node:10.16.3
     steps:
       - checkout
-      - run: cd practiceperfect; yarn lint
+      - run: yarn lint
       # TEST
       # DEPLOY
