@@ -2,10 +2,10 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/ruby:2.4.1
+      - image: circleci/node:10.16.3
     steps:
       - checkout
       - run: cd practiceperfect
-      # - run: eslint --ext .jsx,.js .
+      - run: yarn lint
       # TEST
       # DEPLOY
