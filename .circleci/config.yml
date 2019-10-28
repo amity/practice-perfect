@@ -5,9 +5,7 @@ jobs:
       - image: circleci/ruby:2.4.1
     steps:
       - checkout
-      - run: curl -o- -L https://yarnpkg.com/install.sh | bash
       - run: cd practiceperfect
-      - run: yarn
-      - run: yarn lint
+      - run: eslint --ext .jsx,.js .
       # TEST
       # DEPLOY
