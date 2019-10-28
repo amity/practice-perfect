@@ -6,6 +6,6 @@ jobs:
     steps:
       - checkout
       - run: cd practiceperfect
-      - run: eslint --ext .jsx,.js .
+      # - run: eslint --ext .jsx,.js .
       # TEST
       # DEPLOY
