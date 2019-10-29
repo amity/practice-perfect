@@ -1,13 +1,10 @@
-version: 2.1
-orbs:
-  eslint: arrai/eslint@1.3.0
+version: 2
 jobs:
   build:
     docker:
       - image: circleci/node:10.16.3
     steps:
       - checkout
-
-      - run: yarn lint
+      # - run: yarn lint
       # TEST
       # DEPLOY
