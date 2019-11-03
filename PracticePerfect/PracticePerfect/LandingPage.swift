@@ -15,11 +15,15 @@ struct LandingPage: View {
             Text("Practice Perfect")
                 .fontWeight(.semibold)
             
-            Button(action: {}) {
+            NavigationLink(destination: SelectMusic()) {
                 Text("Play!").foregroundColor(Color.black)
             }
             
-            Button(action: {}) {
+            NavigationLink(destination: TunerView()) {
+                Text("Tuner").foregroundColor(Color.black)
+            }
+            
+            NavigationLink(destination: SettingsView()) {
                 Text("Settings").foregroundColor(Color.black)
             }
             
