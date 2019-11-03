@@ -28,6 +28,7 @@ struct SelectMusic: View {
                 }
             }
         }
+        .navigationBarTitle("Select Music")
     }
 }
 

@@ -17,6 +17,8 @@
 		722A895B236F65DA0030B009 /* SelectMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A895A236F65DA0030B009 /* SelectMusic.swift */; };
 		722A895D236F65F80030B009 /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A895C236F65F80030B009 /* LandingPage.swift */; };
 		722A895F236F662C0030B009 /* PlayMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A895E236F662C0030B009 /* PlayMode.swift */; };
+		BD51384E236F7401004F2220 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD51384D236F7401004F2220 /* SettingsView.swift */; };
+		BD513850236F7416004F2220 /* TunerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD51384F236F7416004F2220 /* TunerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		722A895A236F65DA0030B009 /* SelectMusic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectMusic.swift; sourceTree = "<group>"; };
 		722A895C236F65F80030B009 /* LandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingPage.swift; sourceTree = "<group>"; };
 		722A895E236F662C0030B009 /* PlayMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMode.swift; sourceTree = "<group>"; };
+		BD51384D236F7401004F2220 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		BD51384F236F7416004F2220 /* TunerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +69,8 @@
 			isa = PBXGroup;
 			children = (
 				722A895C236F65F80030B009 /* LandingPage.swift */,
+				BD51384D236F7401004F2220 /* SettingsView.swift */,
+				BD51384F236F7416004F2220 /* TunerView.swift */,
 				722A895A236F65DA0030B009 /* SelectMusic.swift */,
 				722A8958236F65CC0030B009 /* AddMusic.swift */,
 				722A895E236F662C0030B009 /* PlayMode.swift */,
@@ -159,6 +165,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				722A8945236F643C0030B009 /* AppDelegate.swift in Sources */,
+				BD51384E236F7401004F2220 /* SettingsView.swift in Sources */,
+				BD513850236F7416004F2220 /* TunerView.swift in Sources */,
 				722A895B236F65DA0030B009 /* SelectMusic.swift in Sources */,
 				722A895D236F65F80030B009 /* LandingPage.swift in Sources */,
 				722A8947236F643C0030B009 /* SceneDelegate.swift in Sources */,
