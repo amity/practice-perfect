@@ -1,9 +1,9 @@
 //
 //  SceneDelegate.swift
-//  Practice Perfect
+//  PracticePerfect
 //
 //  Created by Abigail Chen on 11/3/19.
-//  Copyright © 2019 CS98 Practice Perfect. All rights reserved.
+//  Copyright © 2019 CS98PracticePerfect. All rights reserved.
 //
 
 import UIKit
@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
         // Create the SwiftUI view that provides the window contents.
-        let contentView = LandingPage()
+        let contentView = ContentView()
 
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {

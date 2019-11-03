@@ -1,9 +1,9 @@
 //
 //  AppDelegate.swift
-//  Practice Perfect
+//  PracticePerfect
 //
 //  Created by Abigail Chen on 11/3/19.
-//  Copyright © 2019 CS98 Practice Perfect. All rights reserved.
+//  Copyright © 2019 CS98PracticePerfect. All rights reserved.
 //
 
 import UIKit
