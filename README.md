@@ -6,27 +6,17 @@ Practice Perfect is a mobile app to help musicians (especially young students in
 
 ## Architecture
 
-* React Native
-* Heroku
-* HAPI library
+* iOS and SwiftUI
+* PostgreSQL
 
 Our back end repo: https://github.com/dartmouth-cs98/19f-practiceperfect-api/
 CircleCI: https://circleci.com/gh/dartmouth-cs98
 
 
 
-## Setup
+## Setup and Deployment
 
-* Set up React Native:
-    * `brew install node`
-    * `brew install watchman`
-    * `npm install expo-cli --global`
-
-
-
-## Deployment
-
-* After React Native installation, `expo start` in your directory containing app.js.
+* Install and open with XCode 11.1+ (currently optimized for simulation on iPhone 11/iPhone XR).
 
 
 
