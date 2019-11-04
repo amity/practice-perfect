@@ -8,27 +8,38 @@
 
 import SwiftUI
 
+// Will eventually be retrieved from backend
+let songData = [
+    SongMetadata(id: 0, name: "Mary Had a Little Lamb", highScore: 1000, rank: "S"),
+    SongMetadata(id: 1, name: "Joy to the World", highScore: 2000, rank: "S"),
+    SongMetadata(id: 2, name: "Minuet in G", highScore: 1500, rank: "S"),
+    SongMetadata(id: 3, name: "For He's a Jolly Good Fellow", highScore: 2500, rank: "S"),
+    SongMetadata(id: 4, name: "Twinkle Twinkle Little Star", highScore: 2000, rank: "S")
+]
+
 struct SelectMusic: View {
     var body: some View {
-        VStack {
-            HStack {
-                //align top of page
-                Text("Select Music")
-                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-                    Text("New Music").foregroundColor(Color.black)
-                }
-            }
-
-            HStack{
-                //horizontal scrolling here
-                ScrollView {
-                    Text("Song1")
-                    Text("Song2")
-                    Text("Song3")
+        VStack{
+            Text("What song will you play?")
+                .font(.system(size: 44))
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: 0) {
+                    ForEach(songData) { songMetadata in
+                        NavigationLink(destination: PlayMode(songMetadata: songMetadata)) {
+                            SongThumbnail(songMetadata: songMetadata)
+                                
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
                 }
             }
         }
-        .navigationBarTitle("Select Music")
+        .padding()
+        .navigationBarItems(trailing:
+            NavigationLink(destination: AddMusic()) {
+                Text("Add music")
+            }
+        )
     }
 }
 

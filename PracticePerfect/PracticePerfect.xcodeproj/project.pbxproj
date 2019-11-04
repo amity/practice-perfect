@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		149053EF236F8CEF00D36A10 /* SongMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149053EE236F8CEF00D36A10 /* SongMetadata.swift */; };
+		149053F1236F8FA800D36A10 /* SongThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149053F0236F8FA800D36A10 /* SongThumbnail.swift */; };
 		722A8945236F643C0030B009 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A8944236F643C0030B009 /* AppDelegate.swift */; };
 		722A8947236F643C0030B009 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A8946236F643C0030B009 /* SceneDelegate.swift */; };
 		722A8949236F643C0030B009 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A8948236F643C0030B009 /* ContentView.swift */; };
@@ -22,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		149053EE236F8CEF00D36A10 /* SongMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongMetadata.swift; sourceTree = "<group>"; };
+		149053F0236F8FA800D36A10 /* SongThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongThumbnail.swift; sourceTree = "<group>"; };
 		722A8941236F643C0030B009 /* PracticePerfect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PracticePerfect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		722A8944236F643C0030B009 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		722A8946236F643C0030B009 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -81,6 +85,8 @@
 				722A894F236F643E0030B009 /* LaunchScreen.storyboard */,
 				722A8952236F643E0030B009 /* Info.plist */,
 				722A894C236F643E0030B009 /* Preview Content */,
+				149053EE236F8CEF00D36A10 /* SongMetadata.swift */,
+				149053F0236F8FA800D36A10 /* SongThumbnail.swift */,
 			);
 			path = PracticePerfect;
 			sourceTree = "<group>";
@@ -168,10 +174,12 @@
 				BD51384E236F7401004F2220 /* SettingsView.swift in Sources */,
 				BD513850236F7416004F2220 /* TunerView.swift in Sources */,
 				722A895B236F65DA0030B009 /* SelectMusic.swift in Sources */,
+				149053EF236F8CEF00D36A10 /* SongMetadata.swift in Sources */,
 				722A895D236F65F80030B009 /* LandingPage.swift in Sources */,
 				722A8947236F643C0030B009 /* SceneDelegate.swift in Sources */,
 				722A895F236F662C0030B009 /* PlayMode.swift in Sources */,
 				722A8949236F643C0030B009 /* ContentView.swift in Sources */,
+				149053F1236F8FA800D36A10 /* SongThumbnail.swift in Sources */,
 				722A8959236F65CC0030B009 /* AddMusic.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

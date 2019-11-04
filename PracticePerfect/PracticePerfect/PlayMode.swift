@@ -9,6 +9,9 @@
 import SwiftUI
 
 struct PlayMode: View {
+    // Song metadata passed from song selection - used to retrieve music data from backed through API
+    var songMetadata: SongMetadata
+    
     var body: some View {
         VStack {
             HStack{
@@ -30,6 +33,7 @@ struct PlayMode: View {
 
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
-        PlayMode().previewLayout(.fixed(width: 896, height: 414))
+        // Preview with example song metadata
+        PlayMode(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", highScore: 1000, rank: "S")).previewLayout(.fixed(width: 896, height: 414))
     }
 }
