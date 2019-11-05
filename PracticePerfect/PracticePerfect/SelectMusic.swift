@@ -18,6 +18,11 @@ let songData = [
 ]
 
 struct SelectMusic: View {
+    // Controls display of modal sheet 
+    @State private var showModal = false
+    // Need default value -- songData[0]
+    @State private var songMetadata: SongMetadata = songData[0]
+    
     var body: some View {
         VStack{
             Text("What song will you play?")
@@ -25,11 +30,19 @@ struct SelectMusic: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .top, spacing: 0) {
                     ForEach(songData) { songMetadata in
-                        NavigationLink(destination: PlayMode(songMetadata: songMetadata)) {
+                        Button(action: {
+                            self.showModal.toggle()
+                            self.songMetadata = songMetadata
+                        }) {
                             SongThumbnail(songMetadata: songMetadata)
-                                
                         }
                         .buttonStyle(PlainButtonStyle())
+                        // Show modal sheet (pop-up SongInfoView) for more information
+                        .sheet(isPresented: self.$showModal, onDismiss: {
+                            print(self.showModal)
+                        }) {
+                            SongInfoView(songMetadata: self.songMetadata)
+                        }
                     }
                 }
             }
