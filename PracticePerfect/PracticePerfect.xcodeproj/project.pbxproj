@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		09D6F3436BDE6D560F781D49 /* Pods_PracticePerfect.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A09D0609716750189A32F60B /* Pods_PracticePerfect.framework */; };
 		149053EF236F8CEF00D36A10 /* SongMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149053EE236F8CEF00D36A10 /* SongMetadata.swift */; };
 		149053F1236F8FA800D36A10 /* SongThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149053F0236F8FA800D36A10 /* SongThumbnail.swift */; };
 		722A8945236F643C0030B009 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A8944236F643C0030B009 /* AppDelegate.swift */; };
@@ -21,11 +22,15 @@
 		722A895F236F662C0030B009 /* PlayMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A895E236F662C0030B009 /* PlayMode.swift */; };
 		BD51384E236F7401004F2220 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD51384D236F7401004F2220 /* SettingsView.swift */; };
 		BD513850236F7416004F2220 /* TunerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD51384F236F7416004F2220 /* TunerView.swift */; };
+		BDBC24DA23720BE2004D5311 /* Tuner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBC24D923720BE2004D5311 /* Tuner.swift */; };
+		BDBC24DC23720CCF004D5311 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBC24DB23720CCF004D5311 /* Note.swift */; };
+		BDBC24DE23720E6C004D5311 /* Pitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBC24DD23720E6C004D5311 /* Pitch.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		149053EE236F8CEF00D36A10 /* SongMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongMetadata.swift; sourceTree = "<group>"; };
 		149053F0236F8FA800D36A10 /* SongThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongThumbnail.swift; sourceTree = "<group>"; };
+		530B73A2A00866EFBF92229A /* Pods-PracticePerfect.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PracticePerfect.release.xcconfig"; path = "Target Support Files/Pods-PracticePerfect/Pods-PracticePerfect.release.xcconfig"; sourceTree = "<group>"; };
 		722A8941236F643C0030B009 /* PracticePerfect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PracticePerfect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		722A8944236F643C0030B009 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		722A8946236F643C0030B009 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -38,8 +43,13 @@
 		722A895A236F65DA0030B009 /* SelectMusic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectMusic.swift; sourceTree = "<group>"; };
 		722A895C236F65F80030B009 /* LandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingPage.swift; sourceTree = "<group>"; };
 		722A895E236F662C0030B009 /* PlayMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMode.swift; sourceTree = "<group>"; };
+		7624FDBE3531DB34B8FDEF6D /* Pods-PracticePerfect.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PracticePerfect.debug.xcconfig"; path = "Target Support Files/Pods-PracticePerfect/Pods-PracticePerfect.debug.xcconfig"; sourceTree = "<group>"; };
+		A09D0609716750189A32F60B /* Pods_PracticePerfect.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PracticePerfect.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD51384D236F7401004F2220 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BD51384F236F7416004F2220 /* TunerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunerView.swift; sourceTree = "<group>"; };
+		BDBC24D923720BE2004D5311 /* Tuner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tuner.swift; sourceTree = "<group>"; };
+		BDBC24DB23720CCF004D5311 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		BDBC24DD23720E6C004D5311 /* Pitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pitch.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09D6F3436BDE6D560F781D49 /* Pods_PracticePerfect.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,6 +69,8 @@
 			children = (
 				722A8943236F643C0030B009 /* PracticePerfect */,
 				722A8942236F643C0030B009 /* Products */,
+				CA3A01280048F164EC072DD1 /* Pods */,
+				EF5942A817742F53327F4DFF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -75,6 +88,9 @@
 				722A895C236F65F80030B009 /* LandingPage.swift */,
 				BD51384D236F7401004F2220 /* SettingsView.swift */,
 				BD51384F236F7416004F2220 /* TunerView.swift */,
+				BDBC24D923720BE2004D5311 /* Tuner.swift */,
+				BDBC24DB23720CCF004D5311 /* Note.swift */,
+				BDBC24DD23720E6C004D5311 /* Pitch.swift */,
 				722A895A236F65DA0030B009 /* SelectMusic.swift */,
 				722A8958236F65CC0030B009 /* AddMusic.swift */,
 				722A895E236F662C0030B009 /* PlayMode.swift */,
@@ -99,6 +115,23 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		CA3A01280048F164EC072DD1 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7624FDBE3531DB34B8FDEF6D /* Pods-PracticePerfect.debug.xcconfig */,
+				530B73A2A00866EFBF92229A /* Pods-PracticePerfect.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		EF5942A817742F53327F4DFF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A09D0609716750189A32F60B /* Pods_PracticePerfect.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -106,6 +139,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 722A8955236F643E0030B009 /* Build configuration list for PBXNativeTarget "PracticePerfect" */;
 			buildPhases = (
+				A292EAE2CE7510E371274E52 /* [CP] Check Pods Manifest.lock */,
 				722A893D236F643C0030B009 /* Sources */,
 				722A893E236F643C0030B009 /* Frameworks */,
 				722A893F236F643C0030B009 /* Resources */,
@@ -165,6 +199,31 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		A292EAE2CE7510E371274E52 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PracticePerfect-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		722A893D236F643C0030B009 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -174,8 +233,11 @@
 				BD51384E236F7401004F2220 /* SettingsView.swift in Sources */,
 				BD513850236F7416004F2220 /* TunerView.swift in Sources */,
 				722A895B236F65DA0030B009 /* SelectMusic.swift in Sources */,
+				BDBC24DA23720BE2004D5311 /* Tuner.swift in Sources */,
+				BDBC24DC23720CCF004D5311 /* Note.swift in Sources */,
 				149053EF236F8CEF00D36A10 /* SongMetadata.swift in Sources */,
 				722A895D236F65F80030B009 /* LandingPage.swift in Sources */,
+				BDBC24DE23720E6C004D5311 /* Pitch.swift in Sources */,
 				722A8947236F643C0030B009 /* SceneDelegate.swift in Sources */,
 				722A895F236F662C0030B009 /* PlayMode.swift in Sources */,
 				722A8949236F643C0030B009 /* ContentView.swift in Sources */,
@@ -314,6 +376,7 @@
 		};
 		722A8956236F643E0030B009 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7624FDBE3531DB34B8FDEF6D /* Pods-PracticePerfect.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -333,6 +396,7 @@
 		};
 		722A8957236F643E0030B009 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 530B73A2A00866EFBF92229A /* Pods-PracticePerfect.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;

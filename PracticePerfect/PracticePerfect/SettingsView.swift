@@ -19,6 +19,6 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        SettingsView().previewLayout(.fixed(width: 896, height: 414))
     }
 }
