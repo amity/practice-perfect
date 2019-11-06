@@ -24,6 +24,14 @@ struct TunerView: View, TunerDelegate {
         }
     }
     
+    struct AccidentalStyle: ViewModifier {
+        func body(content: Content) -> some View {
+            return content
+                .foregroundColor(Color.black)
+                .font(Font.custom("Arial Rounded MT Bold", size: 50))
+        }
+    }
+    
     struct ButtonStyle: ViewModifier {
         func body(content: Content) -> some View {
             return content
@@ -60,6 +68,15 @@ struct TunerView: View, TunerDelegate {
                     Spacer()
                     Text(displayNote())
                         .modifier(NoteStyle())
+                    HStack {
+                        Text("Flat")
+                            .modifier(AccidentalStyle())
+                            .opacity(max(0, calulateCents() / -50))
+                        Spacer()
+                        Text("Sharp")
+                            .modifier(AccidentalStyle())
+                            .opacity(max(0, calulateCents() / 50))
+                    }
                     Spacer()
                     Button(action: {
                         self.tuner.stop()
@@ -81,28 +98,37 @@ struct TunerView: View, TunerDelegate {
         self.octave = pitch.octave
     }
     
+    // Calculates the cents off of in tune
+    // Equation taken from:
+    // http://www.sengpielaudio.com/calculator-centsratio.htm
     func calulateCents() -> Double {
-        abs(1200 * log2(userFrequency / note.frequency))
+        let cents = 1200 * log2(userFrequency / note.frequency)
+        if cents > 50 || cents < -50 || (cents < 5 && cents > -5) {
+            print(0)
+            return 0
+        }
+        print(cents)
+        return cents
     }
 
     func makeSideColor() -> Color {
-        let red: Double
-        let green: Double
-        let cents = calulateCents()
-        if cents < 25 {
-            green = 255.0
-            red = 255.0 * (cents / 25.0)
-        } else {
-            red = 255.0
-            green = 255.0 * ((50 - cents) / 25.0)
-        }
+        let colors = setGreenRed()
+        let red = colors.0
+        let green = colors.1
         return Color(red: (red - 70)/255.0, green: (green - 70)/255.0, blue: 0.0/255.0)
     }
     
     func makeMiddleColor() -> Color {
+        let colors = setGreenRed()
+        let red = colors.0
+        let green = colors.1
+        return Color(red: red/255.0, green: green/255.0, blue: 0.0/255.0)
+    }
+    
+    func setGreenRed() -> (Double, Double) {
         let red: Double
         let green: Double
-        let cents = calulateCents()
+        let cents = abs(calulateCents())
         if cents < 25 {
             green = 255.0
             red = 255.0 * (cents / 25.0)
@@ -110,7 +136,8 @@ struct TunerView: View, TunerDelegate {
             red = 255.0
             green = 255.0 * ((50 - cents) / 25.0)
         }
-        return Color(red: red/255.0, green: green/255.0, blue: 0.0/255.0)
+        
+        return (red, green)
     }
     
     func displayNote() -> String {

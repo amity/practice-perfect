@@ -28,3 +28,4 @@ Anna Matusewicz, Sean Hawkins, Sophie Debs, Abigail Chen
 
 ## Acknowledgments
 * [Tuner Tutorial](http://shinerightstudio.com/posts/ios-tuner-app-using-audiokit/)
+* [Cents Equation](http://www.sengpielaudio.com/calculator-centsratio.htm)
