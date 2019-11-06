@@ -12,8 +12,8 @@ import AudioKit
 struct TunerView: View, TunerDelegate {
     @State var tuner = Tuner()
     @State var userFrequency = 261.6255653005986
+    @State var noteFrequency = 261.6255653005986
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
-    @State var octave = 0
     @State var tunerOn = false
     
     struct NoteStyle: ViewModifier {
@@ -94,15 +94,15 @@ struct TunerView: View, TunerDelegate {
     // Updates current note information from microphone
     func tunerDidTick(pitch: Pitch, frequency: Double) {
         self.userFrequency = frequency
+        self.noteFrequency = pitch.frequency
         self.note = pitch.note
-        self.octave = pitch.octave
     }
     
     // Calculates the cents off of in tune
     // Equation taken from:
     // http://www.sengpielaudio.com/calculator-centsratio.htm
     func calulateCents() -> Double {
-        let cents = 1200 * log2(userFrequency / note.frequency)
+        let cents = 1200 * log2(userFrequency / noteFrequency)
         if cents > 50 || cents < -50 || (cents < 5 && cents > -5) {
             return 0
         }
