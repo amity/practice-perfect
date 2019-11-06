@@ -32,6 +32,7 @@ struct LandingPage: View {
 }
 
 struct LandingPage_Previews: PreviewProvider {
-    static var previews: some View { LandingPage().previewLayout(.fixed(width: 896, height: 414))
+    static var previews: some View {
+        LandingPage().previewLayout(.fixed(width: 896, height: 414))
     }
 }
