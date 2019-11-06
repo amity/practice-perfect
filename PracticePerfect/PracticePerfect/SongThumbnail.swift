@@ -21,16 +21,21 @@ struct SongThumbnail: View {
             VStack {
                 Text(songMetadata.name)
                     .font(.system(size: 32))
-                    .padding(20)
+                    .padding(.top, 20)
+                    .padding(.leading, 20)
+                    .padding(.trailing, 20)
                 Spacer()
                 HStack {
                     Text(songMetadata.rank)
                         .font(.system(size: 32))
+                        .padding(.leading, 20)
+                        .padding(.bottom, 20)
                     Spacer()
                     Text("\(songMetadata.highScore)")
                         .font(.system(size: 32))
+                        .padding(.trailing, 20)
+                        .padding(.bottom, 20)
                 }
-                .padding(20)
             }
             .padding(10)
         }
