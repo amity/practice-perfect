@@ -4,3 +4,4 @@ npm-debug.*
 web-build/
 web-report/
 .DS_Store
+PracticePerfect/Pods/*
