@@ -60,14 +60,13 @@ class Tuner {
     private func pollingTick() {
         let frequency = Double(tracker.frequency)
         let pitch = Pitch.makePitchByFrequency(frequency)
-        let errRatio = frequency / pitch.frequency
         
         if let d = delegate {
-            d.tunerDidTick(pitch: pitch, errRatio: errRatio)
+            d.tunerDidTick(pitch: pitch, frequency: frequency)
         }
     }
 }
 
 protocol TunerDelegate {
-    func tunerDidTick(pitch: Pitch, errRatio: Double)
+    func tunerDidTick(pitch: Pitch, frequency: Double)
 }
