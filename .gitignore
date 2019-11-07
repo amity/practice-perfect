@@ -5,3 +5,5 @@ web-build/
 web-report/
 .DS_Store
 PracticePerfect/Pods/*
+PracticePerfect/PracticePerfect.xcodeproj/xcuserdata/*
+PracticePerfect/PracticePerfect.xcworkspace/xcuserdata/*

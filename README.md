@@ -17,6 +17,10 @@ CircleCI: https://circleci.com/gh/dartmouth-cs98
 ## Setup and Deployment
 
 * Install and open with XCode 11.1+ (currently optimized for simulation on iPhone 11/iPhone XR).
+* `cd` inro the PracticePerfect xcode directory
+* Run `pod install`
+* Click on PracticePerfect.xcworkspace to open coding environment
+* Click play to run simulation
 
 
 
