@@ -25,7 +25,6 @@ Install and open with XCode 11.1+ (currently optimized for simulation on iPhone 
 
 
 
-
 ## Authors
 
 Anna Matusewicz, Sean Hawkins, Sophie Debs, Abigail Chen
