@@ -18,7 +18,7 @@ CircleCI: https://circleci.com/gh/dartmouth-cs98
 ## Setup and Deployment
 
 Install and open with XCode 11.1+ (currently optimized for simulation on iPhone 11/iPhone XR).
-* In directory, install CocoaPods.
+* In Practice Perfect directory, install CocoaPods.
     * `sudo gem install cocoapods` or other installation method found here: https://guides.cocoapods.org/using/getting-started.html
     * or `pod repo update`, `pod install`
 * `open PracticePerfect.xcworkspace`
