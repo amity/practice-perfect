@@ -1,0 +1,113 @@
+
+{
+    scales: {
+        major: [
+            {
+                name: "C Major"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/C_Major_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "G Major"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/G_Major_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "D Major"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/D_Major_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "A Major"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/A_Major_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "E Major"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/E_Major_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "B Major"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/B_Major_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "F\u{266F} Major"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/FS_Major_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "G\u{266D} Major"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/GF_Major_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "D\u{266D} Major"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/DF_Major_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "A\u{266D} Major"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/AF_Major_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "E\u{266D} Major"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/EF_Major_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "B\u{266D} Major"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/BF_Major_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "F Major"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/F_Major_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+        ]
+        minor: [
+            {
+                name: "A Minor"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/A_Minor_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "E Minor"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/E_Minor_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "B Minor"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/B_Minor_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "F\u{266F} Minor"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/FS_Minor_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "C\u{266F} Minor"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/CS_Minor_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "G\u{266F} Minor"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/GS_Minor_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "D\u{266F} Minor"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/DS_Minor_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "E\u{266D} Minor"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/EF_Minor_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "B\u{266D} Minor"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/BF_Minor_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "F Minor"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/F_Minor_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "C Minor"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/C_Minor_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "G Minor"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/G_Minor_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+            {
+                name: "D Minor"
+                url : "https://storage.cloud.google.com/practiceperfect-songs/D_Minor_Scale.musicxml?cloudshell=true&supportedpurview=project"
+            },
+        ]
+    }
+}

@@ -16,7 +16,11 @@ struct LandingPage: View {
                 .fontWeight(.semibold)
             
             NavigationLink(destination: SelectMusic()) {
-                Text("Play!").foregroundColor(Color.black)
+                Text("Play").foregroundColor(Color.black)
+            }
+            
+            NavigationLink(destination: PracticeView()) {
+                Text("Practice").foregroundColor(Color.black)
             }
             
             NavigationLink(destination: TunerView()) {
