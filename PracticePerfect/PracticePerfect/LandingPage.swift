@@ -9,14 +9,15 @@
 import SwiftUI
 
 struct LandingPage: View {
+    @State var isNavigationBarHidden: Bool = false
     
     var body: some View {
         VStack {
             Text("Practice Perfect")
                 .fontWeight(.semibold)
             
-            NavigationLink(destination: SelectMusic()) {
-                Text("Play").foregroundColor(Color.black)
+            NavigationLink(destination: SelectMusic(isNavigationBarHidden: $isNavigationBarHidden)) {
+                Text("Play!").foregroundColor(Color.black)
             }
             
             NavigationLink(destination: PracticeView()) {
@@ -31,6 +32,10 @@ struct LandingPage: View {
                 Text("Settings").foregroundColor(Color.black)
             }
             
+        }
+        .navigationBarBackButtonHidden(true)
+        .onAppear {
+            self.isNavigationBarHidden = false
         }
     }
 }

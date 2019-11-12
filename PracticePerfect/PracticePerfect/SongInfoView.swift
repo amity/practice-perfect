@@ -11,7 +11,7 @@ import SwiftUI
 struct SongInfoView: View {
     @Environment(\.presentationMode) var presentation
     // Keeps track of whether to hide the navigation bar (done for SongInfoView) or whether to show (all other views)
-    @State var isNavigationBarHidden: Bool = true
+    @Binding var isNavigationBarHidden: Bool
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     @State var songMetadata: SongMetadata
 
@@ -36,7 +36,7 @@ struct SongInfoView: View {
                         HStack {
                             ZStack {
                                 Color.gray
-                                NavigationLink(destination: PlayMode(songMetadata: songMetadata, isNavigationBarHidden: $isNavigationBarHidden)) {
+                                NavigationLink(destination: PlayMode(songMetadata: songMetadata, isNavigationBarHidden: self.$isNavigationBarHidden)) {
                                     Text("Play!")
                                         .font(.system(size: 32))
                                 }
