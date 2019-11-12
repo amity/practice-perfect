@@ -14,6 +14,18 @@ struct PlayMode: View {
     // Needed to display the navigation bar after being hidden on SongInfoView, however we may not even want the navigation bar on this screen either, which would allow us to remove this variable potentially 
     @Binding var isNavigationBarHidden: Bool
     
+    // Will be created from the score once play along mode is completed 
+    @State var scoreMetadata: ScoreMetadata = ScoreMetadata(
+        overallRank: "A-",
+        pitchRank: "A",
+        tempoRank: "B+",
+        newScore: 9000,
+        scorePercent: 9123,
+        perfectCount: 1431,
+        goodCount: 237,
+        missCount: 26
+    )
+    
     var body: some View {
         VStack {
             HStack{
@@ -29,6 +41,10 @@ struct PlayMode: View {
                 Text("Progress")
             }
             
+            NavigationLink(destination: ResultsPage(scoreMetadata: scoreMetadata, isNavigationBarHidden: $isNavigationBarHidden)) {
+                Text("Results")
+            }
+            
         }
         .onAppear {
             self.isNavigationBarHidden = false
@@ -36,10 +52,9 @@ struct PlayMode: View {
     }
 }
 
-// Can't preview because don't know how to simulate passing in bound value...
-//struct PlayMode_Previews: PreviewProvider {
-//    static var previews: some View {
-//        // Preview with example song metadata
-//        PlayMode(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", highScore: 1000, rank: "S"), isNavigationBarHidden: true).previewLayout(.fixed(width: 896, height: 414))
-//    }
-//}
+struct PlayMode_Previews: PreviewProvider {
+    static var previews: some View {
+        // Preview with example song metadata
+        PlayMode(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", highScore: 1000, rank: "S"), isNavigationBarHidden: .constant(false)).previewLayout(.fixed(width: 896, height: 414))
+    }
+}

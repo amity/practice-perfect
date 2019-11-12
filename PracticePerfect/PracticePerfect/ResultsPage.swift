@@ -1,0 +1,101 @@
+//
+//  ResultsPage.swift
+//  PracticePerfect
+//
+//  Created by Sean Hawkins on 11/12/19.
+//  Copyright © 2019 CS98PracticePerfect. All rights reserved.
+//
+
+import SwiftUI
+
+struct ResultsPage: View {
+    @State var scoreMetadata: ScoreMetadata
+    @Binding var isNavigationBarHidden: Bool
+    
+    var body: some View {
+        HStack {
+            Spacer()
+            VStack {
+                Text("\(scoreMetadata.overallRank)")
+                    .font(.system(size: 60))
+                ZStack {
+                    Color.gray
+                        .frame(width: 300, height: 75)
+                    NavigationLink(destination: SelectMusic(isNavigationBarHidden: $isNavigationBarHidden)) {
+                        Text("Choose another song")
+                            .font(.system(size: 28))
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+                ZStack {
+                    Color.gray
+                        .frame(width: 300, height: 75)
+                    NavigationLink(destination: LandingPage()) {
+                        Text("Menu")
+                            .font(.system(size: 28))
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+            }
+            Spacer()
+            VStack {
+                Text("\(scoreMetadata.scorePercent)")
+                    .font(.system(size: 48))
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Perfect: \(scoreMetadata.perfectCount)")
+                            .font(.system(size: 24))
+                        Text("Good: \(scoreMetadata.goodCount)")
+                            .font(.system(size: 24))
+                        Text("Missed: \(scoreMetadata.missCount)")
+                            .font(.system(size: 24))
+                    }
+                    .padding(.trailing, 20)
+                    VStack(alignment: .leading) {
+                        Text("Pitch: \(scoreMetadata.pitchRank)")
+                            .font(.system(size: 24))
+                            .frame(alignment: .leading)
+                        Text("Tempo: \(scoreMetadata.tempoRank)")
+                            .font(.system(size: 24))
+                            .frame(alignment: .leading)
+                    }
+                    .padding(.leading, 20)
+                }
+                .padding(.top, 20)
+                .padding(.bottom, 20)
+                Text("Score: \(scoreMetadata.newScore)")
+                    .font(.system(size: 24))
+                Text("High Score: 10000")
+                    .font(.system(size: 24))
+            }
+            Spacer()
+        }
+        .navigationBarTitle("")
+        .navigationBarHidden(self.isNavigationBarHidden)
+        .onAppear {
+            self.isNavigationBarHidden = true
+        }
+        .onDisappear {
+            self.isNavigationBarHidden = false
+        }
+    }
+}
+
+struct ResultsPage_Previews: PreviewProvider {
+    static var previews: some View {
+        // Preview with example song metadata
+        ResultsPage(scoreMetadata: ScoreMetadata(
+                overallRank: "A",
+                pitchRank: "A",
+                tempoRank: "A",
+                newScore: 9000,
+                scorePercent: 9756,
+                perfectCount: 100,
+                goodCount: 10,
+                missCount: 1
+            ),
+            isNavigationBarHidden: .constant(true)
+        ).previewLayout(.fixed(width: 896, height: 414))
+    }
+}
+

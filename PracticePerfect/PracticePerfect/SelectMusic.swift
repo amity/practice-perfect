@@ -59,7 +59,6 @@ func retrieveSongs() -> Array<SongMetadata> {
         let jsonObj = try? JSONSerialization.jsonObject(with: unwrappedData, options: JSONSerialization.ReadingOptions.allowFragments)
 
         songData = parseJson(anyObj: jsonObj)
-        print(songData)
         semaphore.signal()
     }
     task.resume()
@@ -78,6 +77,8 @@ struct SelectMusic: View {
     // List of all songs
     @State var allSongs: Array<SongMetadata> = retrieveSongs()
 
+    @Binding var isNavigationBarHidden: Bool
+    
     var body: some View {
         VStack{
             Spacer()
@@ -101,7 +102,7 @@ struct SelectMusic: View {
                             .sheet(isPresented: self.$showModal, onDismiss: {
                                 print(self.showModal)
                             }) {
-                                SongInfoView(songMetadata: self.songMetadata)
+                                SongInfoView(isNavigationBarHidden: self.$isNavigationBarHidden, songMetadata: self.songMetadata)
                             }
                         }
                         .frame(width: 300, height: 185)
@@ -118,11 +119,14 @@ struct SelectMusic: View {
                 Text("Add music")
             }
         )
+        .onAppear {
+            self.isNavigationBarHidden = false
+        }
     }
 }
 
 struct SelectMusic_Previews: PreviewProvider {
     static var previews: some View {
-        SelectMusic(allSongs: [SongMetadata(id: -1, name: "", highScore: -1, rank: "")]).previewLayout(.fixed(width: 896, height: 414))
+        SelectMusic(allSongs: [SongMetadata(id: -1, name: "", highScore: -1, rank: "")], isNavigationBarHidden: .constant(false)).previewLayout(.fixed(width: 896, height: 414))
     }
 }
