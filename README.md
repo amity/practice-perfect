@@ -10,13 +10,18 @@ Practice Perfect is a mobile app to help musicians (especially young students in
 * PostgreSQL
 
 Our back end repo: https://github.com/dartmouth-cs98/19f-practiceperfect-api/
+
 CircleCI: https://circleci.com/gh/dartmouth-cs98
 
 
 
 ## Setup and Deployment
 
-* Install and open with XCode 11.1+ (currently optimized for simulation on iPhone 11/iPhone XR).
+Install and open with XCode 11.1+ (currently optimized for simulation on iPhone 11/iPhone XR).
+* In Practice Perfect directory, install CocoaPods.
+    * `sudo gem install cocoapods` or other installation method found here: https://guides.cocoapods.org/using/getting-started.html
+    * or `pod repo update`, `pod install`
+* `open PracticePerfect.xcworkspace`
 
 
 

@@ -7,24 +7,77 @@
 //
 //  Used this video tutorial for the scrolling animations:
 //  https://www.youtube.com/watch?v=EBbhIbI2Hg8
+//
+//  API functions inspired by these comments on StackOverflow:
+//  https://stackoverflow.com/a/24321320
+//  https://stackoverflow.com/a/26365148
+//  https://stackoverflow.com/a/25622593
+//
+//  This link contains info on semaphores, which are necessary for loading the songs from the API:
+//  https://medium.com/@michaellong/how-to-chain-api-calls-using-swift-5s-new-result-type-and-gcd-56025b51033c
 
 import SwiftUI
 
-// Will eventually be retrieved from backend
-let songData = [
-    SongMetadata(id: 0, name: "Mary Had a Little Lamb", highScore: 1000, rank: "S"),
-    SongMetadata(id: 1, name: "Joy to the World", highScore: 2000, rank: "S"),
-    SongMetadata(id: 2, name: "Minuet in G", highScore: 1500, rank: "S"),
-    SongMetadata(id: 3, name: "For He's a Jolly Good Fellow", highScore: 2500, rank: "S"),
-    SongMetadata(id: 4, name: "Twinkle Twinkle Little Star", highScore: 2000, rank: "S")
-]
+func parseJson(anyObj:Any?) -> Array<SongMetadata> {
+    // Will eventually be retrieved from backend - in current state you can see the first three songs here followed by the two from the server (11/6/19). Eventually, the list will be initialized as empty
+//    var list:Array<SongMetadata> = []
+    var list = [
+        SongMetadata(id: 0, name: "Mary Had a Little Lamb", highScore: 1000, rank: "S"),
+        SongMetadata(id: 1, name: "Joy to the World", highScore: 2000, rank: "S"),
+        SongMetadata(id: 2, name: "Minuet in G", highScore: 1500, rank: "S"),
+    ]
+
+    if  anyObj is Array<AnyObject> {
+        for json in anyObj as! Array<AnyObject>{
+            // More information will eventually come from the server
+            let id = (json["id"]  as AnyObject? as? Int) ?? 0
+            let name = (json["name"] as AnyObject? as? String) ?? ""
+            let artist = (json["artist"] as AnyObject? as? String) ?? ""
+            list.append(SongMetadata(id: id, name: name, highScore: 0, rank: "A"))
+        }
+    }
+
+    return list
+}
+
+func retrieveSongs() -> Array<SongMetadata> {
+    // Create the request
+    let url = URL(string: "https://practiceperfect.appspot.com/songs")!
+    let session = URLSession.shared
+    var request = URLRequest(url: url)
+    request.httpMethod = "GET"
+
+    var songData: Array<SongMetadata> = []
+    let semaphore = DispatchSemaphore(value: 0)
+    let task = session.dataTask(with: request) { data, response, error in
+        // Unwrap data
+        guard let unwrappedData = data else {
+            print(error!)
+            return
+        }
+        // Get json object from data
+        let jsonObj = try? JSONSerialization.jsonObject(with: unwrappedData, options: JSONSerialization.ReadingOptions.allowFragments)
+
+        songData = parseJson(anyObj: jsonObj)
+        print(songData)
+        semaphore.signal()
+    }
+    task.resume()
+
+    // Wait for the songs to be retrieved before displaying all of them
+    _ = semaphore.wait(wallTimeout: .distantFuture)
+    
+    return songData
+}
 
 struct SelectMusic: View {
-    // Controls display of modal sheet 
+    // Controls display of modal sheet
     @State private var showModal = false
-    // Need default value -- songData[0]
-    @State private var songMetadata: SongMetadata = songData[0]
-    
+    // Need default value - dummy data to start with
+    @State private var songMetadata: SongMetadata = SongMetadata(id: -1, name: "", highScore: -1, rank: "")
+    // List of all songs
+    @State var allSongs: Array<SongMetadata> = retrieveSongs()
+
     var body: some View {
         VStack{
             Spacer()
@@ -32,7 +85,7 @@ struct SelectMusic: View {
                 .font(.system(size: 44))
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 5) {
-                    ForEach(songData) { songMetadata in
+                    ForEach(allSongs) { songMetadata in
                         GeometryReader { geometry in
                             Button(action: {
                                 self.showModal.toggle()
@@ -70,6 +123,6 @@ struct SelectMusic: View {
 
 struct SelectMusic_Previews: PreviewProvider {
     static var previews: some View {
-        SelectMusic().previewLayout(.fixed(width: 896, height: 414))
+        SelectMusic(allSongs: [SongMetadata(id: -1, name: "", highScore: -1, rank: "")]).previewLayout(.fixed(width: 896, height: 414))
     }
 }
