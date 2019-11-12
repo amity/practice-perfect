@@ -16,36 +16,57 @@ struct ResultsPage: View {
         HStack {
             Spacer()
             VStack {
-                Spacer()
-                Text("RANK")
-                    .font(.system(size: 44))
-                Spacer()
-                NavigationLink(destination: SelectMusic(isNavigationBarHidden: $isNavigationBarHidden)) {
-                    Text("Choose another song")
+                Text("\(scoreMetadata.overallRank)")
+                    .font(.system(size: 60))
+                ZStack {
+                    Color.gray
+                        .frame(width: 300, height: 75)
+                    NavigationLink(destination: SelectMusic(isNavigationBarHidden: $isNavigationBarHidden)) {
+                        Text("Choose another song")
+                            .font(.system(size: 28))
+                    }
+                    .buttonStyle(PlainButtonStyle())
                 }
-                NavigationLink(destination: LandingPage()) {
-                    Text("Menu")
+                ZStack {
+                    Color.gray
+                        .frame(width: 300, height: 75)
+                    NavigationLink(destination: LandingPage()) {
+                        Text("Menu")
+                            .font(.system(size: 28))
+                    }
+                    .buttonStyle(PlainButtonStyle())
                 }
-                Spacer()
             }
             Spacer()
             VStack {
-                Spacer()
-                Text("RANK")
-                    .font(.system(size: 44))
-                Spacer()
+                Text("\(scoreMetadata.scorePercent)")
+                    .font(.system(size: 48))
                 HStack {
-                    Text("Scores")
-                        .font(.system(size: 24))
-                    Text("Ranks")
-                        .font(.system(size: 24))
+                    VStack(alignment: .leading) {
+                        Text("Perfect: \(scoreMetadata.perfectCount)")
+                            .font(.system(size: 24))
+                        Text("Good: \(scoreMetadata.goodCount)")
+                            .font(.system(size: 24))
+                        Text("Missed: \(scoreMetadata.missCount)")
+                            .font(.system(size: 24))
+                    }
+                    .padding(.trailing, 20)
+                    VStack(alignment: .leading) {
+                        Text("Pitch: \(scoreMetadata.pitchRank)")
+                            .font(.system(size: 24))
+                            .frame(alignment: .leading)
+                        Text("Tempo: \(scoreMetadata.tempoRank)")
+                            .font(.system(size: 24))
+                            .frame(alignment: .leading)
+                    }
+                    .padding(.leading, 20)
                 }
-                Spacer()
-                Text("Score")
+                .padding(.top, 20)
+                .padding(.bottom, 20)
+                Text("Score: \(scoreMetadata.newScore)")
                     .font(.system(size: 24))
-                Text("High Score")
+                Text("High Score: 10000")
                     .font(.system(size: 24))
-                Spacer()
             }
             Spacer()
         }

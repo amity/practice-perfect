@@ -14,15 +14,16 @@ struct PlayMode: View {
     // Needed to display the navigation bar after being hidden on SongInfoView, however we may not even want the navigation bar on this screen either, which would allow us to remove this variable potentially 
     @Binding var isNavigationBarHidden: Bool
     
+    // Will be created from the score once play along mode is completed 
     @State var scoreMetadata: ScoreMetadata = ScoreMetadata(
-        overallRank: "",
-        pitchRank: "",
-        tempoRank: "",
-        newScore: 0,
-        scorePercent: 0,
-        perfectCount: 0,
-        goodCount: 0,
-        missCount: 0
+        overallRank: "A-",
+        pitchRank: "A",
+        tempoRank: "B+",
+        newScore: 9000,
+        scorePercent: 9123,
+        perfectCount: 1431,
+        goodCount: 237,
+        missCount: 26
     )
     
     var body: some View {
