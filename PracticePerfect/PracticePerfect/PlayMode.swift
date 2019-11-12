@@ -51,10 +51,9 @@ struct PlayMode: View {
     }
 }
 
-// Can't preview because don't know how to simulate passing in bound value...
-//struct PlayMode_Previews: PreviewProvider {
-//    static var previews: some View {
-//        // Preview with example song metadata
-//        PlayMode(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", highScore: 1000, rank: "S"), isNavigationBarHidden: true).previewLayout(.fixed(width: 896, height: 414))
-//    }
-//}
+struct PlayMode_Previews: PreviewProvider {
+    static var previews: some View {
+        // Preview with example song metadata
+        PlayMode(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", highScore: 1000, rank: "S"), isNavigationBarHidden: .constant(false)).previewLayout(.fixed(width: 896, height: 414))
+    }
+}

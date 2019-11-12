@@ -20,7 +20,7 @@ struct ResultsPage: View {
                 Text("RANK")
                     .font(.system(size: 44))
                 Spacer()
-                NavigationLink(destination: SelectMusic()) {
+                NavigationLink(destination: SelectMusic(isNavigationBarHidden: $isNavigationBarHidden)) {
                     Text("Choose another song")
                 }
                 NavigationLink(destination: LandingPage()) {
@@ -54,15 +54,27 @@ struct ResultsPage: View {
         .onAppear {
             self.isNavigationBarHidden = true
         }
-//        .navigationBarBackButtonHidden(true)
-//        .navigationBarHidden(true)
+        .onDisappear {
+            self.isNavigationBarHidden = false
+        }
     }
 }
 
-//struct ResultsPage_Previews: PreviewProvider {
-//    static var previews: some View {
-//        // Preview with example song metadata
-//        ResultsPage().previewLayout(.fixed(width: 896, height: 414))
-//    }
-//}
+struct ResultsPage_Previews: PreviewProvider {
+    static var previews: some View {
+        // Preview with example song metadata
+        ResultsPage(scoreMetadata: ScoreMetadata(
+                overallRank: "A",
+                pitchRank: "A",
+                tempoRank: "A",
+                newScore: 9000,
+                scorePercent: 9756,
+                perfectCount: 100,
+                goodCount: 10,
+                missCount: 1
+            ),
+            isNavigationBarHidden: .constant(true)
+        ).previewLayout(.fixed(width: 896, height: 414))
+    }
+}
 
