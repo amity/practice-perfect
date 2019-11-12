@@ -28,6 +28,7 @@ struct LandingPage: View {
             }
             
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 

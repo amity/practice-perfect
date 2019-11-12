@@ -14,6 +14,17 @@ struct PlayMode: View {
     // Needed to display the navigation bar after being hidden on SongInfoView, however we may not even want the navigation bar on this screen either, which would allow us to remove this variable potentially 
     @Binding var isNavigationBarHidden: Bool
     
+    @State var scoreMetadata: ScoreMetadata = ScoreMetadata(
+        overallRank: "",
+        pitchRank: "",
+        tempoRank: "",
+        newScore: 0,
+        scorePercent: 0,
+        perfectCount: 0,
+        goodCount: 0,
+        missCount: 0
+    )
+    
     var body: some View {
         VStack {
             HStack{
@@ -27,6 +38,10 @@ struct PlayMode: View {
             
             HStack {
                 Text("Progress")
+            }
+            
+            NavigationLink(destination: ResultsPage(scoreMetadata: scoreMetadata, isNavigationBarHidden: $isNavigationBarHidden)) {
+                Text("Results")
             }
             
         }
