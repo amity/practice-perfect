@@ -9,36 +9,25 @@
 import SwiftUI
 
 struct PracticeView: View {
-    @State private var showScales = false
+    @State var majorScales = musicData["major"] ?? []
+    @State var minorScales = musicData["minor"] ?? []
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack {
-                Button(action: {
-                    self.showScales = true
-                }) {
-                    Text("Scales")
+        VStack {
+            Text("Major Scales:") // STYLE
+            List(majorScales) { piece in
+                NavigationLink(destination: PieceDetail(piece: piece)) {
+                    PieceRow(piece: piece)
                 }
-                .buttonStyle(PlainButtonStyle())
             }
-            
-            
-        }
-    }
-    
-    func parseMusicJson() {
-        if let path = Bundle.main.path(forResource: "Exercises", ofType: "json") {
-            do {
-                let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
-                let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
-                if let jsonResult = jsonResult as? Dictionary<String, Dictionary<String, Array<Dictionary<String, String>>>> {
-                    let majorScales = jsonResult["scales"]!["major"]!
-                    let minorScales = jsonResult["scales"]!["minor"]!
+            Text("Minor Scales:")
+            List(minorScales) { piece in
+                NavigationLink(destination: PieceDetail(piece: piece)) {
+                    PieceRow(piece: piece)
                 }
-              } catch {
-                   // handle error
-              }
+            }
         }
+        .navigationBarTitle("Practice")
     }
 }
 

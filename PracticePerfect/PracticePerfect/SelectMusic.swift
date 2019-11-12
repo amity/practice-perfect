@@ -56,7 +56,6 @@ func retrieveSongs() -> Array<SongMetadata> {
         let jsonObj = try? JSONSerialization.jsonObject(with: unwrappedData, options: JSONSerialization.ReadingOptions.allowFragments)
 
         songData = parseJson(anyObj: jsonObj)
-        print(songData)
         semaphore.signal()
     }
     task.resume()

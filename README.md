@@ -32,3 +32,4 @@ Anna Matusewicz, Sean Hawkins, Sophie Debs, Abigail Chen
 
 
 ## Acknowledgments
+* [Lists Tutorial](https://developer.apple.com/tutorials/swiftui/building-lists-and-navigation)
