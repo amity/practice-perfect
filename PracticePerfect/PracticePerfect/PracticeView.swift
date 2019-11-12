@@ -11,16 +11,27 @@ import SwiftUI
 struct PracticeView: View {
     @State var majorScales = musicData["major"] ?? []
     @State var minorScales = musicData["minor"] ?? []
-
+    
+    struct ScaleStyle: ViewModifier {
+        func body(content: Content) -> some View {
+            return content
+                .foregroundColor(Color.black)
+                .font(Font.custom("Arial Rounded MT Bold", size: 18))
+                .padding(.leading, 20)
+        }
+    }
+    
     var body: some View {
-        VStack {
-            Text("Major Scales:") // STYLE
+        VStack(alignment: .leading) {
+            Text("Major Scales:")
+                .modifier(ScaleStyle())
             List(majorScales) { piece in
                 NavigationLink(destination: PieceDetail(piece: piece)) {
                     PieceRow(piece: piece)
                 }
             }
             Text("Minor Scales:")
+                .modifier(ScaleStyle())
             List(minorScales) { piece in
                 NavigationLink(destination: PieceDetail(piece: piece)) {
                     PieceRow(piece: piece)
