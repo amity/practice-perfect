@@ -20,6 +20,10 @@ struct LandingPage: View {
                 Text("Play!").foregroundColor(Color.black)
             }
             
+            NavigationLink(destination: PracticeView()) {
+                Text("Practice").foregroundColor(Color.black)
+            }
+            
             NavigationLink(destination: TunerView()) {
                 Text("Tuner").foregroundColor(Color.black)
             }

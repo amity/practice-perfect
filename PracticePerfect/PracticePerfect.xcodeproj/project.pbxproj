@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		149053EF236F8CEF00D36A10 /* SongMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149053EE236F8CEF00D36A10 /* SongMetadata.swift */; };
+		149053EF236F8CEF00D36A10 /* Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149053EE236F8CEF00D36A10 /* Metadata.swift */; };
 		149053F1236F8FA800D36A10 /* SongThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149053F0236F8FA800D36A10 /* SongThumbnail.swift */; };
 		1494C8FA2371D37800F0C68E /* SongInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1494C8F92371D37800F0C68E /* SongInfoView.swift */; };
 		14952320237B08AE0077BA97 /* ResultsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1495231F237B08AE0077BA97 /* ResultsPage.swift */; };
@@ -25,8 +25,13 @@
 		729620432373F6ED00706B82 /* PracticePerfect.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 729620412373F6ED00706B82 /* PracticePerfect.xcdatamodeld */; };
 		7296206C237405B400706B82 /* Song+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7296206A237405B300706B82 /* Song+CoreDataProperties.swift */; };
 		7296206D237405B400706B82 /* Song+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7296206B237405B400706B82 /* Song+CoreDataClass.swift */; };
+		BD3E0B65237A2645003F04A8 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3E0B64237A2645003F04A8 /* Data.swift */; };
+		BD3E0B67237A2DCC003F04A8 /* PieceRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3E0B66237A2DCC003F04A8 /* PieceRowView.swift */; };
+		BD3E0B69237A30FE003F04A8 /* PieceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3E0B68237A30FE003F04A8 /* PieceDetailView.swift */; };
 		BD51384E236F7401004F2220 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD51384D236F7401004F2220 /* SettingsView.swift */; };
 		BD513850236F7416004F2220 /* TunerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD51384F236F7416004F2220 /* TunerView.swift */; };
+		BD92FECD2374D8E10074FD59 /* Exercises.json in Resources */ = {isa = PBXBuildFile; fileRef = BD92FECC2374D8E10074FD59 /* Exercises.json */; };
+		BD92FECF2374DC240074FD59 /* PracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD92FECE2374DC240074FD59 /* PracticeView.swift */; };
 		BD9597EF23732FD6002A9651 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9597EE23732FD6002A9651 /* Note.swift */; };
 		BD9597F123732FEB002A9651 /* Pitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9597F023732FEB002A9651 /* Pitch.swift */; };
 		BD9597F323733001002A9651 /* Tuner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9597F223733001002A9651 /* Tuner.swift */; };
@@ -34,7 +39,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		149053EE236F8CEF00D36A10 /* SongMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongMetadata.swift; sourceTree = "<group>"; };
+		149053EE236F8CEF00D36A10 /* Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Metadata.swift; path = PracticePerfect/Metadata.swift; sourceTree = SOURCE_ROOT; };
 		149053F0236F8FA800D36A10 /* SongThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongThumbnail.swift; sourceTree = "<group>"; };
 		1494C8F92371D37800F0C68E /* SongInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongInfoView.swift; sourceTree = "<group>"; };
 		1495231F237B08AE0077BA97 /* ResultsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsPage.swift; sourceTree = "<group>"; };
@@ -57,8 +62,13 @@
 		7296206A237405B300706B82 /* Song+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Song+CoreDataProperties.swift"; path = "PracticePerfect/Data/Song+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		7296206B237405B400706B82 /* Song+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Song+CoreDataClass.swift"; path = "PracticePerfect/Data/Song+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		AE4CBC2ABD6D6E4986B1F28B /* Pods-PracticePerfect.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PracticePerfect.release.xcconfig"; path = "Target Support Files/Pods-PracticePerfect/Pods-PracticePerfect.release.xcconfig"; sourceTree = "<group>"; };
+		BD3E0B64237A2645003F04A8 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Data.swift; path = PracticePerfect/Data.swift; sourceTree = SOURCE_ROOT; };
+		BD3E0B66237A2DCC003F04A8 /* PieceRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceRowView.swift; sourceTree = "<group>"; };
+		BD3E0B68237A30FE003F04A8 /* PieceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieceDetailView.swift; sourceTree = "<group>"; };
 		BD51384D236F7401004F2220 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BD51384F236F7416004F2220 /* TunerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunerView.swift; sourceTree = "<group>"; };
+		BD92FECC2374D8E10074FD59 /* Exercises.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Exercises.json; sourceTree = "<group>"; };
+		BD92FECE2374DC240074FD59 /* PracticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeView.swift; sourceTree = "<group>"; };
 		BD9597EE23732FD6002A9651 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		BD9597F023732FEB002A9651 /* Pitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pitch.swift; sourceTree = "<group>"; };
 		BD9597F223733001002A9651 /* Tuner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tuner.swift; sourceTree = "<group>"; };
@@ -114,26 +124,30 @@
 		722A8943236F643C0030B009 /* PracticePerfect */ = {
 			isa = PBXGroup;
 			children = (
-				722A895C236F65F80030B009 /* LandingPage.swift */,
-				BD51384D236F7401004F2220 /* SettingsView.swift */,
-				BD51384F236F7416004F2220 /* TunerView.swift */,
-				BD9597EE23732FD6002A9651 /* Note.swift */,
-				BD9597F023732FEB002A9651 /* Pitch.swift */,
-				BD9597F223733001002A9651 /* Tuner.swift */,
-				722A895A236F65DA0030B009 /* SelectMusic.swift */,
-				722A8958236F65CC0030B009 /* AddMusic.swift */,
-				722A895E236F662C0030B009 /* PlayMode.swift */,
-				722A8944236F643C0030B009 /* AppDelegate.swift */,
-				722A8946236F643C0030B009 /* SceneDelegate.swift */,
-				722A8948236F643C0030B009 /* ContentView.swift */,
-				722A894A236F643E0030B009 /* Assets.xcassets */,
-				722A894F236F643E0030B009 /* LaunchScreen.storyboard */,
 				722A8952236F643E0030B009 /* Info.plist */,
-				722A894C236F643E0030B009 /* Preview Content */,
-				149053EE236F8CEF00D36A10 /* SongMetadata.swift */,
-				149053F0236F8FA800D36A10 /* SongThumbnail.swift */,
+				722A8958236F65CC0030B009 /* AddMusic.swift */,
+				722A8944236F643C0030B009 /* AppDelegate.swift */,
+				722A8948236F643C0030B009 /* ContentView.swift */,
+				BD3E0B64237A2645003F04A8 /* Data.swift */,
+				722A895C236F65F80030B009 /* LandingPage.swift */,
+				149053EE236F8CEF00D36A10 /* Metadata.swift */,
+				BD9597EE23732FD6002A9651 /* Note.swift */,
+				BD3E0B68237A30FE003F04A8 /* PieceDetailView.swift */,
+				BD3E0B66237A2DCC003F04A8 /* PieceRowView.swift */,
+				BD9597F023732FEB002A9651 /* Pitch.swift */,
+				722A895E236F662C0030B009 /* PlayMode.swift */,
+				BD92FECE2374DC240074FD59 /* PracticeView.swift */,
+				722A8946236F643C0030B009 /* SceneDelegate.swift */,
+				722A895A236F65DA0030B009 /* SelectMusic.swift */,
+				BD51384D236F7401004F2220 /* SettingsView.swift */,
 				1494C8F92371D37800F0C68E /* SongInfoView.swift */,
+				149053F0236F8FA800D36A10 /* SongThumbnail.swift */,
+				BD9597F223733001002A9651 /* Tuner.swift */,
+				BD51384F236F7416004F2220 /* TunerView.swift */,
+				722A894A236F643E0030B009 /* Assets.xcassets */,
 				729620692374056E00706B82 /* Data */,
+				722A894F236F643E0030B009 /* LaunchScreen.storyboard */,
+				722A894C236F643E0030B009 /* Preview Content */,
 				7296203F2373F6AB00706B82 /* Resources */,
 				1495231F237B08AE0077BA97 /* ResultsPage.swift */,
 				14952321237B0AFA0077BA97 /* ScoreMetadata.swift */,
@@ -152,6 +166,7 @@
 		7296203F2373F6AB00706B82 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				BD92FECC2374D8E10074FD59 /* Exercises.json */,
 				729620412373F6ED00706B82 /* PracticePerfect.xcdatamodeld */,
 			);
 			name = Resources;
@@ -226,6 +241,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD92FECD2374D8E10074FD59 /* Exercises.json in Resources */,
 				722A8951236F643E0030B009 /* LaunchScreen.storyboard in Resources */,
 				722A894E236F643E0030B009 /* Preview Assets.xcassets in Resources */,
 				722A894B236F643E0030B009 /* Assets.xcassets in Resources */,
@@ -271,13 +287,17 @@
 				BD9597F323733001002A9651 /* Tuner.swift in Sources */,
 				722A895B236F65DA0030B009 /* SelectMusic.swift in Sources */,
 				7296206C237405B400706B82 /* Song+CoreDataProperties.swift in Sources */,
+				BD3E0B65237A2645003F04A8 /* Data.swift in Sources */,
+				149053EF236F8CEF00D36A10 /* Metadata.swift in Sources */,
 				14952320237B08AE0077BA97 /* ResultsPage.swift in Sources */,
-				149053EF236F8CEF00D36A10 /* SongMetadata.swift in Sources */,
 				722A895D236F65F80030B009 /* LandingPage.swift in Sources */,
 				7296206D237405B400706B82 /* Song+CoreDataClass.swift in Sources */,
 				722A8947236F643C0030B009 /* SceneDelegate.swift in Sources */,
+				BD92FECF2374DC240074FD59 /* PracticeView.swift in Sources */,
 				722A895F236F662C0030B009 /* PlayMode.swift in Sources */,
+				BD3E0B67237A2DCC003F04A8 /* PieceRowView.swift in Sources */,
 				729620432373F6ED00706B82 /* PracticePerfect.xcdatamodeld in Sources */,
+				BD3E0B69237A30FE003F04A8 /* PieceDetailView.swift in Sources */,
 				BD9597F123732FEB002A9651 /* Pitch.swift in Sources */,
 				14952322237B0AFA0077BA97 /* ScoreMetadata.swift in Sources */,
 				BD9597EF23732FD6002A9651 /* Note.swift in Sources */,

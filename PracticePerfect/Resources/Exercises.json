@@ -1,0 +1,136 @@
+{
+    "major": [
+        {
+            "id": 0,
+            "name": "C Major",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/C_Major_Scale.musicxml"
+        },
+        {
+            "id": 1,
+            "name": "G Major",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/G_Major_Scale.musicxml"
+        },
+        {
+            "id": 2,
+            "name": "D Major",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/D_Major_Scale.musicxml"
+        },
+        {
+            "id": 3,
+            "name": "A Major",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/A_Major_Scale.musicxml"
+        },
+        {
+            "id": 4,
+            "name": "E Major",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/E_Major_Scale.musicxml"
+        },
+        {
+            "id": 5,
+            "name": "B Major",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/B_Major_Scale.musicxml"
+        },
+        {
+            "id": 6,
+            "name": "F♯ Major",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/FS_Major_Scale.musicxml"
+        },
+        {
+            "id": 7,
+            "name": "G♭ Major",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/GF_Major_Scale.musicxml"
+        },
+        {
+            "id": 8,
+            "name": "D♭ Major",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/DF_Major_Scale.musicxml"
+        },
+        {
+            "id": 9,
+            "name": "A♭ Major",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/AF_Major_Scale.musicxml"
+        },
+        {
+            "id": 10,
+            "name": "E♭ Major",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/EF_Major_Scale.musicxml"
+        },
+        {
+            "id": 11,
+            "name": "B♭ Major",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/BF_Major_Scale.musicxml"
+        },
+        {
+            "id": 12,
+            "name": "F Major",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/F_Major_Scale.musicxml"
+        },
+    ],
+    "minor": [
+        {
+            "id": 0,
+            "name": "A Minor",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/A_Minor_Scale.musicxml"
+        },
+        {
+            "id": 1,
+            "name": "E Minor",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/E_Minor_Scale.musicxml"
+        },
+        {
+            "id": 2,
+            "name": "B Minor",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/B_Minor_Scale.musicxml"
+        },
+        {
+            "id": 3,
+            "name": "F♯ Minor",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/FS_Minor_Scale.musicxml"
+        },
+        {
+            "id": 4,
+            "name": "C♯ Minor",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/CS_Minor_Scale.musicxml"
+        },
+        {
+            "id": 5,
+            "name": "G♯ Minor",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/GS_Minor_Scale.musicxml"
+        },
+        {
+            "id": 6,
+            "name": "D♯ Minor",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/DS_Minor_Scale.musicxml"
+        },
+        {
+            "id": 7,
+            "name": "E♭ Minor",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/EF_Minor_Scale.musicxml"
+        },
+        {
+            "id": 8,
+            "name": "B♭ Minor",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/BF_Minor_Scale.musicxml"
+        },
+        {
+            "id": 9,
+            "name": "F Minor",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/F_Minor_Scale.musicxml"
+        },
+        {
+            "id": 10,
+            "name": "C Minor",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/C_Minor_Scale.musicxml"
+        },
+        {
+            "id": 11,
+            "name": "G Minor",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/G_Minor_Scale.musicxml"
+        },
+        {
+            "id": 12,
+            "name": "D Minor",
+            "url": "https://storage.googleapis.com/practiceperfect-songs/D_Minor_Scale.musicxml"
+        },
+    ]
+}

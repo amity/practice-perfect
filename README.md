@@ -32,3 +32,5 @@ Anna Matusewicz, Sean Hawkins, Sophie Debs, Abigail Chen
 
 
 ## Acknowledgments
+* [Lists Tutorial](https://developer.apple.com/tutorials/swiftui/building-lists-and-navigation)
+* [File Download Tutorial](https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started)
