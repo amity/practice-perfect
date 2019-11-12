@@ -5,6 +5,8 @@
 //  Created by Anna Matusewicz on 11/11/19.
 //  Copyright © 2019 CS98PracticePerfect. All rights reserved.
 //
+// File adapted from lists tutorial:
+// https://developer.apple.com/tutorials/swiftui/building-lists-and-navigation
 
 import SwiftUI
 
@@ -33,6 +35,8 @@ struct PieceDetail: View {
         .navigationBarTitle(Text(verbatim: piece.name), displayMode: .inline)
     }
     
+    // File retrieval methods adapted from:
+    // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
     func getXML() {
         dataTask?.cancel()
         
@@ -63,7 +67,6 @@ struct PieceDetail: View {
     }
 }
 
-// https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
 struct LandmarkDetail_Previews: PreviewProvider {
     static var previews: some View {
         PieceDetail(piece: musicData["major"]![0])

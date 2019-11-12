@@ -5,6 +5,8 @@
 //  Created by Anna Matusewicz on 11/11/19.
 //  Copyright © 2019 CS98PracticePerfect. All rights reserved.
 //
+// File adapted from lists tutorial:
+// https://developer.apple.com/tutorials/swiftui/building-lists-and-navigation
 
 import SwiftUI
 
@@ -13,7 +15,7 @@ struct PieceRow: View {
 
     var body: some View {
         HStack {
-            Text(verbatim: piece.name)
+            Text(piece.name)
             Spacer()
         }
     }
