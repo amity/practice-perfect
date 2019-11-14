@@ -10,6 +10,7 @@ import SwiftUI
 
 struct ResultsPage: View {
     @State var scoreMetadata: ScoreMetadata
+    @State var prevHighScore: Int
     @Binding var isNavigationBarHidden: Bool
     
     var body: some View {
@@ -63,9 +64,9 @@ struct ResultsPage: View {
                 }
                 .padding(.top, 20)
                 .padding(.bottom, 20)
-                Text("Score: \(scoreMetadata.newScore)")
+                Text("New Score: \(scoreMetadata.newScore)")
                     .font(.system(size: 24))
-                Text("High Score: 10000")
+                Text("High Score: \(prevHighScore)")
                     .font(.system(size: 24))
             }
             Spacer()
@@ -94,6 +95,7 @@ struct ResultsPage_Previews: PreviewProvider {
                 goodCount: 10,
                 missCount: 1
             ),
+            prevHighScore: 100,
             isNavigationBarHidden: .constant(true)
         ).previewLayout(.fixed(width: 896, height: 414))
     }

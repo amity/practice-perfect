@@ -18,38 +18,57 @@
 
 import SwiftUI
 
-func parseJson(anyObj:Any?) -> Array<SongMetadata> {
-    // Will eventually be retrieved from backend - in current state you can see the first three songs here followed by the two from the server (11/6/19). Eventually, the list will be initialized as empty
+// Take song data json and dictionary of song id to score and return list of SongMetadata for each song
+func parseSongJson(anyObj:Any?, scoresDict: Dictionary<Int, Int>) -> Array<SongMetadata> {
+    // Will eventually be retrieved fully from backend - in current state you can see the first three songs here followed by the two from the server (11/14/19). Eventually, the list will be initialized as empty (as seen in the following line)
 //    var list:Array<SongMetadata> = []
     var list = [
-        SongMetadata(id: 0, name: "Mary Had a Little Lamb", highScore: 1000, rank: "S"),
-        SongMetadata(id: 1, name: "Joy to the World", highScore: 2000, rank: "S"),
-        SongMetadata(id: 2, name: "Minuet in G", highScore: 1500, rank: "S"),
+        SongMetadata(id: 3, name: "Mary Had a Little Lamb", highScore: 1000, rank: "S"),
+        SongMetadata(id: 4, name: "Joy to the World", highScore: 2000, rank: "S"),
+        SongMetadata(id: 5, name: "Minuet in G", highScore: 1500, rank: "S"),
     ]
 
     if  anyObj is Array<AnyObject> {
         for json in anyObj as! Array<AnyObject>{
-            // More information will eventually come from the server
             let id = (json["id"]  as AnyObject? as? Int) ?? 0
             let name = (json["name"] as AnyObject? as? String) ?? ""
-            let artist = (json["artist"] as AnyObject? as? String) ?? ""
-            list.append(SongMetadata(id: id, name: name, highScore: 0, rank: "A"))
+            // Artist currently unused, could be added to display at some point
+//            let artist = (json["artist"] as AnyObject? as? String) ?? ""
+            // Get high score for give song by indexing into scores list with id
+            list.append(SongMetadata(id: id, name: name, highScore: scoresDict[id] ?? 0, rank: "A"))
         }
     }
 
     return list
 }
 
-func retrieveSongs() -> Array<SongMetadata> {
-    // Create the request
-    let url = URL(string: "https://practiceperfect.appspot.com/songs")!
-    let session = URLSession.shared
-    var request = URLRequest(url: url)
-    request.httpMethod = "GET"
+// Parses score results retrieved from server. Returns dictionary of song id to score
+func parseScoresJson(anyObj:Any?) -> Dictionary<Int, Int> {
+    var scoresDict: Dictionary<Int, Int> = [:]
 
-    var songData: Array<SongMetadata> = []
-    let semaphore = DispatchSemaphore(value: 0)
-    let task = session.dataTask(with: request) { data, response, error in
+    if  anyObj is Array<AnyObject> {
+        for json in anyObj as! Array<AnyObject>{
+            let id = (json["id"] as AnyObject? as? Int) ?? 0
+            let score = (json["score"] as AnyObject? as? Int) ?? 0
+            scoresDict[id] = score
+        }
+    }
+
+    return scoresDict
+}
+
+// Retrieves data and initializes SongMetadata for each song, returned in an array
+func retrieveSongs() -> Array<SongMetadata> {
+    // Retrieve all scores for current user - list of scores in order of song id
+    // Placeholder user id 0 --> will be dynamic once we implement authentication and users
+    let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores/" + String(1))!
+    let scoreSession = URLSession.shared
+    var scoreRequest = URLRequest(url: scoreUrl)
+    scoreRequest.httpMethod = "GET"
+
+    var allScores: Dictionary<Int, Int> = [:]
+    let scoreSemaphore = DispatchSemaphore(value: 0)
+    let scoreTask = scoreSession.dataTask(with: scoreRequest) { data, response, error in
         // Unwrap data
         guard let unwrappedData = data else {
             print(error!)
@@ -58,13 +77,38 @@ func retrieveSongs() -> Array<SongMetadata> {
         // Get json object from data
         let jsonObj = try? JSONSerialization.jsonObject(with: unwrappedData, options: JSONSerialization.ReadingOptions.allowFragments)
 
-        songData = parseJson(anyObj: jsonObj)
-        semaphore.signal()
+        allScores = parseScoresJson(anyObj: jsonObj)
+        scoreSemaphore.signal()
     }
-    task.resume()
+    scoreTask.resume()
 
     // Wait for the songs to be retrieved before displaying all of them
-    _ = semaphore.wait(wallTimeout: .distantFuture)
+    _ = scoreSemaphore.wait(wallTimeout: .distantFuture)
+
+    // Retrieve song data and parse (passing score data to parseSongJson) 
+    let songUrl = URL(string: "https://practiceperfect.appspot.com/songs")!
+    let songSession = URLSession.shared
+    var songRequest = URLRequest(url: songUrl)
+    songRequest.httpMethod = "GET"
+
+    var songData: Array<SongMetadata> = []
+    let songSemaphore = DispatchSemaphore(value: 0)
+    let songTask = songSession.dataTask(with: songRequest) { data, response, error in
+        // Unwrap data
+        guard let unwrappedData = data else {
+            print(error!)
+            return
+        }
+        // Get json object from data
+        let jsonObj = try? JSONSerialization.jsonObject(with: unwrappedData, options: JSONSerialization.ReadingOptions.allowFragments)
+
+        songData = parseSongJson(anyObj: jsonObj, scoresDict: allScores)
+        songSemaphore.signal()
+    }
+    songTask.resume()
+
+    // Wait for the songs to be retrieved before displaying all of them
+    _ = songSemaphore.wait(wallTimeout: .distantFuture)
     
     return songData
 }
