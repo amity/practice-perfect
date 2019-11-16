@@ -17,7 +17,18 @@ let noteSWXML = SWXMLHash.config {
             config.shouldProcessLazily = false
 }.parse(noteMusicXML)
 
-//***rest parser code coming here***
+//parsing to create NoteMetadata object
+func parseMusicXMLForNote() -> NoteMetadata {
+    
+    let noteToParse = NoteMetadata()
+    
+    //***rest parser code coming here***
+
+    return noteToParse
+}
+
+var noteToParse = parseMusicXMLForNote()
+
 
 
 

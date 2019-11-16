@@ -25,6 +25,8 @@
 		728160B52380729700608307 /* PlaySongMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728160B42380729700608307 /* PlaySongMetadata.swift */; };
 		728160B7238072A000608307 /* MeasureMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728160B6238072A000608307 /* MeasureMetadata.swift */; };
 		728160B9238072A900608307 /* NoteMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728160B8238072A900608307 /* NoteMetadata.swift */; };
+		728160BB2380919500608307 /* apres.musicxml in Resources */ = {isa = PBXBuildFile; fileRef = 728160BA2380919500608307 /* apres.musicxml */; };
+		728160BE238091D000608307 /* test.musicxml in Resources */ = {isa = PBXBuildFile; fileRef = 728160BD238091D000608307 /* test.musicxml */; };
 		729620432373F6ED00706B82 /* PracticePerfect.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 729620412373F6ED00706B82 /* PracticePerfect.xcdatamodeld */; };
 		7296206C237405B400706B82 /* Song+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7296206A237405B300706B82 /* Song+CoreDataProperties.swift */; };
 		7296206D237405B400706B82 /* Song+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7296206B237405B400706B82 /* Song+CoreDataClass.swift */; };
@@ -67,6 +69,8 @@
 		728160B42380729700608307 /* PlaySongMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaySongMetadata.swift; sourceTree = "<group>"; };
 		728160B6238072A000608307 /* MeasureMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureMetadata.swift; sourceTree = "<group>"; };
 		728160B8238072A900608307 /* NoteMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteMetadata.swift; sourceTree = "<group>"; };
+		728160BA2380919500608307 /* apres.musicxml */ = {isa = PBXFileReference; lastKnownFileType = text; path = apres.musicxml; sourceTree = "<group>"; };
+		728160BD238091D000608307 /* test.musicxml */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.musicxml; sourceTree = "<group>"; };
 		729620422373F6ED00706B82 /* PracticePerfect.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PracticePerfect.xcdatamodel; sourceTree = "<group>"; };
 		7296206A237405B300706B82 /* Song+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Song+CoreDataProperties.swift"; path = "PracticePerfect/Data/Song+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		7296206B237405B400706B82 /* Song+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Song+CoreDataClass.swift"; path = "PracticePerfect/Data/Song+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
@@ -169,6 +173,7 @@
 				728160B42380729700608307 /* PlaySongMetadata.swift */,
 				728160B6238072A000608307 /* MeasureMetadata.swift */,
 				728160B8238072A900608307 /* NoteMetadata.swift */,
+				728160BC2380919F00608307 /* LocalMusicFiles */,
 			);
 			path = PracticePerfect;
 			sourceTree = "<group>";
@@ -179,6 +184,15 @@
 				722A894D236F643E0030B009 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		728160BC2380919F00608307 /* LocalMusicFiles */ = {
+			isa = PBXGroup;
+			children = (
+				728160BA2380919500608307 /* apres.musicxml */,
+				728160BD238091D000608307 /* test.musicxml */,
+			);
+			path = LocalMusicFiles;
 			sourceTree = "<group>";
 		};
 		7296203F2373F6AB00706B82 /* Resources */ = {
@@ -263,6 +277,8 @@
 				BD92FECD2374D8E10074FD59 /* Exercises.json in Resources */,
 				722A8951236F643E0030B009 /* LaunchScreen.storyboard in Resources */,
 				722A894E236F643E0030B009 /* Preview Assets.xcassets in Resources */,
+				728160BE238091D000608307 /* test.musicxml in Resources */,
+				728160BB2380919500608307 /* apres.musicxml in Resources */,
 				722A894B236F643E0030B009 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
