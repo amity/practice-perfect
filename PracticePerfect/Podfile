@@ -8,6 +8,8 @@ target 'PracticePerfect' do
   # Pods for PracticePerfect
   pod 'AudioKit', '~> 4.0'
 
+  pod 'SWXMLHash', '~> 5.0.0'
+  
 end
 
 workspace 'PracticePerfect'

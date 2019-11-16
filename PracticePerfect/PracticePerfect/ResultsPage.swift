@@ -8,8 +8,26 @@
 
 import SwiftUI
 
+// Formats integer in scoreMetadata into percent
+func formatPercent(scoreInt: Int) -> String {
+    let convertedString = String(scoreInt)
+    // If five digits
+    if scoreInt == 10000 {
+        return convertedString.prefix(3) + "." + convertedString.suffix(2) + "%"
+    }
+    // If four digits
+    else if scoreInt >= 1000 {
+        return convertedString.prefix(2) + "." + convertedString.suffix(2) + "%"
+    }
+    // If three digits
+    else {
+        return convertedString.prefix(1) + "." + convertedString.suffix(2) + "%"
+    }
+}
+
 struct ResultsPage: View {
     @State var scoreMetadata: ScoreMetadata
+    @State var prevHighScore: Int
     @Binding var isNavigationBarHidden: Bool
     
     var body: some View {
@@ -39,7 +57,7 @@ struct ResultsPage: View {
             }
             Spacer()
             VStack {
-                Text("\(scoreMetadata.scorePercent)")
+                Text("\(formatPercent(scoreInt: scoreMetadata.scorePercent))")
                     .font(.system(size: 48))
                 HStack {
                     VStack(alignment: .leading) {
@@ -63,9 +81,9 @@ struct ResultsPage: View {
                 }
                 .padding(.top, 20)
                 .padding(.bottom, 20)
-                Text("Score: \(scoreMetadata.newScore)")
+                Text("New Score: \(scoreMetadata.newScore)")
                     .font(.system(size: 24))
-                Text("High Score: 10000")
+                Text("High Score: \(prevHighScore)")
                     .font(.system(size: 24))
             }
             Spacer()
@@ -94,6 +112,7 @@ struct ResultsPage_Previews: PreviewProvider {
                 goodCount: 10,
                 missCount: 1
             ),
+            prevHighScore: 100,
             isNavigationBarHidden: .constant(true)
         ).previewLayout(.fixed(width: 896, height: 414))
     }
