@@ -23,9 +23,9 @@ func parseSongJson(anyObj:Any?, scoresDict: Dictionary<Int, Int>) -> Array<SongM
     // Will eventually be retrieved fully from backend - in current state you can see the first three songs here followed by the two from the server (11/14/19). Eventually, the list will be initialized as empty (as seen in the following line)
 //    var list:Array<SongMetadata> = []
     var list = [
-        SongMetadata(id: 3, name: "Mary Had a Little Lamb", highScore: 1000, rank: "S"),
-        SongMetadata(id: 4, name: "Joy to the World", highScore: 2000, rank: "S"),
-        SongMetadata(id: 5, name: "Minuet in G", highScore: 1500, rank: "S"),
+        SongMetadata(id: 3, name: "Mary Had a Little Lamb", highScore: 1000, rank: "S", level: 1),
+        SongMetadata(id: 4, name: "Joy to the World", highScore: 2000, rank: "S", level: 1),
+        SongMetadata(id: 5, name: "Minuet in G", highScore: 1500, rank: "S", level: 1),
     ]
 
     if  anyObj is Array<AnyObject> {
@@ -34,8 +34,9 @@ func parseSongJson(anyObj:Any?, scoresDict: Dictionary<Int, Int>) -> Array<SongM
             let name = (json["name"] as AnyObject? as? String) ?? ""
             // Artist currently unused, could be added to display at some point
 //            let artist = (json["artist"] as AnyObject? as? String) ?? ""
+            let level = (json["level"] as AnyObject? as? Int) ?? 1
             // Get high score for give song by indexing into scores list with id
-            list.append(SongMetadata(id: id, name: name, highScore: scoresDict[id] ?? 0, rank: "A"))
+            list.append(SongMetadata(id: id, name: name, highScore: scoresDict[id] ?? 0, rank: "A", level: level))
         }
     }
 
@@ -117,7 +118,7 @@ struct SelectMusic: View {
     // Controls display of modal sheet
     @State private var showModal = false
     // Need default value - dummy data to start with
-    @State private var songMetadata: SongMetadata = SongMetadata(id: -1, name: "", highScore: -1, rank: "")
+    @State private var songMetadata: SongMetadata = SongMetadata(id: -1, name: "", highScore: -1, rank: "", level: -1)
     // List of all songs
     @State var allSongs: Array<SongMetadata> = retrieveSongs()
 
@@ -171,6 +172,6 @@ struct SelectMusic: View {
 
 struct SelectMusic_Previews: PreviewProvider {
     static var previews: some View {
-        SelectMusic(allSongs: [SongMetadata(id: -1, name: "", highScore: -1, rank: "")], isNavigationBarHidden: .constant(false)).previewLayout(.fixed(width: 896, height: 414))
+        SelectMusic(allSongs: [SongMetadata(id: -1, name: "", highScore: -1, rank: "", level: -1)], isNavigationBarHidden: .constant(false)).previewLayout(.fixed(width: 896, height: 414))
     }
 }
