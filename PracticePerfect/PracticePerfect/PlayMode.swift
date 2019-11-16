@@ -164,6 +164,6 @@ struct PlayMode: View {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", highScore: 1000, rank: "S", level: 1), isNavigationBarHidden: .constant(false)).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", artist: "Unknown", highScore: 1000, rank: "S", level: 1), isNavigationBarHidden: .constant(false)).previewLayout(.fixed(width: 896, height: 414))
     }
 }
