@@ -20,7 +20,5 @@ class PlaySongMetadata {
     var timeSignature: [Int:Int]=[:] //ex: 3 <beats>, 4 <beat-type>
     var clef: [String:Int] = [:] //ex: G <sign>, 2 <line>
 
-    var numMeasures: Int = 0
     var measures: Array<MeasureMetadata> = []
-
 }

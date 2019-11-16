@@ -9,7 +9,7 @@
 import SwiftUI
 import SWXMLHash
 
-var measureMusicXML : String = "temp"
+var measureMusicXML : String = musicXMLToParseFromFile
 
 //initialize SWXMLHash object
 let MeasureSWXML = SWXMLHash.config {
@@ -17,7 +17,19 @@ let MeasureSWXML = SWXMLHash.config {
             config.shouldProcessLazily = false
 }.parse(measureMusicXML)
 
-//***rest parser code coming here***
+//parsing to create MeasureMetadata object
+func parseMusicXMLForMeasure() -> MeasureMetadata {
+    
+    let measureToParse = MeasureMetadata()
+    
+    //***rest parser code coming here***
+    
+    return measureToParse
+}
+
+var measureToParse = parseMusicXMLForMeasure()
+
+
 
 
 

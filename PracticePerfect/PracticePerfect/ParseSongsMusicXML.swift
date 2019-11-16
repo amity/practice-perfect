@@ -9,15 +9,37 @@
 import SwiftUI
 import SWXMLHash
 
-var songMusicXML : String = "temp"
+func getTotalNumNotes() -> Int {
+    var count : Int = 0
+    for measure in songToParse.measures {
+        count += measure.notes.count
+    }
+
+    return count
+}
 
 //initialize SWXMLHash object
 let playSongSWXML = SWXMLHash.config {
             config in
             config.shouldProcessLazily = false
-}.parse(songMusicXML)
+}.parse(musicXMLToParseFromFile)
 
-//***rest parser code coming here***
+//parsing to create PlaySongMetadata object
+func parseMusicXMLForSong() -> PlaySongMetadata {
+    //create metadata object
+    let songToParse = PlaySongMetadata()
+
+    //***TEMPORARY HOT CODED SONG NUMBER*** -> WILL PULL FROM API
+    songToParse.songNumber = 0
+
+    //***rest parser code coming here***
+
+    return songToParse
+}
+
+var songToParse = parseMusicXMLForSong()
+
+
 
 
 
