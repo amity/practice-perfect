@@ -14,7 +14,8 @@ let screenWidth = CGFloat(screenSize.width)
 let screenHeight = CGFloat(screenSize.height)
 
 //offsets from center to draw staff lines
-let offsets : [CGFloat] = [screenWidth/8,screenWidth/8 * 2, 0, screenWidth/(-8), screenWidth/(-8) * 2]
+let screenDivisions : CGFloat = 20
+let offsets : [CGFloat] = [screenWidth/screenDivisions,screenWidth/screenDivisions * 2, 0, screenWidth/(-screenDivisions), screenWidth/(-screenDivisions) * 2]
 
 //Currently loads local file to String
 func loadXML2String(fileName : String, fileExtension: String) -> String {
@@ -129,7 +130,7 @@ struct PlayMode: View {
             ZStack {
                 ForEach(0 ..< offsets.count) { index in
                     Rectangle()
-                        .frame(width: 1.0, height: CGFloat(screenHeight))
+                        .frame(width: 1.0, height: CGFloat(screenWidth))
                         .offset(x: CGFloat(offsets[index]), y:0)
                         .rotationEffect(.degrees(-90))
                     }
