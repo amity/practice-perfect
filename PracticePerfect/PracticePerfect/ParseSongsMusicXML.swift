@@ -9,6 +9,15 @@
 import SwiftUI
 import SWXMLHash
 
+func getTotalNumNotes() -> Int {
+    var count : Int = 0
+    for measure in songToParse.measures {
+        count += measure.notes.count
+    }
+
+    return count
+}
+
 //initialize SWXMLHash object
 let playSongSWXML = SWXMLHash.config {
             config in
@@ -25,20 +34,10 @@ func parseMusicXMLForSong() -> PlaySongMetadata {
 
     //***rest parser code coming here***
 
-    
     return songToParse
 }
 
 var songToParse = parseMusicXMLForSong()
-
-
-func getTotalNumNotes() -> Int {
-    var count : Int = 0
-    for measure in songToParse.measures {
-        count += measure.notes.count
-    }
-    return count
-}
 
 
 
