@@ -16,6 +16,27 @@ let screenHeight = CGFloat(screenSize.height)
 //offsets from center to draw staff lines
 let offsets : [CGFloat] = [screenWidth/8,screenWidth/8 * 2, 0, screenWidth/(-8), screenWidth/(-8) * 2]
 
+//Currently loads local file to String
+func loadXML2String(fileName : String, fileExtension: String) -> String {
+    if let filepath = Bundle.main.path(forResource: fileName, ofType: fileExtension) {
+        do {
+            let contents = try String(contentsOfFile: filepath)
+            print(contents)
+            return(contents)
+        } catch {
+            return "file contents could not be loaded"
+        }
+    } else {
+        return "file not found"
+    }
+}
+
+//***TEMPORARILY HOT CODED TO LOCAL FILE APRES***
+var musicXMLToParseFromFile: String = loadXML2String(fileName: "reve", fileExtension: "musicxml")
+
+
+
+
 
 // Posts result score to update backend
 // TO DO: Update parameters to include user id, song id, and score
@@ -84,7 +105,7 @@ struct PlayMode: View {
                             Text("Results")
                             }
                     }
-                    .offset(x: 400, y: 200)
+                    .offset(x: 400, y: 175)
                 
                 VStack {
                     // TO DO: Right now, sends new high score to server when pause button is pressed. This will need to be updated
@@ -92,17 +113,17 @@ struct PlayMode: View {
                     Text("Pause").foregroundColor(Color.black)
                         }
                     }
-                    .offset(x: 400, y: -200)
+                    .offset(x: 400, y: -160)
                 
                 VStack {
                     Text("You are playing: [song title]")
                     }
-                    .offset(y: -200)
+                    .offset(y: -160)
                 
                 VStack {
                     Text("Score: [num]")
                     }
-                    .offset(x: -400, y: 200)
+                    .offset(x: -380, y: 175)
 
             //draws staff
             ZStack {
