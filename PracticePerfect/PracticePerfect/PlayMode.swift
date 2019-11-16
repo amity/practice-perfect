@@ -61,11 +61,28 @@ func postSongs() -> () {
     _ = semaphore.wait(wallTimeout: .distantFuture)
 }
 
+// Star multiplier values for 1 through 5 stars (at indices 0 through 4)
+let starMultValues: Array<Float> = [1, 1.5, 2.5, 4.5, 8.5]
+// Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
+let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
+
 struct PlayMode: View {
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     var songMetadata: SongMetadata
     // Needed to display the navigation bar after being hidden on SongInfoView, however we may not even want the navigation bar on this screen either, which would allow us to remove this variable potentially
     @Binding var isNavigationBarHidden: Bool
+    
+    // SCORING PARAMETERS
+    // Total score: running count, @State displayed to the user
+    @State var totalScore: Float = 0
+    // Star multiplier: more difficult songs get you more points overall
+    lazy var starMult: Float = starMultValues[songMetadata.level]
+    // Streak count: number of correct notes in a row, @State displayed to user; used for calculating accuracy multiplier 
+    @State var streakCount: Int = 0
+    // Streak multiplier: as you get more and more notes correct in a row, you get a higher multipler (index increases as user gets longer streaks); streak count, index, and multiplier are reset when the user misses a note (but not as long as they get good or perfect)
+    var streakIndex: Int = 0
+    lazy var streakMultiplier: Float = streakMultValues[streakIndex]
+    // TO DO: Add parameter for speed?
     
     // TO DO: Will be created from the score once play along mode is completed
     @State var scoreMetadata: ScoreMetadata = ScoreMetadata(
@@ -146,6 +163,6 @@ struct PlayMode: View {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", artist: "Unknown", highScore: 1000, rank: "S"), isNavigationBarHidden: .constant(false)).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", artist: "Unknown", highScore: 1000, rank: "S", level: 1), isNavigationBarHidden: .constant(false)).previewLayout(.fixed(width: 896, height: 414))
     }
 }

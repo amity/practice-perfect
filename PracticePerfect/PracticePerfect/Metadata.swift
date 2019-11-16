@@ -17,6 +17,7 @@ struct SongMetadata: Hashable, Codable, Identifiable {
     var artist: String
     var highScore: Int
     var rank: String
+    var level: Int
 }
 
 struct MusicXMLMetadata: Hashable, Codable, Identifiable {
