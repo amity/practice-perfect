@@ -5,17 +5,21 @@ PODS:
   - AudioKit/Core (4.9.2)
   - AudioKit/UI (4.9.2):
     - AudioKit/Core
+  - SWXMLHash (5.0.1)
 
 DEPENDENCIES:
   - AudioKit (~> 4.0)
+  - SWXMLHash (~> 5.0.0)
 
 SPEC REPOS:
   trunk:
     - AudioKit
+    - SWXMLHash
 
 SPEC CHECKSUMS:
   AudioKit: ee388f0c9ad4e90b6106c14caaf809cd7ca220da
+  SWXMLHash: 9cc0c2e4807926c74377724aa8722ee5707a0485
 
-PODFILE CHECKSUM: d74a4bde970584215673263b6ad7bd64440e68fb
+PODFILE CHECKSUM: a8f05d7cf38a912912fdd24d2a25bc195c7ca7d0
 
 COCOAPODS: 1.8.4
