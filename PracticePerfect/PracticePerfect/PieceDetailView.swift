@@ -17,22 +17,43 @@ struct PieceDetail: View {
     @State var dataTask: URLSessionDataTask?
     @State var errorMessage = ""
     @State var results = ""
+    @State var showCountdown = false
+    
+    let tempo = 120
+    let beats = 4
 
     var body: some View {
-        VStack {
+        ZStack {
             VStack {
-                Text(piece.name)
-                Button(action: {
-                    self.getXML()
-                }) {
-                    Text("Download Piece")
+                VStack {
+                    Text(piece.name)
+                    Button(action: {
+                        self.getXML()
+                    }) {
+                        Text("Download Piece")
+                    }
                 }
-            }
-            .padding()
+                .padding()
 
-            Spacer()
+                Spacer()
+                
+                Button(action: {
+                        self.showCountdown = true
+                    }) {
+                        Text("Begin Piece")
+                }
+                
+                Spacer()
+            }
+            .navigationBarTitle(Text(verbatim: piece.name), displayMode: .inline)
+            .blur(radius: showCountdown ? 20 : 0)
+            
+            if showCountdown {
+                Countdown(tempo: self.tempo, beats: self.beats, showCountdown: self.$showCountdown)
+                    .animation(.easeInOut(duration: 4.0))
+                    .transition(.opacity)
+            }
         }
-        .navigationBarTitle(Text(verbatim: piece.name), displayMode: .inline)
     }
     
     // File retrieval methods adapted from:
@@ -69,6 +90,6 @@ struct PieceDetail: View {
 
 struct LandmarkDetail_Previews: PreviewProvider {
     static var previews: some View {
-        PieceDetail(piece: musicData["major"]![0])
+        PieceDetail(piece: musicData["major"]![0]).previewLayout(.fixed(width: 896, height: 414))
     }
 }
