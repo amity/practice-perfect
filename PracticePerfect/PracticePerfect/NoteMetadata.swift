@@ -11,7 +11,7 @@ import SwiftUI
 class NoteMetadata {
     
     //later will expand from Perfect/Miss to Perfect/Close/Miss, etc.
-    var isRightNote = false
+    var isRightNote: Bool = false
     
     var measureNumber: Int = 0
     var noteNumber: Int = 0
