@@ -14,6 +14,7 @@ import CoreLocation
 struct SongMetadata: Hashable, Codable, Identifiable {
     var id: Int
     var name: String
+    var artist: String
     var highScore: Int
     var rank: String
 }

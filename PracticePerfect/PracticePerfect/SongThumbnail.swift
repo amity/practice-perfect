@@ -20,19 +20,25 @@ struct SongThumbnail: View {
                 .padding(10)
             VStack {
                 Text(songMetadata.name)
-                    .font(.system(size: 32))
+                    .font(.system(size: 34))
                     .padding(.top, 20)
+                    .padding(.leading, 20)
+                    .padding(.trailing, 20)
+                Spacer()
+                Text(songMetadata.artist)
+                    .font(.system(size: 30))
+                    .padding(.bottom, 20)
                     .padding(.leading, 20)
                     .padding(.trailing, 20)
                 Spacer()
                 HStack {
                     Text(songMetadata.rank)
-                        .font(.system(size: 32))
+                        .font(.system(size: 30))
                         .padding(.leading, 20)
                         .padding(.bottom, 20)
                     Spacer()
                     Text("\(songMetadata.highScore)")
-                        .font(.system(size: 32))
+                        .font(.system(size: 30))
                         .padding(.trailing, 20)
                         .padding(.bottom, 20)
                 }
@@ -45,6 +51,6 @@ struct SongThumbnail: View {
 struct SongThumbnail_Previews: PreviewProvider {
     static var previews: some View {
         // Example with sample SongMetadata
-        SongThumbnail(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", highScore: 1000, rank: "S")).previewLayout(.fixed(width: 300, height: 70))
+        SongThumbnail(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", artist: "Unknown", highScore: 1000, rank: "S")).previewLayout(.fixed(width: 300, height: 70))
     }
 }

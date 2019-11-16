@@ -82,9 +82,11 @@ struct ResultsPage: View {
                 .padding(.top, 20)
                 .padding(.bottom, 20)
                 Text("New Score: \(scoreMetadata.newScore)")
-                    .font(.system(size: 24))
+                    .font(.system(size: 32))
+                    .fontWeight(.medium)
                 Text("High Score: \(prevHighScore)")
-                    .font(.system(size: 24))
+                    .font(.system(size: 32))
+                    .fontWeight(.medium)
             }
             Spacer()
         }
