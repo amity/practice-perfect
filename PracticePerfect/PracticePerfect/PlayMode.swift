@@ -63,7 +63,7 @@ func postSongs() -> () {
 
 // Star multiplier values for 1 through 5 stars (at indices 0 through 4)
 let starMultValues: Array<Float> = [1, 1.5, 2.5, 4.5, 8.5]
-// Streak multiplier values for streaks of length 0, 10, 25, and 150 (respectively)
+// Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
 let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
 
 struct PlayMode: View {
