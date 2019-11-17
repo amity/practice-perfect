@@ -16,77 +16,43 @@ struct TunerView: View, TunerDelegate {
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
     @State var tunerOn = false
     
-    struct NoteStyle: ViewModifier {
-        func body(content: Content) -> some View {
-            return content
-                .foregroundColor(Color.black)
-                .font(Font.custom("Arial Rounded MT Bold", size: 100))
-        }
-    }
-    
-    struct AccidentalStyle: ViewModifier {
-        func body(content: Content) -> some View {
-            return content
-                .foregroundColor(Color.black)
-                .font(Font.custom("Arial Rounded MT Bold", size: 50))
-        }
-    }
-    
-    struct ButtonStyle: ViewModifier {
-        func body(content: Content) -> some View {
-            return content
-                .foregroundColor(Color.black)
-                .padding()
-                .font(Font.custom("Arial Rounded MT Bold", size: 18))
-                .background(RadialGradient(gradient: Gradient(colors: [.white, .gray]), center: .center, startRadius: 40, endRadius: 100))
-                .cornerRadius(6)
-        }
-    }
-    
     var body: some View {
         ZStack {
-            if tunerOn {
-                LinearGradient(gradient: Gradient(colors: [makeSideColor(), makeMiddleColor(), makeSideColor()]), startPoint: .leading, endPoint: .trailing)
-                    .edgesIgnoringSafeArea(.all)
-            } else {
-                LinearGradient(gradient: Gradient(colors: [.red, .green]), startPoint: .leading, endPoint: .trailing)
+            LinearGradient(gradient: Gradient(colors: [makeSideColor(), makeMiddleColor(), makeSideColor()]), startPoint: .leading, endPoint: .trailing)
                 .edgesIgnoringSafeArea(.all)
-            }
 
             VStack {
-                if !tunerOn {
+                Spacer()
+                Text(displayNote())
+                    .modifier(NoteStyle())
+                HStack {
+                    Text("Flat")
+                        .modifier(AccidentalStyle())
+                        .opacity(max(0, calulateCents() / -50))
                     Spacer()
+                    Text("Sharp")
+                        .modifier(AccidentalStyle())
+                        .opacity(max(0, calulateCents() / 50))
+                }
+                Spacer()
+                if !tunerOn {
                     Button(action: {
-                        self.tuner.delegate = self
-                        self.tuner.start()
-                        self.tunerOn = true
+                        self.startTuner()
                     }) {
-                        Text("Start Tuner")
+                        Text("Resume Tuner")
                     }
                         .modifier(ButtonStyle())
                 } else {
-                    Spacer()
-                    Text(displayNote())
-                        .modifier(NoteStyle())
-                    HStack {
-                        Text("Flat")
-                            .modifier(AccidentalStyle())
-                            .opacity(max(0, calulateCents() / -50))
-                        Spacer()
-                        Text("Sharp")
-                            .modifier(AccidentalStyle())
-                            .opacity(max(0, calulateCents() / 50))
-                    }
-                    Spacer()
                     Button(action: {
                         self.tuner.stop()
                         self.tunerOn = false
                     }) {
-                        Text("Stop Tuner")
+                        Text("Pause Tuner")
                     }
                         .modifier(ButtonStyle())
                 }
             }
+            .onAppear(perform: startTuner)
             .navigationBarTitle("Tuner")
         }
     }
@@ -96,6 +62,12 @@ struct TunerView: View, TunerDelegate {
         self.userFrequency = frequency
         self.noteFrequency = pitch.frequency
         self.note = pitch.note
+    }
+    
+    func startTuner() {
+        self.tuner.delegate = self
+        self.tuner.start()
+        self.tunerOn = true
     }
     
     // Calculates the cents off of in tune
