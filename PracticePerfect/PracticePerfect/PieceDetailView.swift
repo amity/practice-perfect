@@ -24,6 +24,7 @@ struct PieceDetail: View {
 
     var body: some View {
         ZStack {
+            mainGradient
             VStack {
                 VStack {
                     Text(piece.name)

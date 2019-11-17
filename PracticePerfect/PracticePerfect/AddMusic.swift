@@ -10,11 +10,14 @@ import SwiftUI
 
 struct AddMusic: View {
     var body: some View {
-        VStack{
-            Text("Add Music")
-        
-            Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-                            Text("Upload music: ")
+        ZStack {
+            mainGradient
+            VStack{
+                Text("Add Music")
+            
+                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
+                                Text("Upload music: ")
+                }
             }
         }
     }

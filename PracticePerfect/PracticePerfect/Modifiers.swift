@@ -9,7 +9,6 @@
 import SwiftUI
 
 // Gradients
-
 let mainGradient: some View = LinearGradient(gradient: Gradient(colors: [
         aquaBlue,
         baseBlue,
@@ -17,7 +16,7 @@ let mainGradient: some View = LinearGradient(gradient: Gradient(colors: [
     ]), startPoint: .leading, endPoint: .trailing)
         .edgesIgnoringSafeArea(.all)
 
-// Color:
+// Color Palette:
 let baseBlue = Color(red: 184.0/255.0, green: 234.0/255.0, blue: 252.0/255.0)
 
 let mutedBlue = Color(red: 156.0/255.0, green: 191.0/255.0, blue: 230.0/255.0)
@@ -29,9 +28,9 @@ let darkGreen = Color(red: 160.0/255.0, green: 179.0/255.0, blue: 105.0/255.0)
 struct ScaleStyle: ViewModifier {
     func body(content: Content) -> some View {
         return content
-            .foregroundColor(Color.black)
-            .font(Font.custom("Arial Rounded MT Bold", size: 18))
-            .padding(.leading, 20)
+            .foregroundColor(.white)
+            .font(Font.custom("Arial Rounded MT Bold", size: 22))
+            .padding([.leading, .top], 15)
     }
 }
 

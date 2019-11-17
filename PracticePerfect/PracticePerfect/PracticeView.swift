@@ -13,23 +13,17 @@ struct PracticeView: View {
     @State var minorScales = musicData["minor"] ?? []
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Major Scales:")
-                .modifier(ScaleStyle())
-            List(majorScales) { piece in
-                NavigationLink(destination: PieceDetail(piece: piece)) {
-                    PieceRow(piece: piece)
+        VStack {
+            List {
+                NavigationLink(destination: PracticeCategory(category: "Major Scales", pieces: majorScales)) {
+                    Text("Major Scales")
                 }
-            }
-            Text("Minor Scales:")
-                .modifier(ScaleStyle())
-            List(minorScales) { piece in
-                NavigationLink(destination: PieceDetail(piece: piece)) {
-                    PieceRow(piece: piece)
+                NavigationLink(destination: PracticeCategory(category: "Minor Scales", pieces: minorScales)) {
+                    Text("Minor Scales")
                 }
-            }
+            }.listStyle(GroupedListStyle())
         }
-        .navigationBarTitle("Practice")
+        .navigationBarTitle("Practice Categories")
     }
 }
 
