@@ -21,17 +21,12 @@ import SwiftUI
 // Take song data json and dictionary of song id to score and return list of SongMetadata for each song
 func parseSongJson(anyObj:Any?, scoresDict: Dictionary<Int, Int>) -> Array<SongMetadata> {
     // Will eventually be retrieved fully from backend - in current state you can see the first three songs here followed by the two from the server (11/14/19). Eventually, the list will be initialized as empty (as seen in the following line)
-//    var list:Array<SongMetadata> = []
-    var list = [
-        SongMetadata(id: 3, name: "Mary Had a Little Lamb", artist: "Unknown", highScore: 1000, rank: "S", level: 1),
-        SongMetadata(id: 4, name: "Joy to the World", artist: "Unknown", highScore: 2000, rank: "S", level: 1),
-        SongMetadata(id: 5, name: "Minuet in G", artist: "Unknown", highScore: 1500, rank: "S", level: 1),
-    ]
+    var list:Array<SongMetadata> = []
 
     if  anyObj is Array<AnyObject> {
         for json in anyObj as! Array<AnyObject>{
             let id = (json["id"]  as AnyObject? as? Int) ?? 0
-            let name = (json["name"] as AnyObject? as? String) ?? ""
+            let name = (json["title"] as AnyObject? as? String) ?? ""
             let artist = (json["artist"] as AnyObject? as? String) ?? ""
             let level = (json["level"] as AnyObject? as? Int) ?? 1
             // Get high score for give song by indexing into scores list with id
