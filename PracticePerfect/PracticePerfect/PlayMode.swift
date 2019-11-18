@@ -67,11 +67,9 @@ let starMultValues: Array<Float> = [1, 1.5, 2.5, 4.5, 8.5]
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
 let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
 
-struct PlayMode: View {
+struct PlayMode: View, TunerDelegate {
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     var songMetadata: SongMetadata
-    // Needed to display the navigation bar after being hidden on SongInfoView, however we may not even want the navigation bar on this screen either, which would allow us to remove this variable potentially
-    @Binding var isNavigationBarHidden: Bool
     
     // SCORING PARAMETERS
     // Total score: running count, @State displayed to the user
@@ -97,65 +95,108 @@ struct PlayMode: View {
         missCount: 26
     )
     
+    // Tuner variables
+    @State var tuner = Tuner()
+    @State var cents = 0.0
+    @State var note = Note(Note.Name.c, Note.Accidental.natural)
+    @State var isOn = true
+    
     var body: some View {
-        VStack {
-            ZStack {
-                
-                VStack {
-                    NavigationLink(destination: ResultsPage(scoreMetadata: scoreMetadata, prevHighScore: songMetadata.highScore, isNavigationBarHidden: $isNavigationBarHidden)) {
-                            Text("Results")
-                            }
+        ZStack {
+            mainGradient
+        
+            VStack{
+                Spacer()
+
+                HStack {
+                    VStack {
+                        Text(displayNote(note: note))
+                            .modifier(NoteStyle())
+                            .frame(minWidth: 175, maxWidth: 175)
+                        if cents > 0 {
+                            Text("\(roundToFive(num: cents)) cents sharp")
+                            .font(Font.custom("Arial Rounded MT Bold", size: 16))
+                        } else if cents < 0 {
+                            Text("\(roundToFive(num: abs(cents))) cents flat")
+                            .font(Font.custom("Arial Rounded MT Bold", size: 16))
+                        } else {
+                            Text("In tune!")
+                            .font(Font.custom("Arial Rounded MT Bold", size: 16))
+                        }
+                        
                     }
-                    .offset(x: 400, y: 175)
-                
-                VStack {
-                    // TO DO: Right now, sends new high score to server when pause button is pressed. This will need to be updated
-                    Button(action: {postSongs()}) {
-                    Text("Pause").foregroundColor(Color.black)
+
+                    Spacer()
+
+                    //draws staff
+                    VStack {
+                        ForEach(0 ..< 5) { index in
+                            Rectangle()
+                                .frame(width: 500.0, height: 1.0)
+                                .padding(.bottom, screenWidth/screenDivisions/2)
                         }
                     }
-                    .offset(x: 400, y: -160)
+                    
+                    Spacer()
+                }
                 
-                VStack {
-                    Text("You are playing: [song title]")
+                Spacer()
+                
+                HStack {
+                    if isOn {
+                        Button(action: {
+                            self.tuner.stop()
+                            self.isOn = false
+                        }) {
+                            Text("Pause")
+                        }
+                             .modifier(MenuButtonStyle())
+                    } else {
+                        Button(action: {
+                            self.startTuner()
+                        }) {
+                            Text("Resume")
+                        }
+                             .modifier(MenuButtonStyle())
                     }
-                    .offset(y: -160)
-                
-                VStack {
+                    
+                    Spacer()
+                    
                     Text("Score: [num]")
+                    
+                    Spacer()
+                    
+                    NavigationLink(destination: ResultsPage(scoreMetadata: scoreMetadata, prevHighScore: songMetadata.highScore)) {
+                        Text("Results")
                     }
-                    .offset(x: -380, y: 175)
-
-            //draws staff
-            ZStack {
-                ForEach(0 ..< offsets.count) { index in
-                    Rectangle()
-                        .frame(width: 1.0, height: CGFloat(screenWidth))
-                        .offset(x: CGFloat(offsets[index]), y:0)
-                        .rotationEffect(.degrees(-90))
-                    }
+                    .simultaneousGesture(TapGesture().onEnded {
+                        // TO DO: Right now, sends new high score to server when pause button is pressed. This will need to be updated
+                            self.tuner.stop()
+                            postSongs()
+                        })
+                        .modifier(MenuButtonStyle())
                 }
-                
-            //music notation
-                ZStack {
-                    Text("Music Notation")
-                }
-                .offset(x: -400)
-            
-            //notes
-                ZStack {
-                    Text("Notes")
-                }
-                
-                
+                .padding(.bottom, 20)
             }
-            
         }
-        .onAppear {
-            self.isNavigationBarHidden = false
-            }
-      
-        
+        .navigationBarTitle("You are playing: [song title]")
+        .onAppear(perform: startTuner)
+    }
+
+    // Updates current note information from microphone
+    func tunerDidTick(pitch: Pitch, frequency: Double) {
+        self.note = pitch.note
+        self.cents = calulateCents(userFrequency: frequency, noteFrequency: pitch.frequency)
+    }
+    
+    func startTuner() {
+        self.tuner.delegate = self
+        self.tuner.start()
+        self.isOn = true
+    }
+    
+    func roundToFive(num: Double) -> Int {
+        Int(5 * round(num/5))
     }
 }
 
@@ -164,6 +205,6 @@ struct PlayMode: View {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", artist: "Unknown", highScore: 1000, rank: "S", level: 1), isNavigationBarHidden: .constant(false)).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", artist: "Unknown", highScore: 1000, rank: "S", level: 1)).previewLayout(.fixed(width: 896, height: 414))
     }
 }

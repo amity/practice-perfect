@@ -115,22 +115,20 @@ struct SelectMusic: View {
     @State private var songMetadata: SongMetadata = SongMetadata(id: -1, name: "", artist: "", highScore: -1, rank: "", level: -1)
     // List of all songs
     @State var allSongs: Array<SongMetadata> = retrieveSongs()
-
-    @Binding var isNavigationBarHidden: Bool
     
     var body: some View {
         VStack{
             Spacer()
             Text("What song will you play?")
                 .font(.system(size: 44))
+            NavigationLink(destination: AddMusic()) {
+                Text("Add music")
+            }
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 5) {
                     ForEach(allSongs) { songMetadata in
                         GeometryReader { geometry in
-                            Button(action: {
-                                self.showModal.toggle()
-                                self.songMetadata = songMetadata
-                            }) {
+                            NavigationLink(destination: SongInfoView(songMetadata: songMetadata)) {
                                 SongThumbnail(songMetadata: songMetadata)
                             }
                             .buttonStyle(PlainButtonStyle())
@@ -138,11 +136,11 @@ struct SelectMusic: View {
                                 (Double(geometry.frame(in: .global).minX) - Double(UIScreen.main.bounds.width / 2) + Double(150)) / -20
                                 ), axis: (x: 0, y: 10.0, z: 0))
                             // Show modal sheet (pop-up SongInfoView) for more information
-                            .sheet(isPresented: self.$showModal, onDismiss: {
-                                print(self.showModal)
-                            }) {
-                                SongInfoView(isNavigationBarHidden: self.$isNavigationBarHidden, songMetadata: self.songMetadata)
-                            }
+//                            .sheet(isPresented: self.$showModal, onDismiss: {
+//                                print(self.showModal)
+//                            }) {
+//                                SongInfoView(songMetadata: self.songMetadata)
+//                            }
                         }
                         .frame(width: 300, height: 185)
                     }
@@ -153,19 +151,11 @@ struct SelectMusic: View {
 //            .content.offset(x: (UIScreen.main.bounds.width / 2) + 150, y: 0)
         }
         .padding()
-        .navigationBarItems(trailing:
-            NavigationLink(destination: AddMusic()) {
-                Text("Add music")
-            }
-        )
-        .onAppear {
-            self.isNavigationBarHidden = false
-        }
     }
 }
 
 struct SelectMusic_Previews: PreviewProvider {
     static var previews: some View {
-        SelectMusic(allSongs: [SongMetadata(id: -1, name: "", artist: "", highScore: -1, rank: "", level: -1)], isNavigationBarHidden: .constant(false)).previewLayout(.fixed(width: 896, height: 414))
+        SelectMusic(allSongs: [SongMetadata(id: -1, name: "", artist: "", highScore: -1, rank: "", level: -1)]).previewLayout(.fixed(width: 896, height: 414))
     }
 }

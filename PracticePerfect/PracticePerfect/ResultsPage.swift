@@ -28,7 +28,6 @@ func formatPercent(scoreInt: Int) -> String {
 struct ResultsPage: View {
     @State var scoreMetadata: ScoreMetadata
     @State var prevHighScore: Int
-    @Binding var isNavigationBarHidden: Bool
     
     var body: some View {
         HStack {
@@ -39,7 +38,7 @@ struct ResultsPage: View {
                 ZStack {
                     Color.gray
                         .frame(width: 300, height: 75)
-                    NavigationLink(destination: SelectMusic(isNavigationBarHidden: $isNavigationBarHidden)) {
+                    NavigationLink(destination: SelectMusic()) {
                         Text("Choose another song")
                             .font(.system(size: 28))
                     }
@@ -91,13 +90,7 @@ struct ResultsPage: View {
             Spacer()
         }
         .navigationBarTitle("")
-        .navigationBarHidden(self.isNavigationBarHidden)
-        .onAppear {
-            self.isNavigationBarHidden = true
-        }
-        .onDisappear {
-            self.isNavigationBarHidden = false
-        }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -114,8 +107,7 @@ struct ResultsPage_Previews: PreviewProvider {
                 goodCount: 10,
                 missCount: 1
             ),
-            prevHighScore: 100,
-            isNavigationBarHidden: .constant(true)
+            prevHighScore: 100
         ).previewLayout(.fixed(width: 896, height: 414))
     }
 }

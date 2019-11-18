@@ -23,16 +23,16 @@ struct TunerView: View, TunerDelegate {
 
             VStack {
                 Spacer()
-                Text(displayNote())
+                Text(displayNote(note: note))
                     .modifier(NoteStyle())
                 HStack {
                     Text("Flat")
                         .modifier(AccidentalStyle())
-                        .opacity(max(0, calulateCents() / -50))
+                        .opacity(max(0, calulateCents(userFrequency: userFrequency, noteFrequency: noteFrequency) / -50))
                     Spacer()
                     Text("Sharp")
                         .modifier(AccidentalStyle())
-                        .opacity(max(0, calulateCents() / 50))
+                        .opacity(max(0, calulateCents(userFrequency: userFrequency, noteFrequency: noteFrequency) / 50))
                 }
                 Spacer()
                 if !tunerOn {
@@ -69,17 +69,6 @@ struct TunerView: View, TunerDelegate {
         self.tuner.start()
         self.tunerOn = true
     }
-    
-    // Calculates the cents off of in tune
-    // Equation taken from:
-    // http://www.sengpielaudio.com/calculator-centsratio.htm
-    func calulateCents() -> Double {
-        let cents = 1200 * log2(userFrequency / noteFrequency)
-        if cents > 50 || cents < -50 || (cents < 5 && cents > -5) {
-            return 0
-        }
-        return cents
-    }
 
     func makeSideColor() -> Color {
         let colors = setGreenRed()
@@ -98,7 +87,7 @@ struct TunerView: View, TunerDelegate {
     func setGreenRed() -> (Double, Double) {
         let red: Double
         let green: Double
-        let cents = abs(calulateCents())
+        let cents = abs(calulateCents(userFrequency: userFrequency, noteFrequency: noteFrequency))
         if cents < 25 {
             green = 255.0
             red = 255.0 * (cents / 25.0)
@@ -108,39 +97,6 @@ struct TunerView: View, TunerDelegate {
         }
         
         return (red, green)
-    }
-    
-    func displayNote() -> String {
-        var noteName: String
-        var accidental: String
-        
-        switch note.note {
-            case .a:
-                noteName = "A"
-            case .b:
-                noteName = "B"
-            case .c:
-                noteName = "C"
-            case .d:
-                noteName = "D"
-            case .e:
-                noteName = "E"
-            case .f:
-                noteName = "F"
-            case .g:
-                noteName = "G"
-        }
-        
-        switch note.accidental {
-            case .sharp:
-                accidental = "\u{266F}"
-            case .flat:
-                accidental = "\u{266D}"
-            case .natural:
-                accidental = ""
-        }
-
-        return noteName + accidental
     }
 }
 
