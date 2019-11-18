@@ -85,14 +85,12 @@ struct PlayMode: View, TunerDelegate {
     
     // TO DO: Will be created from the score once play along mode is completed
     @State var scoreMetadata: ScoreMetadata = ScoreMetadata(
-        overallRank: "A-",
-        pitchRank: "A",
-        tempoRank: "B+",
-        newScore: 9000,
-        scorePercent: 9123,
-        perfectCount: 1431,
-        goodCount: 237,
-        missCount: 26
+        newScore: 850000,
+        pitchPercent: 9560,
+        tempoPercent: 9756,
+        perfectPercent: 9400,
+        goodPercent: 450,
+        missPercent: 250
     )
     
     // Tuner variables
@@ -164,7 +162,7 @@ struct PlayMode: View, TunerDelegate {
                     
                     Spacer()
                     
-                    NavigationLink(destination: ResultsPage(scoreMetadata: scoreMetadata, prevHighScore: songMetadata.highScore)) {
+                    NavigationLink(destination: ResultsPage(scoreMetadata: scoreMetadata, songMetadata: songMetadata)) {
                         Text("Results")
                     }
                     .simultaneousGesture(TapGesture().onEnded {
@@ -203,6 +201,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", artist: "Unknown", highScore: 1000, rank: "S", level: 1)).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(songMetadata: SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: "")).previewLayout(.fixed(width: 896, height: 414))
     }
 }

@@ -18,19 +18,25 @@ struct SongInfoView: View {
             HStack {
                 VStack {
                     Text(songMetadata.name)
-                        .font(.system(size: 42))
+                        .font(.system(size: 48))
                         .padding(.bottom, 15)
                         .fixedSize()
-                    Text(songMetadata.rank)
-                        .font(.system(size: 42))
-                        .padding(.top, 5)
                     HStack {
-                        // Percent will eventually be part of SongMetadata once it is in the backend
-                        Text("93%")
-                        Spacer(minLength: 100)
+                        Text(songMetadata.rank)
+                            .font(.system(size: 42))
+                            .padding(.top, 5)
+                        Spacer()
                         Text("\(songMetadata.highScore)")
+                            .font(.system(size: 42))
+                            .padding(.top, 5)
+                    }
+                    HStack {
+                        Text("\(songMetadata.artist)")
+                        Spacer()
+                        Text("\(String(songMetadata.year))")
                     }
                     .padding(.top, 10)
+                    .padding(.bottom, 10)
                     NavigationLink(destination: PlayMode(songMetadata: songMetadata)) {
                         Text("Play!")
                         .font(.system(size: 32))
@@ -53,6 +59,6 @@ struct SongInfoView: View {
 struct SongInfoView_Previews: PreviewProvider {
     static var previews: some View {
         // Example with sample SongMetadata
-        SongInfoView(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", artist: "Unknown", highScore: 1000, rank: "S", level: 1)).previewLayout(.fixed(width: 896, height: 414))
+        SongInfoView(songMetadata: SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: "")).previewLayout(.fixed(width: 896, height: 414))
     }
 }

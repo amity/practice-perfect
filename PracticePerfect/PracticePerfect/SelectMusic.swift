@@ -28,9 +28,17 @@ func parseSongJson(anyObj:Any?, scoresDict: Dictionary<Int, Int>) -> Array<SongM
             let id = (json["id"]  as AnyObject? as? Int) ?? 0
             let name = (json["title"] as AnyObject? as? String) ?? ""
             let artist = (json["artist"] as AnyObject? as? String) ?? ""
+            let resource_url = (json["resource_url"] as AnyObject? as? String) ?? ""
+            let year = (json["year"]  as AnyObject? as? Int) ?? 0
             let level = (json["level"] as AnyObject? as? Int) ?? 1
+            let top_score = (json["top_score"]  as AnyObject? as? Int) ?? 0
+            let deleted = (json["deleted"]  as AnyObject? as? Bool) ?? false
+            
+            // Calculate rank based on high score and top possible score
+            let rank = calculateRank(newScore: scoresDict[id] ?? -1, topScore: top_score)
+            
             // Get high score for give song by indexing into scores list with id
-            list.append(SongMetadata(id: id, name: name, artist: artist, highScore: scoresDict[id] ?? 0, rank: "A", level: level))
+            list.append(SongMetadata(id: id, name: name, artist: artist, resourceUrl: resource_url, year: year, level: level, topScore: top_score, highScore: scoresDict[id] ?? 0, deleted: deleted, rank: rank))
         }
     }
 
@@ -112,7 +120,7 @@ struct SelectMusic: View {
     // Controls display of modal sheet
     @State private var showModal = false
     // Need default value - dummy data to start with
-    @State private var songMetadata: SongMetadata = SongMetadata(id: -1, name: "", artist: "", highScore: -1, rank: "", level: -1)
+    @State private var songMetadata: SongMetadata = SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: "")
     // List of all songs
     @State var allSongs: Array<SongMetadata> = retrieveSongs()
     
@@ -135,12 +143,6 @@ struct SelectMusic: View {
                             .rotation3DEffect(Angle(degrees:
                                 (Double(geometry.frame(in: .global).minX) - Double(UIScreen.main.bounds.width / 2) + Double(150)) / -20
                                 ), axis: (x: 0, y: 10.0, z: 0))
-                            // Show modal sheet (pop-up SongInfoView) for more information
-//                            .sheet(isPresented: self.$showModal, onDismiss: {
-//                                print(self.showModal)
-//                            }) {
-//                                SongInfoView(songMetadata: self.songMetadata)
-//                            }
                         }
                         .frame(width: 300, height: 185)
                     }
@@ -156,6 +158,6 @@ struct SelectMusic: View {
 
 struct SelectMusic_Previews: PreviewProvider {
     static var previews: some View {
-        SelectMusic(allSongs: [SongMetadata(id: -1, name: "", artist: "", highScore: -1, rank: "", level: -1)]).previewLayout(.fixed(width: 896, height: 414))
+        SelectMusic(allSongs: [SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: "")]).previewLayout(.fixed(width: 896, height: 414))
     }
 }
