@@ -44,3 +44,10 @@ struct Countdown: View {
             )
     }
 }
+
+struct Countdown_Previews: PreviewProvider {
+    static var previews: some View {
+        // Example with sample SongMetadata
+        Countdown(tempo: 120, beats: 4, showCountdown: .constant(true)).previewLayout(.fixed(width: 896, height: 414))
+    }
+}

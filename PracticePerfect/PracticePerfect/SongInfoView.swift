@@ -27,15 +27,13 @@ struct SongInfoView: View {
                     HStack {
                         // Percent will eventually be part of SongMetadata once it is in the backend
                         Text("93%")
-                            .font(.system(size: 32))
                         Spacer(minLength: 100)
                         Text("\(songMetadata.highScore)")
-                            .font(.system(size: 32))
                     }
                     .padding(.top, 10)
                     NavigationLink(destination: PlayMode(songMetadata: songMetadata)) {
                         Text("Play!")
-                        .font(Font.custom("Arial Rounded MT Bold", size: 32))
+                        .font(.system(size: 32))
                     }
                         .modifier(MenuButtonStyle())
                 }
@@ -43,11 +41,18 @@ struct SongInfoView: View {
                 ZStack {
                     Color.gray
                     Text("Graphs/Visualization: History of scores/percents over time. Could have scoreboard information as well. ")
-                        .font(.system(size: 32))
                         .padding(20)
                 }
                 .padding(50)
             }
+                .font(.system(size: 32))
         }
+    }
+}
+
+struct SongInfoView_Previews: PreviewProvider {
+    static var previews: some View {
+        // Example with sample SongMetadata
+        SongInfoView(songMetadata: SongMetadata(id: 0, name: "Mary Had a Little lamb", artist: "Unknown", highScore: 1000, rank: "S", level: 1)).previewLayout(.fixed(width: 896, height: 414))
     }
 }

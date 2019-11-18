@@ -29,7 +29,7 @@ struct ScaleStyle: ViewModifier {
     func body(content: Content) -> some View {
         return content
             .foregroundColor(.white)
-            .font(Font.custom("Arial Rounded MT Bold", size: 22))
+            .font(.system(size: 22))
             .padding([.leading, .top], 15)
     }
 }
@@ -38,7 +38,7 @@ struct NoteStyle: ViewModifier {
     func body(content: Content) -> some View {
         return content
             .foregroundColor(Color.black)
-            .font(Font.custom("Arial Rounded MT Bold", size: 100))
+            .font(Font.system(size: 100).weight(.bold))
     }
 }
 
@@ -46,7 +46,7 @@ struct AccidentalStyle: ViewModifier {
     func body(content: Content) -> some View {
         return content
             .foregroundColor(Color.black)
-            .font(Font.custom("Arial Rounded MT Bold", size: 50))
+            .font(Font.system(size: 50).weight(.bold))
     }
 }
 
@@ -55,7 +55,7 @@ struct ButtonStyle: ViewModifier {
         return content
             .padding()
             .foregroundColor(.black)
-            .font(Font.custom("Arial Rounded MT Bold", size: 18))
+            .font(Font.system(size: 18).weight(.bold))
             .background(LinearGradient(gradient: Gradient(colors: [.gray, .white]), startPoint: .leading, endPoint: .trailing))
             .cornerRadius(40)
     }
@@ -66,7 +66,7 @@ struct MenuButtonStyle: ViewModifier {
         return content
             .padding()
             .foregroundColor(.white)
-            .font(Font.custom("Arial Rounded MT Bold", size: 18))
+            .font(Font.system(size: 18).weight(.bold))
             .background(LinearGradient(gradient: Gradient(colors: [darkGreen, lightGreen]), startPoint: .leading, endPoint: .trailing))
             .cornerRadius(40)
     }

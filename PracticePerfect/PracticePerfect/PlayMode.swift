@@ -115,16 +115,14 @@ struct PlayMode: View, TunerDelegate {
                             .frame(minWidth: 175, maxWidth: 175)
                         if cents > 0 {
                             Text("\(roundToFive(num: cents)) cents sharp")
-                            .font(Font.custom("Arial Rounded MT Bold", size: 16))
                         } else if cents < 0 {
                             Text("\(roundToFive(num: abs(cents))) cents flat")
-                            .font(Font.custom("Arial Rounded MT Bold", size: 16))
                         } else {
                             Text("In tune!")
-                            .font(Font.custom("Arial Rounded MT Bold", size: 16))
                         }
                         
                     }
+                        .font(Font.system(size: 16).weight(.bold))
 
                     Spacer()
 

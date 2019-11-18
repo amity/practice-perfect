@@ -30,64 +30,56 @@ struct ResultsPage: View {
     @State var prevHighScore: Int
     
     var body: some View {
-        HStack {
-            Spacer()
-            VStack {
-                Text("\(scoreMetadata.overallRank)")
-                    .font(.system(size: 60))
-                ZStack {
-                    Color.gray
-                        .frame(width: 300, height: 75)
+        ZStack {
+            mainGradient
+
+            HStack {
+                Spacer()
+                VStack {
+                    Text("\(scoreMetadata.overallRank)")
+                        .font(.system(size: 60))
                     NavigationLink(destination: SelectMusic()) {
                         Text("Choose another song")
-                            .font(.system(size: 28))
+                            .frame(width: 200)
                     }
-                    .buttonStyle(PlainButtonStyle())
-                }
-                ZStack {
-                    Color.gray
-                        .frame(width: 300, height: 75)
+                    .modifier(MenuButtonStyle())
+                    .padding()
+
                     NavigationLink(destination: LandingPage()) {
                         Text("Menu")
-                            .font(.system(size: 28))
+                            .frame(width: 200)
                     }
-                    .buttonStyle(PlainButtonStyle())
+                    .modifier(MenuButtonStyle())
                 }
-            }
-            Spacer()
-            VStack {
-                Text("\(formatPercent(scoreInt: scoreMetadata.scorePercent))")
-                    .font(.system(size: 48))
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("Perfect: \(scoreMetadata.perfectCount)")
-                            .font(.system(size: 24))
-                        Text("Good: \(scoreMetadata.goodCount)")
-                            .font(.system(size: 24))
-                        Text("Missed: \(scoreMetadata.missCount)")
-                            .font(.system(size: 24))
+                Spacer()
+                VStack {
+                    Text("\(formatPercent(scoreInt: scoreMetadata.scorePercent))")
+                        .font(.system(size: 48))
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text("Perfect: \(scoreMetadata.perfectCount)")
+                            Text("Good: \(scoreMetadata.goodCount)")
+                            Text("Missed: \(scoreMetadata.missCount)")
+                        }
+                        .padding(.trailing, 20)
+                        VStack(alignment: .leading) {
+                            Text("Pitch: \(scoreMetadata.pitchRank)")
+                                .frame(alignment: .leading)
+                            Text("Tempo: \(scoreMetadata.tempoRank)")
+                                .frame(alignment: .leading)
+                        }
+                        .padding(.leading, 20)
                     }
-                    .padding(.trailing, 20)
-                    VStack(alignment: .leading) {
-                        Text("Pitch: \(scoreMetadata.pitchRank)")
-                            .font(.system(size: 24))
-                            .frame(alignment: .leading)
-                        Text("Tempo: \(scoreMetadata.tempoRank)")
-                            .font(.system(size: 24))
-                            .frame(alignment: .leading)
-                    }
-                    .padding(.leading, 20)
+                        .font(.system(size: 24))
+                        .padding(.vertical, 20)
+
+                    Text("New Score: \(scoreMetadata.newScore)")
+                    Text("High Score: \(prevHighScore)")
                 }
-                .padding(.top, 20)
-                .padding(.bottom, 20)
-                Text("New Score: \(scoreMetadata.newScore)")
-                    .font(.system(size: 32))
-                    .fontWeight(.medium)
-                Text("High Score: \(prevHighScore)")
-                    .font(.system(size: 32))
-                    .fontWeight(.medium)
+                    .font(Font.system(size: 32).weight(.medium))
+
+                Spacer()
             }
-            Spacer()
         }
         .navigationBarTitle("")
         .navigationBarBackButtonHidden(true)
