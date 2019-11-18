@@ -40,7 +40,7 @@ struct Countdown: View {
                 Circle()
                     .fill(Color.white)
                     .shadow(color: .gray, radius: 10)
-                    .frame(width: 250, height: 250)
+                    .frame(width: 200, height: 200)
             )
     }
 }
