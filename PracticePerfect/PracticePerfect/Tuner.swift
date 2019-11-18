@@ -10,6 +10,10 @@ import AudioKit
 import Foundation
 
 
+// Amplitude threshhold for filtering background noise
+// In the future, we could judge off of an audio sample of the environment
+let threshold = 0.05
+
 // Shared function used by PlayMode and TunerView
 func displayNote(note: Note) -> String {
     var noteName: String
@@ -108,7 +112,7 @@ class Tuner {
         let frequency = Double(tracker.frequency)
         let pitch = Pitch.makePitchByFrequency(frequency)
         
-        if let d = delegate {
+        if tracker.amplitude > threshold, let d = delegate {
             d.tunerDidTick(pitch: pitch, frequency: frequency)
         }
     }

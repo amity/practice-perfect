@@ -40,7 +40,14 @@ struct Countdown: View {
                 Circle()
                     .fill(Color.white)
                     .shadow(color: .gray, radius: 10)
-                    .frame(width: 200, height: 200)
+                    .frame(width: 250, height: 250)
             )
+    }
+}
+
+struct Countdown_Previews: PreviewProvider {
+    static var previews: some View {
+        // Example with sample SongMetadata
+        Countdown(tempo: 120, beats: 4, showCountdown: .constant(true)).previewLayout(.fixed(width: 896, height: 414))
     }
 }
