@@ -9,8 +9,6 @@
 import SwiftUI
 
 struct LandingPage: View {
-    @State var isNavigationBarHidden: Bool = false
-    
     let note: some View = Image("note").resizable().frame(width: 75, height: 75)
     let smallNote: some View = Image("note").resizable().frame(width: 50, height: 50)
     
@@ -43,7 +41,7 @@ struct LandingPage: View {
                 Image("full-logo")
                 
                 HStack {
-                    NavigationLink(destination: SelectMusic(isNavigationBarHidden: $isNavigationBarHidden)) {
+                    NavigationLink(destination: SelectMusic()) {
                         HStack {
                             Image(systemName: "play.fill")
                             Text("Play!")
@@ -83,10 +81,7 @@ struct LandingPage: View {
                 }
             }
             .navigationBarTitle("")
-//            .navigationBarHidden(true)
-            .onAppear {
-                self.isNavigationBarHidden.toggle()
-            }
+            .navigationBarBackButtonHidden(true)
         }
     }
 }

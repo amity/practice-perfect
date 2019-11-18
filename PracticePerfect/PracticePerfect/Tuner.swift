@@ -9,6 +9,52 @@
 import AudioKit
 import Foundation
 
+
+// Shared function used by PlayMode and TunerView
+func displayNote(note: Note) -> String {
+    var noteName: String
+    var accidental: String
+    
+    switch note.note {
+        case .a:
+            noteName = "A"
+        case .b:
+            noteName = "B"
+        case .c:
+            noteName = "C"
+        case .d:
+            noteName = "D"
+        case .e:
+            noteName = "E"
+        case .f:
+            noteName = "F"
+        case .g:
+            noteName = "G"
+    }
+    
+    switch note.accidental {
+        case .sharp:
+            accidental = "\u{266F}"
+        case .flat:
+            accidental = "\u{266D}"
+        case .natural:
+            accidental = ""
+    }
+
+    return noteName + accidental
+}
+
+// Calculates the cents off of in tune
+// Equation taken from:
+// http://www.sengpielaudio.com/calculator-centsratio.htm
+func calulateCents(userFrequency: Double, noteFrequency: Double) -> Double {
+    let cents = 1200 * log2(userFrequency / noteFrequency)
+    if cents > 50 || cents < -50 || (cents < 5 && cents > -5) {
+        return 0
+    }
+    return cents
+}
+
 // Written following a tutorial found at:
 // http://shinerightstudio.com/posts/ios-tuner-app-using-audiokit/
 class Tuner {
