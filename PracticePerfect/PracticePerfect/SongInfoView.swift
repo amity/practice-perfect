@@ -17,9 +17,9 @@ struct SongInfoView: View {
 
     var body: some View {
         NavigationView {
-            HStack {
-                ZStack {
-                    Color.white
+            ZStack {
+                mainGradient
+                HStack {
                     VStack {
                         Text(songMetadata.name)
                             .font(.system(size: 42))
@@ -61,20 +61,20 @@ struct SongInfoView: View {
                             .frame(width: 150, height: 50)
                         }
                     }
+                    .padding(50)
+                    ZStack {
+                        Color.gray
+                        Text("Graphs/Visualization: History of scores/percents over time. Could have scoreboard information as well. ")
+                            .font(.system(size: 32))
+                            .padding(20)
+                    }
+                    .padding(50)
                 }
-                .padding(50)
-                ZStack {
-                    Color.gray
-                    Text("Graphs/Visualization: History of scores/percents over time. Could have scoreboard information as well. ")
-                        .font(.system(size: 32))
-                        .padding(20)
+                .navigationBarTitle("")
+                .navigationBarHidden(self.isNavigationBarHidden)
+                .onAppear {
+                    self.isNavigationBarHidden = true
                 }
-                .padding(50)
-            }
-            .navigationBarTitle("")
-            .navigationBarHidden(self.isNavigationBarHidden)
-            .onAppear {
-                self.isNavigationBarHidden = true
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())

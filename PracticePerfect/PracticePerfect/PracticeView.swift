@@ -12,33 +12,18 @@ struct PracticeView: View {
     @State var majorScales = musicData["major"] ?? []
     @State var minorScales = musicData["minor"] ?? []
     
-    struct ScaleStyle: ViewModifier {
-        func body(content: Content) -> some View {
-            return content
-                .foregroundColor(Color.black)
-                .font(Font.custom("Arial Rounded MT Bold", size: 18))
-                .padding(.leading, 20)
-        }
-    }
-    
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Major Scales:")
-                .modifier(ScaleStyle())
-            List(majorScales) { piece in
-                NavigationLink(destination: PieceDetail(piece: piece)) {
-                    PieceRow(piece: piece)
+        VStack {
+            List {
+                NavigationLink(destination: PracticeCategory(category: "Major Scales", pieces: majorScales)) {
+                    Text("Major Scales")
                 }
-            }
-            Text("Minor Scales:")
-                .modifier(ScaleStyle())
-            List(minorScales) { piece in
-                NavigationLink(destination: PieceDetail(piece: piece)) {
-                    PieceRow(piece: piece)
+                NavigationLink(destination: PracticeCategory(category: "Minor Scales", pieces: minorScales)) {
+                    Text("Minor Scales")
                 }
-            }
+            }.listStyle(GroupedListStyle())
         }
-        .navigationBarTitle("Practice")
+        .navigationBarTitle("Practice Categories")
     }
 }
 
