@@ -14,13 +14,15 @@ struct Countdown: View {
     private var tempo: Int // Beats per minute
     private var beats: Int // Number to count to
     private var timer: Publishers.Autoconnect<Timer.TimerPublisher>
+    private var callback: (() -> Void)? = nil
 
     @State var count = 1
 
-    init (tempo: Int, beats: Int, showCountdown: Binding<Bool>) {
+    init (tempo: Int, beats: Int, showCountdown: Binding<Bool>, callback: (() -> Void)? = nil) {
         self.tempo = tempo
         self.beats = beats
         self._showCountdown = showCountdown
+        self.callback = callback
 
         let interval = 60.0 / Double(tempo)
         self.timer = Timer.publish(every: interval, on: .current, in: .common).autoconnect()
@@ -33,6 +35,9 @@ struct Countdown: View {
                     self.count += 1
                 } else {
                     self.showCountdown = false
+                    if (self.callback != nil) {
+                        self.callback!()
+                    }
                 }
             }
             .font(Font.custom("Arial Rounded MT Bold", size: 100))
