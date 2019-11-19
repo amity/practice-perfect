@@ -51,8 +51,6 @@ struct PieceDetail: View {
             
             if showCountdown {
                 Countdown(tempo: self.tempo, beats: self.beats, showCountdown: self.$showCountdown)
-                    .animation(.easeInOut(duration: 4.0))
-                    .transition(.opacity)
             }
         }
     }

@@ -70,6 +70,7 @@ let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
 struct PlayMode: View, TunerDelegate {
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     var songMetadata: SongMetadata
+    var tempo: Int
     
     // SCORING PARAMETERS
     // Total score: running count, @State displayed to the user
@@ -98,6 +99,10 @@ struct PlayMode: View, TunerDelegate {
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
     @State var isOn = true
+    
+    // Countdown variables
+    @State var showCountdown = true
+    let beats = 4
     
     var body: some View {
         ZStack {
@@ -174,9 +179,13 @@ struct PlayMode: View, TunerDelegate {
                 }
                 .padding(.bottom, 20)
             }
+            .blur(radius: showCountdown ? 20 : 0)
+            
+            if showCountdown {
+                Countdown(tempo: self.tempo, beats: self.beats, showCountdown: self.$showCountdown, callback: startTuner)
+            }
         }
         .navigationBarTitle("You are playing: [song title]")
-        .onAppear(perform: startTuner)
     }
 
     // Updates current note information from microphone
@@ -201,6 +210,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(songMetadata: SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: "")).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(songMetadata: SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: ""), tempo: 120).previewLayout(.fixed(width: 896, height: 414))
     }
 }
