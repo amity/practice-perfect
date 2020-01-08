@@ -58,7 +58,7 @@ struct TunerView: View, TunerDelegate {
     }
     
     // Updates current note information from microphone
-    func tunerDidTick(pitch: Pitch, frequency: Double) {
+    func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
         self.userFrequency = frequency
         self.noteFrequency = pitch.frequency
         self.note = pitch.note
