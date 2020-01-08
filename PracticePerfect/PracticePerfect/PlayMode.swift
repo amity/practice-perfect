@@ -71,6 +71,7 @@ struct PlayMode: View, TunerDelegate {
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     var songMetadata: SongMetadata
     var tempo: Int
+    var timeSig: (Int, Int)
     
     // SCORING PARAMETERS
     // Total score: running count, @State displayed to the user
@@ -99,6 +100,7 @@ struct PlayMode: View, TunerDelegate {
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
     @State var isOn = true
+    @State var tempoCount = 0
     
     // Countdown variables
     @State var showCountdown = true
@@ -123,7 +125,8 @@ struct PlayMode: View, TunerDelegate {
                         } else {
                             Text("In tune!")
                         }
-                        
+                        Text(String(tempoCount % timeSig.0 + 1))
+                            .font(Font.system(size:32).weight(.bold))
                     }
                         .font(Font.system(size: 16).weight(.bold))
 
@@ -189,9 +192,14 @@ struct PlayMode: View, TunerDelegate {
     }
 
     // Updates current note information from microphone
-    func tunerDidTick(pitch: Pitch, frequency: Double) {
-        self.note = pitch.note
-        self.cents = calulateCents(userFrequency: frequency, noteFrequency: pitch.frequency)
+    func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
+        // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
+        self.tempoCount = Int(Float(beatCount) * Float(0.05) / Float(60) * Float(tempo))
+        // If exceeded tuner threshold for new note, update the new note
+        if change {
+            self.note = pitch.note
+            self.cents = calulateCents(userFrequency: frequency, noteFrequency: pitch.frequency)
+        }
     }
     
     func startTuner() {
@@ -210,6 +218,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(songMetadata: SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: ""), tempo: 120).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(songMetadata: SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4)).previewLayout(.fixed(width: 896, height: 414))
     }
 }

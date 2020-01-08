@@ -68,6 +68,7 @@ class Tuner {
     let pollingInterval = 0.05
     var pollingTimer: Timer?
     var delegate: TunerDelegate?
+    var beatCount: Int = 0
 
     init() {
         do {
@@ -109,15 +110,21 @@ class Tuner {
     }
 
     private func pollingTick() {
+        beatCount += 1
         let frequency = Double(tracker.frequency)
         let pitch = Pitch.makePitchByFrequency(frequency)
         
+        // If exceeds threshold, tell Play Mode to update
         if tracker.amplitude > threshold, let d = delegate {
-            d.tunerDidTick(pitch: pitch, frequency: frequency)
+            d.tunerDidTick(pitch: pitch, frequency: frequency, beatCount: beatCount, change: true)
+        }
+        // Otherwise, don't change (change: false) 
+        else {
+            self.delegate?.tunerDidTick(pitch: pitch, frequency: frequency, beatCount: beatCount, change: false)
         }
     }
 }
 
 protocol TunerDelegate {
-    func tunerDidTick(pitch: Pitch, frequency: Double)
+    func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool)
 }

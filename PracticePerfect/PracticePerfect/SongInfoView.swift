@@ -12,7 +12,9 @@ struct SongInfoView: View {
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     @State var songMetadata: SongMetadata
     
+    // These need to be in the API eventually 
     let tempo = 120
+    let timeSig = (4,4)
 
     var body: some View {
         ZStack {
@@ -39,7 +41,7 @@ struct SongInfoView: View {
                     }
                     .padding(.top, 10)
                     .padding(.bottom, 10)
-                    NavigationLink(destination: PlayMode(songMetadata: songMetadata, tempo: tempo)) {
+                    NavigationLink(destination: PlayMode(songMetadata: songMetadata, tempo: tempo, timeSig: timeSig)) {
                         Text("Play!")
                         .font(.system(size: 32))
                     }
