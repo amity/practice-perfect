@@ -13,7 +13,7 @@ struct SongInfoView: View {
     @State var songMetadata: SongMetadata
     
     // These need to be in the API eventually 
-    let tempo = 120
+    let tempo = 60
     let timeSig = (4,4)
 
     var body: some View {
