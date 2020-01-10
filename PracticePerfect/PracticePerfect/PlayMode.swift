@@ -189,6 +189,7 @@ struct PlayMode: View, TunerDelegate {
             }
         }
         .navigationBarTitle("You are playing: [song title]")
+        .onDisappear(perform: self.tuner.stop)
     }
 
     // Updates current note information from microphone
