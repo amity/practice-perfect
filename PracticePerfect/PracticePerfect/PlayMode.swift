@@ -106,6 +106,12 @@ struct PlayMode: View, TunerDelegate {
     @State var showCountdown = true
     let beats = 4
     
+    // Temporary scoring variables
+    @State var currBeatNotes: [Note] = [] // For all notes in current beat
+    // TO DO: get this from XML rather than hard-coding C major
+    @State var correctNotes: [String] = ["C", "E", "G", "C"]
+    @State var runningScore: Int = 0
+    
     var body: some View {
         ZStack {
             mainGradient
@@ -126,7 +132,7 @@ struct PlayMode: View, TunerDelegate {
                             Text("In tune!")
                         }
                         Text(String(tempoCount % timeSig.0 + 1))
-                            .font(Font.system(size:32).weight(.bold))
+                            .font(Font.system(size:64).weight(.bold))
                     }
                         .font(Font.system(size: 16).weight(.bold))
 
@@ -166,7 +172,8 @@ struct PlayMode: View, TunerDelegate {
                     
                     Spacer()
                     
-                    Text("Score: [num]")
+                    Text("Score: " + String(runningScore))
+                        .font(Font.system(size: 64).weight(.bold))
                     
                     Spacer()
                     
@@ -195,7 +202,40 @@ struct PlayMode: View, TunerDelegate {
     // Updates current note information from microphone
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
-        self.tempoCount = Int(Float(beatCount) * Float(0.05) / Float(60) * Float(tempo))
+        let newTempoCount = Int(Float(beatCount) * Float(0.05) / Float(60) * Float(tempo))
+        
+        // If not on new beat, add the note to the list of note readings for current beat
+        if newTempoCount == tempoCount {
+            currBeatNotes.append(pitch.note)
+        }
+        // If new beat, calculate score and empty list for next beat
+        else {
+            
+            // Frequency calculation algorithm from: https://stackoverflow.com/questions/38416347/getting-the-most-frequent-value-of-an-array
+            
+            // Create dictionary to map value to count and get most frequent note
+            var counts = [Note: Int]()
+            currBeatNotes.forEach { counts[$0] = (counts[$0] ?? 0) + 1 }
+            let (value, _) = counts.max(by: {$0.1 < $1.1}) ?? (Note(Note.Name(rawValue: 0)!,Note.Accidental(rawValue: 0)!), 0)
+            
+            // If correct note, then 10 points; if one half step away, then 5 points
+            if displayNote(note: value) == correctNotes[tempoCount % timeSig.0] {
+                runningScore += 10
+            }
+            else if displayNote(note: value.halfStepUp) == correctNotes[tempoCount % timeSig.0] {
+                runningScore += 5
+            }
+            else if displayNote(note: value.halfStepDown) == correctNotes[tempoCount % timeSig.0] {
+                runningScore += 5
+            }
+            
+            // Empty current beat note values array for next beat 
+            currBeatNotes = []
+        }
+        
+        // Update tempo count
+        self.tempoCount = newTempoCount
+        
         // If exceeded tuner threshold for new note, update the new note
         if change {
             self.note = pitch.note
