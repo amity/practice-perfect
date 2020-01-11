@@ -230,6 +230,7 @@ struct PlayMode: View, TunerDelegate {
         .onAppear {
             self.getXML()
         }
+        .onDisappear(perform: self.tuner.stop)
     }
 
     // Updates current note information from microphone
