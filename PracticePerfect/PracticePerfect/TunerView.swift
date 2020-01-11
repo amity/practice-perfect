@@ -54,6 +54,7 @@ struct TunerView: View, TunerDelegate {
             }
             .onAppear(perform: startTuner)
             .navigationBarTitle("Tuner")
+            .onDisappear(perform: self.tuner.stop)
         }
     }
     
