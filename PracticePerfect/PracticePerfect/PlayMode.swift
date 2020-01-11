@@ -109,7 +109,7 @@ struct PlayMode: View, TunerDelegate {
     // Temporary scoring variables
     @State var currBeatNotes: [Note] = [] // For all notes in current beat
     // TO DO: get this from XML rather than hard-coding C major
-    @State var correctNotes: [String] = ["C", "E", "G", "C"]
+    @State var correctNotes: [String] = ["C", "D", "E", "F", "G", "A", "B", "C"]
     @State var runningScore: Int = 0
     
     var body: some View {
@@ -132,6 +132,8 @@ struct PlayMode: View, TunerDelegate {
                             Text("In tune!")
                         }
                         Text(String(tempoCount % timeSig.0 + 1))
+                            .font(Font.system(size:64).weight(.bold))
+                        Text(correctNotes[tempoCount % correctNotes.count])
                             .font(Font.system(size:64).weight(.bold))
                     }
                         .font(Font.system(size: 16).weight(.bold))
