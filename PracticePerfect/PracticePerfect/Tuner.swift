@@ -97,7 +97,6 @@ class Tuner {
     }
 
     func stop() {
-        print("stopped")
         do {
             try AudioKit.stop()
         } catch let error {
