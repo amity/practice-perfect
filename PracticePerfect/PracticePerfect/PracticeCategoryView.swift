@@ -12,16 +12,32 @@ struct PracticeCategory: View {
     var category: String
     var pieces: [MusicXMLMetadata]
     
-
+    let tempoValues = Array(0...200)
+    @State private var selectedTempo = 100
+    
     var body: some View {
-        VStack {
-            List(pieces) { piece in
-                NavigationLink(destination: PieceDetail(piece: piece)) {
-                    Text(piece.name)
-                }
-            }.listStyle(GroupedListStyle())
+        HStack {
+            VStack {
+                Text("Tempo")
+                    .font(Font.system(size:32).weight(.bold))
+                Picker(selection: $selectedTempo, label: EmptyView()) {
+                    ForEach(0 ..< tempoValues.count) {
+                        Text(String(self.tempoValues[$0]))
+
+                    }
+                }.labelsHidden()
+                .frame(maxWidth: 150)
+                .clipped()
+            }
+            VStack {
+                List(pieces) { piece in
+                    NavigationLink(destination: PlayMode(songMetadata: SongMetadata(id: -1, name: piece.name, artist: "", resourceUrl: piece.url, year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: ""), tempo: self.selectedTempo, timeSig: (4,4))) {
+                        Text(piece.name)
+                    }
+                }.listStyle(GroupedListStyle())
+            }
+            .navigationBarTitle(category)
         }
-        .navigationBarTitle(category)
     }
 }
 
