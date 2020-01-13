@@ -33,11 +33,7 @@ func loadXML2String(fileName : String, fileExtension: String) -> String {
 }
 
 //***TEMPORARILY HOT CODED TO LOCAL FILE APRES***
-var musicXMLToParseFromFile: String = loadXML2String(fileName: "reve", fileExtension: "musicxml")
-
-
-
-
+var musicXMLToParseFromFile: String = loadXML2String(fileName: "apres", fileExtension: "musicxml")
 
 // Posts result score to update backend
 // TO DO: Update parameters to include user id, song id, and score
@@ -111,6 +107,41 @@ struct PlayMode: View, TunerDelegate {
     // TO DO: get this from XML rather than hard-coding C major
     @State var correctNotes: [String] = ["C", "E", "G", "C"]
     @State var runningScore: Int = 0
+    
+    // File retrieval methods adapted from:
+    // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
+    private func getXML() {
+        dataTask?.cancel()
+        
+        if var urlComponents = URLComponents(string: songMetadata.resourceUrl) {
+            guard let url = urlComponents.url else {
+                return
+            }
+            
+            dataTask = downloadSession.dataTask(with: url) { (data, response, error) in
+                defer {
+                    self.dataTask = nil
+                }
+
+                if let error = error {
+                    self.errorMessage += "DataTask error: " + error.localizedDescription + "\n"
+                } else if let data = data, let response = response as? HTTPURLResponse,
+                    response.statusCode == 200 {
+                    self.XMLString = String(data: data, encoding: .utf8) ?? ""
+                    print(self.XMLString)
+                    print(self.songMetadata.resourceUrl)
+                }
+            }
+            dataTask?.resume()
+        }
+    }
+    
+    // XML Retrieval
+    @State var downloadSession = URLSession(configuration: .default)
+    @State var dataTask: URLSessionDataTask?
+    @State var errorMessage = ""
+    @State var results = ""
+    @State var XMLString = ""
     
     var body: some View {
         ZStack {
@@ -196,6 +227,9 @@ struct PlayMode: View, TunerDelegate {
             }
         }
         .navigationBarTitle("You are playing: [song title]")
+        .onAppear {
+            self.getXML()
+        }
         .onDisappear(perform: self.tuner.stop)
     }
 
