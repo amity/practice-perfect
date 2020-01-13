@@ -117,10 +117,6 @@ func retrieveSongs() -> Array<SongMetadata> {
 }
 
 struct SelectMusic: View {
-    // Controls display of modal sheet
-    @State private var showModal = false
-    // Need default value - dummy data to start with
-    @State private var songMetadata: SongMetadata = SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: "")
     // List of all songs
     @State var allSongs: Array<SongMetadata> = retrieveSongs()
     
