@@ -247,22 +247,6 @@ struct PlayMode: View, TunerDelegate {
         .navigationBarTitle("You are playing: [song title]")
         .onAppear {
             self.getXML()
-            
-//            // Test data - to be removed when parsing XML is done
-//            let note1 = NoteMetadata()
-//            note1.duration = 1
-//            note1.step = "C"
-//            let note2 = NoteMetadata()
-//            note2.duration = 2
-//            note2.step = "E"
-//            let note3 = NoteMetadata()
-//            note3.duration = 1
-//            note3.step = "G"
-//            self.testNotes = [note1, note2, note3]
-//
-//            // Initialize the first target duration to the length of the first note
-//            self.endOfCurrentNoteBeats = note1.duration
-            
         }
         .onDisappear(perform: self.tuner.stop)
     }
