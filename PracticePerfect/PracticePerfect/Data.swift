@@ -12,7 +12,7 @@ import UIKit
 import SwiftUI
 import CoreLocation
 
-let musicData: Dictionary<String, [MusicXMLMetadata]> = load("Exercises.json")
+let musicData: Dictionary<String, [ScaleMetadata]> = load("Exercises.json")
 
 func load<T: Decodable>(_ filename: String) -> T {
     let data: Data

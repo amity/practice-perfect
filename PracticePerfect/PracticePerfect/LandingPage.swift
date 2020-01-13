@@ -61,10 +61,10 @@ struct LandingPage: View {
                 }
                 
                 HStack {
-                    NavigationLink(destination: PracticeView()) {
+                    NavigationLink(destination: ScalePicker()) {
                         HStack {
                             Image(systemName: "music.note")
-                            Text("Practice")
+                            Text("Exercises")
                                 .fixedSize()
                         }
                     }

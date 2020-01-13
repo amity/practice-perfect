@@ -244,7 +244,7 @@ struct PlayMode: View, TunerDelegate {
                 Countdown(tempo: self.tempo, beats: self.beats, showCountdown: self.$showCountdown, callback: startTuner)
             }
         }
-        .navigationBarTitle("You are playing: [song title]")
+        .navigationBarTitle("You are playing: " + songMetadata.name)
         .onAppear {
             self.getXML()
         }
