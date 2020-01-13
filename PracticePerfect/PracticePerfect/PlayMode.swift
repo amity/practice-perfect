@@ -64,13 +64,16 @@ func createTestData () -> [NoteMetadata] {
     note1.duration = 1
     note1.step = "C"
     let note2 = NoteMetadata()
-    note2.duration = 2
-    note2.step = "E"
+    note2.duration = 1
+    note2.step = "D"
     let note3 = NoteMetadata()
     note3.duration = 1
-    note3.step = "G"
+    note3.step = "E"
+    let note4 = NoteMetadata()
+    note4.duration = 1
+    note4.step = "F"
     
-    return [note1, note2, note3]
+    return [note1, note2, note3, note4]
 }
 
 // Star multiplier values for 1 through 5 stars (at indices 0 through 4)
@@ -123,6 +126,9 @@ struct PlayMode: View, TunerDelegate {
     // Temporary scoring variables
     @State var currBeatNotes: [Note] = [] // For all notes in current beat
     @State var runningScore: Int = 0
+    
+    // Note display variables
+    @State var barDist = screenWidth/screenDivisions/2
     
     // File retrieval methods adapted from:
     // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
@@ -186,13 +192,28 @@ struct PlayMode: View, TunerDelegate {
                         .font(Font.system(size: 16).weight(.bold))
 
                     Spacer()
-
-                    //draws staff
-                    VStack {
-                        ForEach(0 ..< 5) { index in
-                            Rectangle()
-                                .frame(width: 500.0, height: 1.0)
-                                .padding(.bottom, screenWidth/screenDivisions/2)
+                    
+                    ZStack {
+                        // draws staff
+                        VStack {
+                            ForEach(0 ..< 5) { index in
+                                Rectangle()
+                                    .frame(width: 500.0, height: 1.0)
+                                    .padding(.bottom, self.barDist)
+                                    .padding(.top, 0)
+                            }
+                        }
+                        
+                        // draws notes
+                        // Int(totalElapsedBeats) % timeSig.0 + 1
+                        // testNotes
+                        HStack {
+                            ForEach(0 ..< 4) { index in
+                                Circle()
+                                    .frame(width: 30.0, height: 30.0)
+                                    .padding(.trailing, 10)
+                                    .offset(x: CGFloat(-100), y: CGFloat(-75 + self.calcNoteOffset(note: self.testNotes[index])))
+                            }
                         }
                     }
                     
@@ -312,6 +333,30 @@ struct PlayMode: View, TunerDelegate {
     
     func roundToFive(num: Double) -> Int {
         Int(5 * round(num/5))
+    }
+    
+    func calcNoteOffset(note: NoteMetadata) -> Int {
+        var offset = self.barDist + 10
+        switch note.step {
+            case "F":
+                offset *= 0
+            case "E":
+                offset *= 0.5
+            case "D":
+                offset *= 1
+            case "C":
+                offset *= 1.5
+            case "B":
+                offset *= 2
+            case "A":
+                offset *= 2.5
+            case "G":
+                offset *= 3
+            default:
+                offset *= 3.5
+        }
+        
+        return Int(offset)
     }
 }
 
