@@ -270,15 +270,17 @@ struct PlayMode: View, TunerDelegate {
             currBeatNotes.forEach { counts[$0] = (counts[$0] ?? 0) + 1 }
             let (value, _) = counts.max(by: {$0.1 < $1.1}) ?? (Note(Note.Name(rawValue: 0)!,Note.Accidental(rawValue: 0)!), 0)
             
-            // If correct note, then 10 points; if one half step away, then 5 points
+            // If correct note, then 10 points; if one half step away, then 5 points; if one whole step away, then 3 points
             if displayNote(note: value) == testNotes[testNotesIndex].step {
                 runningScore += 10
-            }
-            else if displayNote(note: value.halfStepUp) == testNotes[testNotesIndex].step {
+            } else if displayNote(note: value.halfStepUp) == testNotes[testNotesIndex].step {
                 runningScore += 5
-            }
-            else if displayNote(note: value.halfStepDown) == testNotes[testNotesIndex].step {
+            } else if displayNote(note: value.halfStepDown) == testNotes[testNotesIndex].step {
                 runningScore += 5
+            } else if displayNote(note: value.wholeStepDown) == testNotes[testNotesIndex].step {
+                runningScore += 3
+            } else if displayNote(note: value.wholeStepUp) == testNotes[testNotesIndex].step {
+                runningScore += 3
             }
             
             // Empty current beat note values array for next beat 
