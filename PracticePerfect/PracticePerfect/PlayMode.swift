@@ -58,6 +58,21 @@ func postSongs() -> () {
     _ = semaphore.wait(wallTimeout: .distantFuture)
 }
 
+func createTestData () -> [NoteMetadata] {
+    // Test data - to be removed when parsing XML is done
+    let note1 = NoteMetadata()
+    note1.duration = 1
+    note1.step = "C"
+    let note2 = NoteMetadata()
+    note2.duration = 2
+    note2.step = "E"
+    let note3 = NoteMetadata()
+    note3.duration = 1
+    note3.step = "G"
+    
+    return [note1, note2, note3]
+}
+
 // Star multiplier values for 1 through 5 stars (at indices 0 through 4)
 let starMultValues: Array<Float> = [1, 1.5, 2.5, 4.5, 8.5]
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
@@ -96,7 +111,10 @@ struct PlayMode: View, TunerDelegate {
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
     @State var isOn = true
-    @State var tempoCount = 0
+    @State var totalElapsedBeats: Float = 0
+    @State var endOfCurrentNoteBeats: Float = 1 // TO-DO: have this not be hardcoded
+    @State var testNotes: [NoteMetadata] = createTestData()
+    @State var testNotesIndex = 0
     
     // Countdown variables
     @State var showCountdown = true
@@ -104,8 +122,6 @@ struct PlayMode: View, TunerDelegate {
     
     // Temporary scoring variables
     @State var currBeatNotes: [Note] = [] // For all notes in current beat
-    // TO DO: get this from XML rather than hard-coding C major
-    @State var correctNotes: [String] = ["C", "E", "G", "C"]
     @State var runningScore: Int = 0
     
     // File retrieval methods adapted from:
@@ -162,7 +178,9 @@ struct PlayMode: View, TunerDelegate {
                         } else {
                             Text("In tune!")
                         }
-                        Text(String(tempoCount % timeSig.0 + 1))
+                        Text(String(Int(totalElapsedBeats) % timeSig.0 + 1))
+                            .font(Font.system(size:64).weight(.bold))
+                        Text("Target: " + String(testNotes[testNotesIndex].step))
                             .font(Font.system(size:64).weight(.bold))
                     }
                         .font(Font.system(size: 16).weight(.bold))
@@ -236,10 +254,10 @@ struct PlayMode: View, TunerDelegate {
     // Updates current note information from microphone
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
-        let newTempoCount = Int(Float(beatCount) * Float(0.05) / Float(60) * Float(tempo))
+        let newElapsedBeats: Float = Float(beatCount) * Float(0.05) / Float(60) * Float(tempo)
         
-        // If not on new beat, add the note to the list of note readings for current beat
-        if newTempoCount == tempoCount {
+        // If still on current note, add pitch reading to array
+        if newElapsedBeats <= endOfCurrentNoteBeats {
             currBeatNotes.append(pitch.note)
         }
         // If new beat, calculate score and empty list for next beat
@@ -253,22 +271,31 @@ struct PlayMode: View, TunerDelegate {
             let (value, _) = counts.max(by: {$0.1 < $1.1}) ?? (Note(Note.Name(rawValue: 0)!,Note.Accidental(rawValue: 0)!), 0)
             
             // If correct note, then 10 points; if one half step away, then 5 points
-            if displayNote(note: value) == correctNotes[tempoCount % timeSig.0] {
+            if displayNote(note: value) == testNotes[testNotesIndex].step {
                 runningScore += 10
             }
-            else if displayNote(note: value.halfStepUp) == correctNotes[tempoCount % timeSig.0] {
+            else if displayNote(note: value.halfStepUp) == testNotes[testNotesIndex].step {
                 runningScore += 5
             }
-            else if displayNote(note: value.halfStepDown) == correctNotes[tempoCount % timeSig.0] {
+            else if displayNote(note: value.halfStepDown) == testNotes[testNotesIndex].step {
                 runningScore += 5
             }
             
             // Empty current beat note values array for next beat 
             currBeatNotes = []
+            
+            // Go to next note in array
+            if testNotesIndex == testNotes.count - 1 {
+                testNotesIndex = 0
+            } else {
+                testNotesIndex += 1
+            }
+            
+            endOfCurrentNoteBeats = totalElapsedBeats + testNotes[testNotesIndex].duration
         }
         
         // Update tempo count
-        self.tempoCount = newTempoCount
+        self.totalElapsedBeats = newElapsedBeats
         
         // If exceeded tuner threshold for new note, update the new note
         if change {
