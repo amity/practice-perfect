@@ -72,8 +72,20 @@ func createTestData () -> [NoteMetadata] {
     let note4 = NoteMetadata()
     note4.duration = 1
     note4.step = "F"
+    let note5 = NoteMetadata()
+    note5.duration = 1
+    note5.step = "G"
+    let note6 = NoteMetadata()
+    note6.duration = 1
+    note6.step = "A"
+    let note7 = NoteMetadata()
+    note7.duration = 1
+    note7.step = "B"
+    let note8 = NoteMetadata()
+    note8.duration = 1
+    note8.step = "C"
     
-    return [note1, note2, note3, note4]
+    return [note1, note2, note3, note4, note5, note6, note7, note8]
 }
 
 // Star multiplier values for 1 through 5 stars (at indices 0 through 4)
@@ -129,6 +141,7 @@ struct PlayMode: View, TunerDelegate {
     
     // Note display variables
     @State var barDist = screenWidth/screenDivisions/2
+    @State var currBar = 0
     
     // File retrieval methods adapted from:
     // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
@@ -212,7 +225,7 @@ struct PlayMode: View, TunerDelegate {
                                 Circle()
                                     .frame(width: 30.0, height: 30.0)
                                     .padding(.trailing, 10)
-                                    .offset(x: CGFloat(-100), y: CGFloat(-75 + self.calcNoteOffset(note: self.testNotes[index])))
+                                    .offset(x: CGFloat(-100), y: CGFloat(-75 + self.calcNoteOffset(note: self.testNotes[self.currBar * self.timeSig.0 + index])))
                             }
                         }
                     }
@@ -313,6 +326,17 @@ struct PlayMode: View, TunerDelegate {
             }
             
             endOfCurrentNoteBeats = totalElapsedBeats + testNotes[testNotesIndex].duration
+            
+            // Keep track of current bar
+            if Int(totalElapsedBeats) % timeSig.0 == 0 {
+                self.currBar += 1
+            }
+            
+            // temp safety
+            if (self.currBar + 1) * timeSig.0 > testNotes.count {
+                self.currBar = 0
+            }
+            
         }
         
         // Update tempo count
