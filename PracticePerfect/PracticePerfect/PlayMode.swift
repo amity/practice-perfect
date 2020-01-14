@@ -218,8 +218,6 @@ struct PlayMode: View, TunerDelegate {
                         }
                         
                         // draws notes
-                        // Int(totalElapsedBeats) % timeSig.0 + 1
-                        // testNotes
                         HStack {
                             ForEach(0 ..< 4) { index in
                                 Circle()
