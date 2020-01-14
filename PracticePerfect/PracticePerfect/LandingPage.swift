@@ -41,6 +41,13 @@ struct LandingPage: View {
                 Image("full-logo")
                 
                 HStack {
+                    NavigationLink(destination: LoginPage()) {
+                        HStack {
+                            Text("Login")
+                                .fixedSize()
+                        }
+                    }
+                    .modifier(MenuButtonStyle())
                     NavigationLink(destination: SelectMusic()) {
                         HStack {
                             Image(systemName: "play.fill")
