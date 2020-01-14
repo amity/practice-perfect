@@ -40,3 +40,9 @@ struct MusicXMLMetadata: Hashable, Codable, Identifiable {
     var name: String
     var url: String
 }
+
+struct ScaleMetadata: Hashable, Codable, Identifiable {
+    var id: Int
+    var name: String
+    var urls: [String]
+}
