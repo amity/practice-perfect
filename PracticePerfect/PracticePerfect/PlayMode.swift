@@ -64,13 +64,28 @@ func createTestData () -> [NoteMetadata] {
     note1.duration = 1
     note1.step = "C"
     let note2 = NoteMetadata()
-    note2.duration = 2
-    note2.step = "E"
+    note2.duration = 1
+    note2.step = "D"
     let note3 = NoteMetadata()
     note3.duration = 1
-    note3.step = "G"
+    note3.step = "E"
+    let note4 = NoteMetadata()
+    note4.duration = 1
+    note4.step = "F"
+    let note5 = NoteMetadata()
+    note5.duration = 1
+    note5.step = "G"
+    let note6 = NoteMetadata()
+    note6.duration = 1
+    note6.step = "A"
+    let note7 = NoteMetadata()
+    note7.duration = 1
+    note7.step = "B"
+    let note8 = NoteMetadata()
+    note8.duration = 1
+    note8.step = "C"
     
-    return [note1, note2, note3]
+    return [note1, note2, note3, note4, note5, note6, note7, note8]
 }
 
 // Star multiplier values for 1 through 5 stars (at indices 0 through 4)
@@ -121,6 +136,10 @@ struct PlayMode: View, TunerDelegate {
     @State var runningScore: Float = 0
     @State var streakCount: Int = 0
     @State var streakValuesIndex: Int = 0
+    
+    // Note display variables
+    @State var barDist = screenWidth/screenDivisions/2
+    @State var currBar = 0
     
     // File retrieval methods adapted from:
     // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
@@ -184,13 +203,26 @@ struct PlayMode: View, TunerDelegate {
                         .font(Font.system(size: 16).weight(.bold))
 
                     Spacer()
-
-                    //draws staff
-                    VStack {
-                        ForEach(0 ..< 5) { index in
-                            Rectangle()
-                                .frame(width: 500.0, height: 1.0)
-                                .padding(.bottom, screenWidth/screenDivisions/2)
+                    
+                    ZStack {
+                        // draws staff
+                        VStack {
+                            ForEach(0 ..< 5) { index in
+                                Rectangle()
+                                    .frame(width: 500.0, height: 1.0)
+                                    .padding(.bottom, self.barDist)
+                                    .padding(.top, 0)
+                            }
+                        }
+                        
+                        // draws notes
+                        HStack {
+                            ForEach(0 ..< 4) { index in
+                                Circle()
+                                    .frame(width: 30.0, height: 30.0)
+                                    .padding(.trailing, 10)
+                                    .offset(x: CGFloat(-100), y: CGFloat(-75 + self.calcNoteOffset(note: self.testNotes[self.currBar * self.timeSig.0 + index])))
+                            }
                         }
                     }
                     
@@ -251,25 +283,20 @@ struct PlayMode: View, TunerDelegate {
     
     // If correct note, then 10 points; if one half step away, then 5 points; if one whole step away, then 3 points; increase streak count for target, neutral for half step off, reset for whole note or worse
     func updateScore(value: Note) {
-        if displayNote(note: value) == testNotes[testNotesIndex].step {
+        switch testNotes[testNotesIndex].step {
+        case displayNote(note: value):
             streakCount += 1
             if streakIncreases.contains(Float(streakCount)) {
                 streakValuesIndex += 1
             }
             runningScore += (10 * streakMultValues[streakValuesIndex])
-        } else if displayNote(note: value.halfStepUp) == testNotes[testNotesIndex].step {
+        case displayNote(note: value.halfStepUp), displayNote(note: value.halfStepDown):
             runningScore += (5 * streakMultValues[streakValuesIndex])
-        } else if displayNote(note: value.halfStepDown) == testNotes[testNotesIndex].step {
-            runningScore += (5 * streakMultValues[streakValuesIndex])
-        } else if displayNote(note: value.wholeStepDown) == testNotes[testNotesIndex].step {
+        case displayNote(note: value.wholeStepUp), displayNote(note: value.wholeStepDown):
             streakCount = 0
             streakValuesIndex = 0
             runningScore += 3
-        } else if displayNote(note: value.wholeStepUp) == testNotes[testNotesIndex].step {
-            streakCount = 0
-            streakValuesIndex = 0
-            runningScore += 3
-        } else {
+        default:
             streakCount = 0
             streakValuesIndex = 0
         }
@@ -306,6 +333,17 @@ struct PlayMode: View, TunerDelegate {
             }
             
             endOfCurrentNoteBeats = totalElapsedBeats + testNotes[testNotesIndex].duration
+            
+            // Keep track of current bar
+            if Int(totalElapsedBeats) % timeSig.0 == 0 {
+                self.currBar += 1
+            }
+            
+            // temp safety
+            if (self.currBar + 1) * timeSig.0 > testNotes.count {
+                self.currBar = 0
+            }
+            
         }
         
         // Update tempo count
@@ -326,6 +364,30 @@ struct PlayMode: View, TunerDelegate {
     
     func roundToFive(num: Double) -> Int {
         Int(5 * round(num/5))
+    }
+    
+    func calcNoteOffset(note: NoteMetadata) -> Int {
+        var offset = self.barDist + 10
+        switch note.step {
+            case "F":
+                offset *= 0
+            case "E":
+                offset *= 0.5
+            case "D":
+                offset *= 1
+            case "C":
+                offset *= 1.5
+            case "B":
+                offset *= 2
+            case "A":
+                offset *= 2.5
+            case "G":
+                offset *= 3
+            default:
+                offset *= 3.5
+        }
+        
+        return Int(offset)
     }
 }
 
