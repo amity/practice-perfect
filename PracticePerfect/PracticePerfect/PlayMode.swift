@@ -251,25 +251,20 @@ struct PlayMode: View, TunerDelegate {
     
     // If correct note, then 10 points; if one half step away, then 5 points; if one whole step away, then 3 points; increase streak count for target, neutral for half step off, reset for whole note or worse
     func updateScore(value: Note) {
-        if displayNote(note: value) == testNotes[testNotesIndex].step {
+        switch testNotes[testNotesIndex].step {
+        case displayNote(note: value):
             streakCount += 1
             if streakIncreases.contains(Float(streakCount)) {
                 streakValuesIndex += 1
             }
             runningScore += (10 * streakMultValues[streakValuesIndex])
-        } else if displayNote(note: value.halfStepUp) == testNotes[testNotesIndex].step {
+        case displayNote(note: value.halfStepUp), displayNote(note: value.halfStepDown):
             runningScore += (5 * streakMultValues[streakValuesIndex])
-        } else if displayNote(note: value.halfStepDown) == testNotes[testNotesIndex].step {
-            runningScore += (5 * streakMultValues[streakValuesIndex])
-        } else if displayNote(note: value.wholeStepDown) == testNotes[testNotesIndex].step {
+        case displayNote(note: value.wholeStepUp), displayNote(note: value.wholeStepDown):
             streakCount = 0
             streakValuesIndex = 0
             runningScore += 3
-        } else if displayNote(note: value.wholeStepUp) == testNotes[testNotesIndex].step {
-            streakCount = 0
-            streakValuesIndex = 0
-            runningScore += 3
-        } else {
+        default:
             streakCount = 0
             streakValuesIndex = 0
         }
