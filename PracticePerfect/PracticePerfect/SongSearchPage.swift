@@ -22,10 +22,10 @@ struct SongSearchPage: View {
                 SearchBar(text: $searchTerm)
                 ForEach(self.songList.filter {
                     self.searchTerm.isEmpty ? true :
-                        $0.name.localizedCaseInsensitiveContains(self.searchTerm)
+                        ($0.name.localizedCaseInsensitiveContains(self.searchTerm) || $0.artist.localizedCaseInsensitiveContains(self.searchTerm))
                 }, id: \.self) { song in
                     NavigationLink(destination: SongInfoView(songMetadata: song)) {
-                        Text(song.name)
+                        Text(song.name + " by " + song.artist)
                     }
                     // TO-DO STRETCH: This doesn't seem to be working right now... need another way to dismiss keyboard when changing page
                     .gesture(TapGesture().onEnded{_ in UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
