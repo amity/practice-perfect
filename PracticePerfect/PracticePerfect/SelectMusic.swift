@@ -125,10 +125,17 @@ struct SelectMusic: View {
             mainGradient
             VStack{
                 Spacer()
-                Text("What song will you play?")
-                    .font(.system(size: 44))
-                NavigationLink(destination: AddMusic()) {
-                    Text("Add music")
+                HStack {
+                    Text("What song will you play?")
+                        .font(.system(size: 44))
+                    NavigationLink(destination: SongSearchPage(songList: allSongs)) {
+                        Text("Search songs")
+                    }
+                        .modifier(MenuButtonStyle())
+                    NavigationLink(destination: AddMusic()) {
+                        Text("Add music")
+                    }
+                        .modifier(MenuButtonStyle())
                 }
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 5) {
