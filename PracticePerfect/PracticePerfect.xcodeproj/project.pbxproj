@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		145E432023CF80D500C8C98A /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145E431F23CF80D500C8C98A /* SearchBar.swift */; };
+		145E432223CF837700C8C98A /* SongSearchPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145E432123CF837700C8C98A /* SongSearchPage.swift */; };
 		149053EF236F8CEF00D36A10 /* Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149053EE236F8CEF00D36A10 /* Metadata.swift */; };
 		149053F1236F8FA800D36A10 /* SongThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149053F0236F8FA800D36A10 /* SongThumbnail.swift */; };
 		1494C8FA2371D37800F0C68E /* SongInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1494C8F92371D37800F0C68E /* SongInfoView.swift */; };
@@ -47,6 +49,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		145E431F23CF80D500C8C98A /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
+		145E432123CF837700C8C98A /* SongSearchPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongSearchPage.swift; sourceTree = "<group>"; };
 		149053EE236F8CEF00D36A10 /* Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Metadata.swift; path = PracticePerfect/Metadata.swift; sourceTree = SOURCE_ROOT; };
 		149053F0236F8FA800D36A10 /* SongThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongThumbnail.swift; sourceTree = "<group>"; };
 		1494C8F92371D37800F0C68E /* SongInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongInfoView.swift; sourceTree = "<group>"; };
@@ -161,10 +165,12 @@
 				BD5D3EF82381F30100CA92F0 /* ScalePicker.swift */,
 				1495231F237B08AE0077BA97 /* ResultsPage.swift */,
 				722A8946236F643C0030B009 /* SceneDelegate.swift */,
+				145E431F23CF80D500C8C98A /* SearchBar.swift */,
 				722A895A236F65DA0030B009 /* SelectMusic.swift */,
 				BD51384D236F7401004F2220 /* SettingsView.swift */,
 				14E995B123CE7B9300F4C08D /* SignUpPage.swift */,
 				1494C8F92371D37800F0C68E /* SongInfoView.swift */,
+				145E432123CF837700C8C98A /* SongSearchPage.swift */,
 				149053F0236F8FA800D36A10 /* SongThumbnail.swift */,
 				BD9597F223733001002A9651 /* Tuner.swift */,
 				BD51384F236F7416004F2220 /* TunerView.swift */,
@@ -338,6 +344,7 @@
 				14E995B023CE702D00F4C08D /* LoginPage.swift in Sources */,
 				1494C8FA2371D37800F0C68E /* SongInfoView.swift in Sources */,
 				BD513850236F7416004F2220 /* TunerView.swift in Sources */,
+				145E432023CF80D500C8C98A /* SearchBar.swift in Sources */,
 				BD9597F323733001002A9651 /* Tuner.swift in Sources */,
 				72F3276D237FF72600EF9F57 /* ParseSongsMusicXML.swift in Sources */,
 				72F3276F237FF74100EF9F57 /* ParseMeasuresMusicXML.swift in Sources */,
@@ -356,6 +363,7 @@
 				BD5D3EF72381BADE00CA92F0 /* Modifiers.swift in Sources */,
 				722A895F236F662C0030B009 /* PlayMode.swift in Sources */,
 				729620432373F6ED00706B82 /* PracticePerfect.xcdatamodeld in Sources */,
+				145E432223CF837700C8C98A /* SongSearchPage.swift in Sources */,
 				BD5D3EF92381F30100CA92F0 /* ScalePicker.swift in Sources */,
 				BD0FFB20237E02AF009E9CC6 /* CountdownView.swift in Sources */,
 				BD9597F123732FEB002A9651 /* Pitch.swift in Sources */,
