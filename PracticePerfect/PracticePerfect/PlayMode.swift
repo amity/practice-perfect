@@ -61,13 +61,13 @@ func postSongs() -> () {
 func createTestData () -> [NoteMetadata] {
     // Test data - to be removed when parsing XML is done
     let note1 = NoteMetadata()
-    note1.duration = 1
+    note1.duration = 2
     note1.step = "C"
     let note2 = NoteMetadata()
-    note2.duration = 1
+    note2.duration = 2
     note2.step = "D"
     let note3 = NoteMetadata()
-    note3.duration = 1
+    note3.duration = 2
     note3.step = "E"
     let note4 = NoteMetadata()
     note4.duration = 1
@@ -219,13 +219,21 @@ struct PlayMode: View, TunerDelegate {
                         
                         // draws notes
                         HStack {
-                            ForEach(0 ..< 4) { index in
+                            ForEach(0 ..< self.timeSig.0) { index in
                                 Circle()
                                     .frame(width: 30.0, height: 30.0)
                                     .padding(.trailing, 10)
                                     .offset(x: CGFloat(-100), y: CGFloat(-75 + self.calcNoteOffset(note: self.testNotes[self.currBar * self.timeSig.0 + index])))
                             }
                         }
+//                        HStack {
+//                            ForEach(self.frameBeg ..< self.frameEnd) { index in
+//                                Circle()
+//                                    .frame(width: 30.0, height: 30.0)
+//                                    .padding(.trailing, 10)
+//                                    .offset(x: CGFloat(-100), y: CGFloat(-75 + self.calcNoteOffset(note: self.testNotes[self.currBar * self.timeSig.0 + index])))
+//                            }
+//                        }
                     }
                     
                     Spacer()
@@ -294,7 +302,6 @@ struct PlayMode: View, TunerDelegate {
         }
         // If new beat, calculate score and empty list for next beat
         else {
-            
             // Frequency calculation algorithm from: https://stackoverflow.com/questions/38416347/getting-the-most-frequent-value-of-an-array
             
             // Create dictionary to map value to count and get most frequent note
@@ -334,7 +341,6 @@ struct PlayMode: View, TunerDelegate {
             if (self.currBar + 1) * timeSig.0 > testNotes.count {
                 self.currBar = 0
             }
-            
         }
         
         // Update tempo count
@@ -387,6 +393,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(songMetadata: SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4)).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(songMetadata: SongMetadata(name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4)).previewLayout(.fixed(width: 896, height: 414))
     }
 }
