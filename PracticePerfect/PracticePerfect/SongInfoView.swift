@@ -83,6 +83,6 @@ struct SongInfoView: View {
 struct SongInfoView_Previews: PreviewProvider {
     static var previews: some View {
         // Example with sample SongMetadata
-        SongInfoView(songMetadata: SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: "")).previewLayout(.fixed(width: 896, height: 414))
+        SongInfoView(songMetadata: SongMetadata(name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: "")).previewLayout(.fixed(width: 896, height: 414))
     }
 }

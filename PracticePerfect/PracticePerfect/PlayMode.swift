@@ -58,35 +58,20 @@ func postSongs() -> () {
     _ = semaphore.wait(wallTimeout: .distantFuture)
 }
 
-func createTestData () -> [NoteMetadata] {
-    // Test data - to be removed when parsing XML is done
-    let note1 = NoteMetadata()
-    note1.duration = 1
-    note1.step = "C"
-    let note2 = NoteMetadata()
-    note2.duration = 1
-    note2.step = "D"
-    let note3 = NoteMetadata()
-    note3.duration = 1
-    note3.step = "E"
-    let note4 = NoteMetadata()
-    note4.duration = 1
-    note4.step = "F"
-    let note5 = NoteMetadata()
-    note5.duration = 1
-    note5.step = "G"
-    let note6 = NoteMetadata()
-    note6.duration = 1
-    note6.step = "A"
-    let note7 = NoteMetadata()
-    note7.duration = 1
-    note7.step = "B"
-    let note8 = NoteMetadata()
-    note8.duration = 1
-    note8.step = "C"
-    
-    return [note1, note2, note3, note4, note5, note6, note7, note8]
-}
+// Test data - to be removed when parsing XML is done
+let note1 = NoteMetadata(step: "C", duration: 2)
+let note2 = NoteMetadata(step: "D", duration: 2)
+let note3 = NoteMetadata(step: "E", duration: 3)
+let note4 = NoteMetadata(step: "F", duration: 1)
+let note5 = NoteMetadata(step: "G", duration: 1)
+let note6 = NoteMetadata(step: "A", duration: 1)
+let note7 = NoteMetadata(step: "B", duration: 1)
+let note8 = NoteMetadata(step: "C", duration: 1)
+
+var testData =  [note1, note2, note3, note4, note5, note6, note7, note8]
+var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2]),
+                    MeasureMetadata(measureNumber: 2, notes: [note3, note4]),
+                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8])]
 
 // Star multiplier values for 1 through 5 stars (at indices 0 through 4)
 let starMultValues: Array<Float> = [1, 1.5, 2.5, 4.5, 8.5]
@@ -124,7 +109,7 @@ struct PlayMode: View, TunerDelegate {
     @State var isOn = true
     @State var totalElapsedBeats: Float = 0
     @State var endOfCurrentNoteBeats: Float = 1 // TO-DO: have this not be hardcoded
-    @State var testNotes: [NoteMetadata] = createTestData()
+    @State var testNotes: [NoteMetadata] = testData
     @State var testNotesIndex = 0
     
     // Countdown variables
@@ -140,6 +125,7 @@ struct PlayMode: View, TunerDelegate {
     // Note display variables
     @State var barDist = screenWidth/screenDivisions/2
     @State var currBar = 0
+    @State var measures: [MeasureMetadata] = testMeasures
     
     // File retrieval methods adapted from:
     // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
@@ -186,7 +172,7 @@ struct PlayMode: View, TunerDelegate {
                 HStack {
                     VStack {
                         Text(displayNote(note: note))
-                            .modifier(NoteStyle())
+                            .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175)
                         if cents > 0 {
                             Text("\(roundToFive(num: cents)) cents sharp")
@@ -196,8 +182,6 @@ struct PlayMode: View, TunerDelegate {
                             Text("In tune!")
                         }
                         Text(String(Int(totalElapsedBeats) % timeSig.0 + 1))
-                            .font(Font.system(size:64).weight(.bold))
-                        Text("Target: " + String(testNotes[testNotesIndex].step))
                             .font(Font.system(size:64).weight(.bold))
                     }
                         .font(Font.system(size: 16).weight(.bold))
@@ -214,14 +198,10 @@ struct PlayMode: View, TunerDelegate {
                                     .padding(.top, 0)
                             }
                         }
-                        
-                        // draws notes
+
                         HStack {
-                            ForEach(0 ..< 4) { index in
-                                Circle()
-                                    .frame(width: 30.0, height: 30.0)
-                                    .padding(.trailing, 10)
-                                    .offset(x: CGFloat(-100), y: CGFloat(-75 + self.calcNoteOffset(note: self.testNotes[self.currBar * self.timeSig.0 + index])))
+                            ForEach(self.measures[self.currBar].notes) { note in
+                                self.drawNote(note: note)
                             }
                         }
                     }
@@ -333,17 +313,17 @@ struct PlayMode: View, TunerDelegate {
             }
             
             endOfCurrentNoteBeats = totalElapsedBeats + testNotes[testNotesIndex].duration
-            
-            // Keep track of current bar
-            if Int(totalElapsedBeats) % timeSig.0 == 0 {
-                self.currBar += 1
-            }
-            
-            // temp safety
-            if (self.currBar + 1) * timeSig.0 > testNotes.count {
-                self.currBar = 0
-            }
-            
+        }
+        
+        // Keep track of current bar
+        if Int(newElapsedBeats) > Int(self.totalElapsedBeats) && Int(newElapsedBeats) % timeSig.0 == 0 &&
+           Int(newElapsedBeats) != 0 {
+            self.currBar += 1
+        }
+        
+        // temp safety
+        if self.currBar >= testMeasures.count {
+            self.currBar = 0
         }
         
         // Update tempo count
@@ -366,6 +346,38 @@ struct PlayMode: View, TunerDelegate {
         Int(5 * round(num/5))
     }
     
+    func drawNote(note: NoteMetadata) -> some View {
+        let offset = self.calcNoteOffset(note: note)
+        
+        return Group {
+            if note.duration == 1 {
+                Circle()
+                    .modifier(NoteStyle(offset: offset))
+            }
+            else if note.duration == 2 {
+                Circle()
+                    .stroke(Color.black, lineWidth: 4)
+                    .modifier(NoteStyle(offset: offset))
+            }
+            else if note.duration == 3 {
+                Circle()
+                    .stroke(Color.black, lineWidth: 4)
+                    .modifier(NoteStyle(offset: offset))
+                Circle()
+                    .modifier(NoteDotStyle(offset: offset))
+            }
+            else if note.duration == 4 {
+                Circle()
+                    .stroke(Color.black, lineWidth: 4)
+                    .modifier(NoteStyle(offset: offset))
+            }
+            else {
+                Circle()
+                    .modifier(NoteStyle(offset: offset))
+            }
+        }
+    }
+    
     func calcNoteOffset(note: NoteMetadata) -> Int {
         var offset = self.barDist + 10
         switch note.step {
@@ -384,7 +396,7 @@ struct PlayMode: View, TunerDelegate {
             case "G":
                 offset *= 3
             default:
-                offset *= 3.5
+                offset *= 1.5
         }
         
         return Int(offset)
@@ -396,6 +408,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(songMetadata: SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4)).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(songMetadata: SongMetadata(name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4)).previewLayout(.fixed(width: 896, height: 414))
     }
 }
