@@ -76,7 +76,9 @@ var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2]),
 // Star multiplier values for 1 through 5 stars (at indices 0 through 4)
 let starMultValues: Array<Float> = [1, 1.5, 2.5, 4.5, 8.5]
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
-let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
+//let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
+let streakMultValues: Array<Float> = [1, 2, 3, 4] // Simpler values for testing
+let streakIncreases: Array<Float> = [10, 25, 50]
 
 struct PlayMode: View, TunerDelegate {
     // Song metadata passed from song selection - used to retrieve music data from backed through API
@@ -84,18 +86,12 @@ struct PlayMode: View, TunerDelegate {
     var tempo: Int
     var timeSig: (Int, Int)
     
-    // SCORING PARAMETERS
+    // UNUSED SCORING PARAMETERS
     // Total score: running count, @State displayed to the user
     @State var totalScore: Float = 0
     // Star multiplier: more difficult songs get you more points overall
     lazy var starMult: Float = starMultValues[songMetadata.level]
-    // Streak count: number of correct notes in a row, @State displayed to user; used for calculating accuracy multiplier 
-    @State var streakCount: Int = 0
-    // Streak multiplier: as you get more and more notes correct in a row, you get a higher multipler (index increases as user gets longer streaks); streak count, index, and multiplier are reset when the user misses a note (but not as long as they get good or perfect)
-    var streakIndex: Int = 0
-    lazy var streakMultiplier: Float = streakMultValues[streakIndex]
-    // TO DO: Add parameter for speed?
-    
+
     // TO DO: Will be created from the score once play along mode is completed
     @State var scoreMetadata: ScoreMetadata = ScoreMetadata(
         newScore: 850000,
@@ -120,9 +116,11 @@ struct PlayMode: View, TunerDelegate {
     @State var showCountdown = true
     let beats = 4
     
-    // Temporary scoring variables
+    //  Scoring variables
     @State var currBeatNotes: [Note] = [] // For all notes in current beat
-    @State var runningScore: Int = 0
+    @State var runningScore: Float = 0
+    @State var streakCount: Int = 0
+    @State var streakValuesIndex: Int = 0
     
     // Note display variables
     @State var barDist = screenWidth/screenDivisions/2
@@ -262,6 +260,27 @@ struct PlayMode: View, TunerDelegate {
         }
         .onDisappear(perform: self.tuner.stop)
     }
+    
+    // If correct note, then 10 points; if one half step away, then 5 points; if one whole step away, then 3 points; increase streak count for target, neutral for half step off, reset for whole note or worse
+    func updateScore(value: Note) {
+        switch testNotes[testNotesIndex].step {
+        case displayNote(note: value):
+            streakCount += 1
+            if streakIncreases.contains(Float(streakCount)) {
+                streakValuesIndex += 1
+            }
+            runningScore += (10 * streakMultValues[streakValuesIndex])
+        case displayNote(note: value.halfStepUp), displayNote(note: value.halfStepDown):
+            runningScore += (5 * streakMultValues[streakValuesIndex])
+        case displayNote(note: value.wholeStepUp), displayNote(note: value.wholeStepDown):
+            streakCount = 0
+            streakValuesIndex = 0
+            runningScore += 3
+        default:
+            streakCount = 0
+            streakValuesIndex = 0
+        }
+    }
 
     // Updates current note information from microphone
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
@@ -281,16 +300,7 @@ struct PlayMode: View, TunerDelegate {
             currBeatNotes.forEach { counts[$0] = (counts[$0] ?? 0) + 1 }
             let (value, _) = counts.max(by: {$0.1 < $1.1}) ?? (Note(Note.Name(rawValue: 0)!,Note.Accidental(rawValue: 0)!), 0)
             
-            // If correct note, then 10 points; if one half step away, then 5 points
-            if displayNote(note: value) == testNotes[testNotesIndex].step {
-                runningScore += 10
-            }
-            else if displayNote(note: value.halfStepUp) == testNotes[testNotesIndex].step {
-                runningScore += 5
-            }
-            else if displayNote(note: value.halfStepDown) == testNotes[testNotesIndex].step {
-                runningScore += 5
-            }
+            updateScore(value: value)
             
             // Empty current beat note values array for next beat 
             currBeatNotes = []

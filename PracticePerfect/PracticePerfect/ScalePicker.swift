@@ -56,7 +56,7 @@ struct ScalePicker: View {
                     .clipped()
                 }
                 Spacer()
-                NavigationLink(destination: PlayMode(songMetadata: SongMetadata(name: scales[self.selectedKey].name + " " + modes[self.selectedMode], artist: "", resourceUrl: scales[self.selectedKey].urls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: ""), tempo: self.selectedTempo, timeSig: (4,4))) {
+                NavigationLink(destination: PlayMode(songMetadata: SongMetadata(name: scales[self.selectedKey].name + " " + modes[self.selectedMode], artist: "", resourceUrl: scales[self.selectedKey].urls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4))) {
                     Text("Play!")
                     .font(.system(size: 32))
                 }

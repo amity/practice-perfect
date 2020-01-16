@@ -16,11 +16,9 @@ struct SongThumbnail: View {
     
     var body: some View {
         ZStack{
-            Color.gray
-                .padding(10)
             VStack {
                 Text(songMetadata.name)
-                    .font(.system(size: 34))
+                    .font(Font.system(size: 34).weight(.bold))
                     .padding(.top, 20)
                     .padding(.horizontal, 20)
                 Spacer()
@@ -41,6 +39,9 @@ struct SongThumbnail: View {
                 .font(.system(size: 30))
                 .padding(10)
         }
+        .foregroundColor(.white)
+        .background(LinearGradient(gradient: Gradient(colors: [darkGreen, lightGreen]), startPoint: .leading, endPoint: .trailing).padding(10))
+        .cornerRadius(40)
     }
 }
 
