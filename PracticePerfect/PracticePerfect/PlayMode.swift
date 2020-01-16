@@ -39,12 +39,13 @@ var musicXMLToParseFromFile: String = loadXML2String(fileName: "apres", fileExte
 // TO DO: Update parameters to include user id, song id, and score
 func postSongs() -> () {
     // TO DO: Params from results passed into function - hard-coded right now
-    let params = ["user": 0, "song": 0, "score": 1000] as Dictionary<String, Int>
+    let params: [String: String] = ["song": "12", "user": "3", "score": "240"]
     let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores")!
     let scoreSession = URLSession.shared
     var scoreRequest = URLRequest(url: scoreUrl)
     scoreRequest.httpMethod = "POST"
-    scoreRequest.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+    scoreRequest.httpBody = try? JSONSerialization.data(withJSONObject: params)
+    scoreRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
     
     let semaphore = DispatchSemaphore(value: 0)
     let task = scoreSession.dataTask(with: scoreRequest) { data, response, error in
@@ -261,9 +262,14 @@ struct PlayMode: View, TunerDelegate {
                     }
                     .simultaneousGesture(TapGesture().onEnded {
                         // TO DO: Right now, sends new high score to server when pause button is pressed. This will need to be updated
-                            self.tuner.stop()
-                            postSongs()
-                        })
+                        self.tuner.stop()
+                        postSongs()
+
+//                        // If high score of 0, i.e. no existing score
+//                        if songMetadata.highScore == 0 {
+//                            postSongs()
+//                        }
+                    })
                         .modifier(MenuButtonStyle())
                 }
                 .padding(.bottom, 20)

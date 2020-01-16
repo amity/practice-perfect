@@ -51,7 +51,7 @@ func parseScoresJson(anyObj:Any?) -> Dictionary<Int, Int> {
 
     if  anyObj is Array<AnyObject> {
         for json in anyObj as! Array<AnyObject>{
-            let id = (json["id"] as AnyObject? as? Int) ?? 0
+            let id = (json["song"] as AnyObject? as? Int) ?? 0
             let score = (json["score"] as AnyObject? as? Int) ?? 0
             scoresDict[id] = score
         }
