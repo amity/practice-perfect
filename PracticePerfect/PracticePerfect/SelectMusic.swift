@@ -19,7 +19,7 @@
 import SwiftUI
 
 // Take song data json and dictionary of song id to score and return list of SongMetadata for each song
-func parseSongJson(anyObj:Any?, scoresDict: Dictionary<Int, Int>) -> Array<SongMetadata> {
+func parseSongJson(anyObj:Any?, scoresDict: Dictionary<Int, (Int, Int)>) -> Array<SongMetadata> {
     // Will eventually be retrieved fully from backend - in current state you can see the first three songs here followed by the two from the server (11/14/19). Eventually, the list will be initialized as empty (as seen in the following line)
     var list:Array<SongMetadata> = []
 
@@ -35,10 +35,10 @@ func parseSongJson(anyObj:Any?, scoresDict: Dictionary<Int, Int>) -> Array<SongM
             let deleted = (json["deleted"]  as AnyObject? as? Bool) ?? false
             
             // Calculate rank based on high score and top possible score
-            let rank = calculateRank(newScore: scoresDict[id] ?? -1, topScore: top_score)
+            let rank = calculateRank(newScore: scoresDict[id]?.0 ?? 0, topScore: top_score)
             
             // Get high score for give song by indexing into scores list with id
-            list.append(SongMetadata(id: id, name: name, artist: artist, resourceUrl: resource_url, year: year, level: level, topScore: top_score, highScore: scoresDict[id] ?? 0, deleted: deleted, rank: rank))
+            list.append(SongMetadata(id: id, name: name, artist: artist, resourceUrl: resource_url, year: year, level: level, topScore: top_score, highScore: scoresDict[id]?.0 ?? 0, highScoreId: scoresDict[id]?.1 ?? -1, deleted: deleted, rank: rank))
         }
     }
 
@@ -46,14 +46,15 @@ func parseSongJson(anyObj:Any?, scoresDict: Dictionary<Int, Int>) -> Array<SongM
 }
 
 // Parses score results retrieved from server. Returns dictionary of song id to score
-func parseScoresJson(anyObj:Any?) -> Dictionary<Int, Int> {
-    var scoresDict: Dictionary<Int, Int> = [:]
+func parseScoresJson(anyObj:Any?) -> Dictionary<Int, (Int, Int)> {
+    var scoresDict: Dictionary<Int, (Int, Int)> = [:]
 
     if  anyObj is Array<AnyObject> {
         for json in anyObj as! Array<AnyObject>{
-            let id = (json["song"] as AnyObject? as? Int) ?? 0
+            let scoreID = (json["id"] as AnyObject? as? Int) ?? 0
+            let songID = (json["song"] as AnyObject? as? Int) ?? 0
             let score = (json["score"] as AnyObject? as? Int) ?? 0
-            scoresDict[id] = score
+            scoresDict[songID] = (score, scoreID)
         }
     }
 
@@ -69,7 +70,7 @@ func retrieveSongs() -> Array<SongMetadata> {
     var scoreRequest = URLRequest(url: scoreUrl)
     scoreRequest.httpMethod = "GET"
 
-    var allScores: Dictionary<Int, Int> = [:]
+    var allScores: Dictionary<Int, (Int, Int)> = [:]
     let scoreSemaphore = DispatchSemaphore(value: 0)
     let scoreTask = scoreSession.dataTask(with: scoreRequest) { data, response, error in
         // Unwrap data
@@ -164,6 +165,6 @@ struct SelectMusic: View {
 
 struct SelectMusic_Previews: PreviewProvider {
     static var previews: some View {
-        SelectMusic(allSongs: [SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: "")]).previewLayout(.fixed(width: 896, height: 414))
+        SelectMusic(allSongs: [SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: "")]).previewLayout(.fixed(width: 896, height: 414))
     }
 }

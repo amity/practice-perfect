@@ -20,6 +20,7 @@ struct SongMetadata: Hashable, Codable, Identifiable {
     var level: Int
     var topScore: Int // Top possible score
     var highScore: Int // Highest achieved score by any user to date
+    var highScoreId: Int // Score id for existing high score
     var deleted: Bool 
     var rank: String
 }

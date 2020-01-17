@@ -124,6 +124,7 @@ struct ResultsPage_Previews: PreviewProvider {
                 level: -1,
                 topScore: -1,
                 highScore: -1,
+                highScoreId: -1, 
                 deleted: false,
                 rank: ""
             )
