@@ -48,6 +48,6 @@ struct SongThumbnail: View {
 struct SongThumbnail_Previews: PreviewProvider {
     static var previews: some View {
         // Example with sample SongMetadata
-        SongThumbnail(songMetadata: SongMetadata(name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: "")).previewLayout(.fixed(width: 300, height: 300))
+        SongThumbnail(songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: "")).previewLayout(.fixed(width: 300, height: 300))
     }
 }

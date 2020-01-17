@@ -13,6 +13,7 @@ import CoreLocation
 // Need to add more fields - scoring history for info page
 struct SongMetadata: Identifiable, Hashable, Codable {
     var id = UUID()
+    var songId: Int
     var name: String
     var artist: String
     var resourceUrl: String
@@ -20,6 +21,7 @@ struct SongMetadata: Identifiable, Hashable, Codable {
     var level: Int
     var topScore: Int // Top possible score
     var highScore: Int // Highest achieved score by any user to date
+    var highScoreId: Int // Score id for existing high score
     var deleted: Bool 
     var rank: String
 }

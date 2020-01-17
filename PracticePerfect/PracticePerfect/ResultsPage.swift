@@ -116,6 +116,7 @@ struct ResultsPage_Previews: PreviewProvider {
                 missPercent: 250
             ),
             songMetadata: SongMetadata(
+                songId: -1, 
                 name: "",
                 artist: "",
                 resourceUrl: "",
@@ -123,6 +124,7 @@ struct ResultsPage_Previews: PreviewProvider {
                 level: -1,
                 topScore: -1,
                 highScore: -1,
+                highScoreId: -1, 
                 deleted: false,
                 rank: ""
             )

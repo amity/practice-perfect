@@ -35,16 +35,41 @@ func loadXML2String(fileName : String, fileExtension: String) -> String {
 //***TEMPORARILY HOT CODED TO LOCAL FILE APRES***
 var musicXMLToParseFromFile: String = loadXML2String(fileName: "apres", fileExtension: "musicxml")
 
-// Posts result score to update backend
-// TO DO: Update parameters to include user id, song id, and score
-func postSongs() -> () {
-    // TO DO: Params from results passed into function - hard-coded right now
-    let params = ["user": 0, "song": 0, "score": 1000] as Dictionary<String, Int>
+// Posts new score to API
+// Posting guidance: https://stackoverflow.com/a/58804263
+func postNewScore(songId: Int, score: Int) -> () {
+    // TO DO: Add user ID as non-hard-coded value 
+    let params: [String: String] = ["song": String(songId), "user": "1", "score": String(score)]
     let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores")!
     let scoreSession = URLSession.shared
     var scoreRequest = URLRequest(url: scoreUrl)
     scoreRequest.httpMethod = "POST"
-    scoreRequest.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+    scoreRequest.httpBody = try? JSONSerialization.data(withJSONObject: params)
+    scoreRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    let semaphore = DispatchSemaphore(value: 0)
+    let task = scoreSession.dataTask(with: scoreRequest) { data, response, error in
+        // TO DO: Error handling with response, currently just returns 200 which is what you would expect
+        print(response!)
+        semaphore.signal()
+    }
+    task.resume()
+
+    // Wait for the songs to be retrieved before displaying all of them
+    _ = semaphore.wait(wallTimeout: .distantFuture)
+}
+
+// Posts score update to API
+// Posting guidance: https://stackoverflow.com/a/58804263
+func postScoreUpdate(scoreId: Int, score: Int) -> () {
+    // TO DO: Params from results passed into function - hard-coded right now
+    let params: [String: String] = ["score": String(score)]
+    let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores/" + String(scoreId))!
+    let scoreSession = URLSession.shared
+    var scoreRequest = URLRequest(url: scoreUrl)
+    scoreRequest.httpMethod = "POST"
+    scoreRequest.httpBody = try? JSONSerialization.data(withJSONObject: params)
+    scoreRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
     
     let semaphore = DispatchSemaphore(value: 0)
     let task = scoreSession.dataTask(with: scoreRequest) { data, response, error in
@@ -241,9 +266,14 @@ struct PlayMode: View, TunerDelegate {
                     }
                     .simultaneousGesture(TapGesture().onEnded {
                         // TO DO: Right now, sends new high score to server when pause button is pressed. This will need to be updated
-                            self.tuner.stop()
-                            postSongs()
-                        })
+                        self.tuner.stop()
+                        // If highScoreId of -1, i.e. no existing score, then create; otherwise update
+                        if self.songMetadata.highScoreId == -1 {
+                            postNewScore(songId: self.songMetadata.songId, score: Int(self.runningScore))
+                        } else {
+                            postScoreUpdate(scoreId: self.songMetadata.highScoreId, score: Int(self.runningScore))
+                        }
+                    })
                         .modifier(MenuButtonStyle())
                 }
                 .padding(.bottom, 20)
@@ -408,6 +438,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(songMetadata: SongMetadata(name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4)).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4)).previewLayout(.fixed(width: 896, height: 414))
     }
 }
