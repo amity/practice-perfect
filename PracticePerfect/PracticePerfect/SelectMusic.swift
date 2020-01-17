@@ -38,7 +38,7 @@ func parseSongJson(anyObj:Any?, scoresDict: Dictionary<Int, (Int, Int)>) -> Arra
             let rank = calculateRank(newScore: scoresDict[id]?.0 ?? 0, topScore: top_score)
             
             // Get high score for give song by indexing into scores list with id
-            list.append(SongMetadata(id: id, name: name, artist: artist, resourceUrl: resource_url, year: year, level: level, topScore: top_score, highScore: scoresDict[id]?.0 ?? 0, highScoreId: scoresDict[id]?.1 ?? -1, deleted: deleted, rank: rank))
+            list.append(SongMetadata(songId: id, name: name, artist: artist, resourceUrl: resource_url, year: year, level: level, topScore: top_score, highScore: scoresDict[id]?.0 ?? 0, highScoreId: scoresDict[id]?.1 ?? -1, deleted: deleted, rank: rank))
         }
     }
 
@@ -165,6 +165,6 @@ struct SelectMusic: View {
 
 struct SelectMusic_Previews: PreviewProvider {
     static var previews: some View {
-        SelectMusic(allSongs: [SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: "")]).previewLayout(.fixed(width: 896, height: 414))
+        SelectMusic(allSongs: [SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: "")]).previewLayout(.fixed(width: 896, height: 414))
     }
 }
