@@ -35,16 +35,17 @@ func loadXML2String(fileName : String, fileExtension: String) -> String {
 //***TEMPORARILY HOT CODED TO LOCAL FILE APRES***
 var musicXMLToParseFromFile: String = loadXML2String(fileName: "apres", fileExtension: "musicxml")
 
-// Posts result score to update backend
-// TO DO: Update parameters to include user id, song id, and score
-func postSongs() -> () {
-    // TO DO: Params from results passed into function - hard-coded right now
-    let params = ["user": 0, "song": 0, "score": 1000] as Dictionary<String, Int>
+// Posts new score to API
+// Posting guidance: https://stackoverflow.com/a/58804263
+func postNewScore(songId: Int, score: Int) -> () {
+    // TO DO: Add user ID as non-hard-coded value 
+    let params: [String: String] = ["song": String(songId), "user": "1", "score": String(score)]
     let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores")!
     let scoreSession = URLSession.shared
     var scoreRequest = URLRequest(url: scoreUrl)
     scoreRequest.httpMethod = "POST"
-    scoreRequest.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+    scoreRequest.httpBody = try? JSONSerialization.data(withJSONObject: params)
+    scoreRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
     
     let semaphore = DispatchSemaphore(value: 0)
     let task = scoreSession.dataTask(with: scoreRequest) { data, response, error in
@@ -58,40 +59,51 @@ func postSongs() -> () {
     _ = semaphore.wait(wallTimeout: .distantFuture)
 }
 
-func createTestData () -> [NoteMetadata] {
-    // Test data - to be removed when parsing XML is done
-    let note1 = NoteMetadata()
-    note1.duration = 1
-    note1.step = "C"
-    let note2 = NoteMetadata()
-    note2.duration = 1
-    note2.step = "D"
-    let note3 = NoteMetadata()
-    note3.duration = 1
-    note3.step = "E"
-    let note4 = NoteMetadata()
-    note4.duration = 1
-    note4.step = "F"
-    let note5 = NoteMetadata()
-    note5.duration = 1
-    note5.step = "G"
-    let note6 = NoteMetadata()
-    note6.duration = 1
-    note6.step = "A"
-    let note7 = NoteMetadata()
-    note7.duration = 1
-    note7.step = "B"
-    let note8 = NoteMetadata()
-    note8.duration = 1
-    note8.step = "C"
+// Posts score update to API
+// Posting guidance: https://stackoverflow.com/a/58804263
+func postScoreUpdate(scoreId: Int, score: Int) -> () {
+    // TO DO: Params from results passed into function - hard-coded right now
+    let params: [String: String] = ["score": String(score)]
+    let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores/" + String(scoreId))!
+    let scoreSession = URLSession.shared
+    var scoreRequest = URLRequest(url: scoreUrl)
+    scoreRequest.httpMethod = "POST"
+    scoreRequest.httpBody = try? JSONSerialization.data(withJSONObject: params)
+    scoreRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
     
-    return [note1, note2, note3, note4, note5, note6, note7, note8]
+    let semaphore = DispatchSemaphore(value: 0)
+    let task = scoreSession.dataTask(with: scoreRequest) { data, response, error in
+        // TO DO: Error handling with response, currently just returns 200 which is what you would expect
+        print(response!)
+        semaphore.signal()
+    }
+    task.resume()
+
+    // Wait for the songs to be retrieved before displaying all of them
+    _ = semaphore.wait(wallTimeout: .distantFuture)
 }
+
+// Test data - to be removed when parsing XML is done
+let note1 = NoteMetadata(step: "C", duration: 2)
+let note2 = NoteMetadata(step: "D", duration: 2)
+let note3 = NoteMetadata(step: "E", duration: 3)
+let note4 = NoteMetadata(step: "F", duration: 1)
+let note5 = NoteMetadata(step: "G", duration: 1)
+let note6 = NoteMetadata(step: "A", duration: 1)
+let note7 = NoteMetadata(step: "B", duration: 1)
+let note8 = NoteMetadata(step: "C", duration: 1)
+
+var testData =  [note1, note2, note3, note4, note5, note6, note7, note8]
+var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2]),
+                    MeasureMetadata(measureNumber: 2, notes: [note3, note4]),
+                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8])]
 
 // Star multiplier values for 1 through 5 stars (at indices 0 through 4)
 let starMultValues: Array<Float> = [1, 1.5, 2.5, 4.5, 8.5]
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
-let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
+//let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
+let streakMultValues: Array<Float> = [1, 2, 3, 4] // Simpler values for testing
+let streakIncreases: Array<Float> = [10, 25, 50]
 
 struct PlayMode: View, TunerDelegate {
     // Song metadata passed from song selection - used to retrieve music data from backed through API
@@ -99,18 +111,12 @@ struct PlayMode: View, TunerDelegate {
     var tempo: Int
     var timeSig: (Int, Int)
     
-    // SCORING PARAMETERS
+    // UNUSED SCORING PARAMETERS
     // Total score: running count, @State displayed to the user
     @State var totalScore: Float = 0
     // Star multiplier: more difficult songs get you more points overall
     lazy var starMult: Float = starMultValues[songMetadata.level]
-    // Streak count: number of correct notes in a row, @State displayed to user; used for calculating accuracy multiplier 
-    @State var streakCount: Int = 0
-    // Streak multiplier: as you get more and more notes correct in a row, you get a higher multipler (index increases as user gets longer streaks); streak count, index, and multiplier are reset when the user misses a note (but not as long as they get good or perfect)
-    var streakIndex: Int = 0
-    lazy var streakMultiplier: Float = streakMultValues[streakIndex]
-    // TO DO: Add parameter for speed?
-    
+
     // TO DO: Will be created from the score once play along mode is completed
     @State var scoreMetadata: ScoreMetadata = ScoreMetadata(
         newScore: 850000,
@@ -128,22 +134,23 @@ struct PlayMode: View, TunerDelegate {
     @State var isOn = true
     @State var totalElapsedBeats: Float = 0
     @State var endOfCurrentNoteBeats: Float = 1 // TO-DO: have this not be hardcoded
-    @State var testNotes: [NoteMetadata] = createTestData()
+    @State var testNotes: [NoteMetadata] = testData
     @State var testNotesIndex = 0
     
     // Countdown variables
     @State var showCountdown = true
     let beats = 4
     
-    // Temporary scoring variables
+    //  Scoring variables
     @State var currBeatNotes: [Note] = [] // For all notes in current beat
-    // TO DO: get this from XML rather than hard-coding C major
-    @State var correctNotes: [String] = ["C", "D", "E", "F", "G", "A", "B", "C"]
-    @State var runningScore: Int = 0
+    @State var runningScore: Float = 0
+    @State var streakCount: Int = 0
+    @State var streakValuesIndex: Int = 0
     
     // Note display variables
     @State var barDist = screenWidth/screenDivisions/2
     @State var currBar = 0
+    @State var measures: [MeasureMetadata] = testMeasures
     
     // File retrieval methods adapted from:
     // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
@@ -190,7 +197,7 @@ struct PlayMode: View, TunerDelegate {
                 HStack {
                     VStack {
                         Text(displayNote(note: note))
-                            .modifier(NoteStyle())
+                            .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175)
                         if cents > 0 {
                             Text("\(roundToFive(num: cents)) cents sharp")
@@ -200,10 +207,6 @@ struct PlayMode: View, TunerDelegate {
                             Text("In tune!")
                         }
                         Text(String(Int(totalElapsedBeats) % timeSig.0 + 1))
-                            .font(Font.system(size:64).weight(.bold))
-                        Text("Target: " + String(testNotes[testNotesIndex].step))
-                            .font(Font.system(size:64).weight(.bold))
-                        Text(correctNotes[tempoCount % correctNotes.count])
                             .font(Font.system(size:64).weight(.bold))
                     }
                         .font(Font.system(size: 16).weight(.bold))
@@ -220,14 +223,10 @@ struct PlayMode: View, TunerDelegate {
                                     .padding(.top, 0)
                             }
                         }
-                        
-                        // draws notes
+
                         HStack {
-                            ForEach(0 ..< 4) { index in
-                                Circle()
-                                    .frame(width: 30.0, height: 30.0)
-                                    .padding(.trailing, 10)
-                                    .offset(x: CGFloat(-100), y: CGFloat(-75 + self.calcNoteOffset(note: self.testNotes[self.currBar * self.timeSig.0 + index])))
+                            ForEach(self.measures[self.currBar].notes) { note in
+                                self.drawNote(note: note)
                             }
                         }
                     }
@@ -267,9 +266,14 @@ struct PlayMode: View, TunerDelegate {
                     }
                     .simultaneousGesture(TapGesture().onEnded {
                         // TO DO: Right now, sends new high score to server when pause button is pressed. This will need to be updated
-                            self.tuner.stop()
-                            postSongs()
-                        })
+                        self.tuner.stop()
+                        // If highScoreId of -1, i.e. no existing score, then create; otherwise update
+                        if self.songMetadata.highScoreId == -1 {
+                            postNewScore(songId: self.songMetadata.songId, score: Int(self.runningScore))
+                        } else {
+                            postScoreUpdate(scoreId: self.songMetadata.highScoreId, score: Int(self.runningScore))
+                        }
+                    })
                         .modifier(MenuButtonStyle())
                 }
                 .padding(.bottom, 20)
@@ -286,6 +290,27 @@ struct PlayMode: View, TunerDelegate {
         }
         .onDisappear(perform: self.tuner.stop)
     }
+    
+    // If correct note, then 10 points; if one half step away, then 5 points; if one whole step away, then 3 points; increase streak count for target, neutral for half step off, reset for whole note or worse
+    func updateScore(value: Note) {
+        switch testNotes[testNotesIndex].step {
+        case displayNote(note: value):
+            streakCount += 1
+            if streakIncreases.contains(Float(streakCount)) {
+                streakValuesIndex += 1
+            }
+            runningScore += (10 * streakMultValues[streakValuesIndex])
+        case displayNote(note: value.halfStepUp), displayNote(note: value.halfStepDown):
+            runningScore += (5 * streakMultValues[streakValuesIndex])
+        case displayNote(note: value.wholeStepUp), displayNote(note: value.wholeStepDown):
+            streakCount = 0
+            streakValuesIndex = 0
+            runningScore += 3
+        default:
+            streakCount = 0
+            streakValuesIndex = 0
+        }
+    }
 
     // Updates current note information from microphone
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
@@ -298,7 +323,6 @@ struct PlayMode: View, TunerDelegate {
         }
         // If new beat, calculate score and empty list for next beat
         else {
-            
             // Frequency calculation algorithm from: https://stackoverflow.com/questions/38416347/getting-the-most-frequent-value-of-an-array
             
             // Create dictionary to map value to count and get most frequent note
@@ -306,16 +330,7 @@ struct PlayMode: View, TunerDelegate {
             currBeatNotes.forEach { counts[$0] = (counts[$0] ?? 0) + 1 }
             let (value, _) = counts.max(by: {$0.1 < $1.1}) ?? (Note(Note.Name(rawValue: 0)!,Note.Accidental(rawValue: 0)!), 0)
             
-            // If correct note, then 10 points; if one half step away, then 5 points
-            if displayNote(note: value) == testNotes[testNotesIndex].step {
-                runningScore += 10
-            }
-            else if displayNote(note: value.halfStepUp) == testNotes[testNotesIndex].step {
-                runningScore += 5
-            }
-            else if displayNote(note: value.halfStepDown) == testNotes[testNotesIndex].step {
-                runningScore += 5
-            }
+            updateScore(value: value)
             
             // Empty current beat note values array for next beat 
             currBeatNotes = []
@@ -328,17 +343,17 @@ struct PlayMode: View, TunerDelegate {
             }
             
             endOfCurrentNoteBeats = totalElapsedBeats + testNotes[testNotesIndex].duration
-            
-            // Keep track of current bar
-            if Int(totalElapsedBeats) % timeSig.0 == 0 {
-                self.currBar += 1
-            }
-            
-            // temp safety
-            if (self.currBar + 1) * timeSig.0 > testNotes.count {
-                self.currBar = 0
-            }
-            
+        }
+        
+        // Keep track of current bar
+        if Int(newElapsedBeats) > Int(self.totalElapsedBeats) && Int(newElapsedBeats) % timeSig.0 == 0 &&
+           Int(newElapsedBeats) != 0 {
+            self.currBar += 1
+        }
+        
+        // temp safety
+        if self.currBar >= testMeasures.count {
+            self.currBar = 0
         }
         
         // Update tempo count
@@ -361,6 +376,38 @@ struct PlayMode: View, TunerDelegate {
         Int(5 * round(num/5))
     }
     
+    func drawNote(note: NoteMetadata) -> some View {
+        let offset = self.calcNoteOffset(note: note)
+        
+        return Group {
+            if note.duration == 1 {
+                Circle()
+                    .modifier(NoteStyle(offset: offset))
+            }
+            else if note.duration == 2 {
+                Circle()
+                    .stroke(Color.black, lineWidth: 4)
+                    .modifier(NoteStyle(offset: offset))
+            }
+            else if note.duration == 3 {
+                Circle()
+                    .stroke(Color.black, lineWidth: 4)
+                    .modifier(NoteStyle(offset: offset))
+                Circle()
+                    .modifier(NoteDotStyle(offset: offset))
+            }
+            else if note.duration == 4 {
+                Circle()
+                    .stroke(Color.black, lineWidth: 4)
+                    .modifier(NoteStyle(offset: offset))
+            }
+            else {
+                Circle()
+                    .modifier(NoteStyle(offset: offset))
+            }
+        }
+    }
+    
     func calcNoteOffset(note: NoteMetadata) -> Int {
         var offset = self.barDist + 10
         switch note.step {
@@ -379,7 +426,7 @@ struct PlayMode: View, TunerDelegate {
             case "G":
                 offset *= 3
             default:
-                offset *= 3.5
+                offset *= 1.5
         }
         
         return Int(offset)
@@ -391,6 +438,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(songMetadata: SongMetadata(id: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4)).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4)).previewLayout(.fixed(width: 896, height: 414))
     }
 }

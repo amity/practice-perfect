@@ -24,7 +24,7 @@ struct TunerView: View, TunerDelegate {
             VStack {
                 Spacer()
                 Text(displayNote(note: note))
-                    .modifier(NoteStyle())
+                    .modifier(NoteNameStyle())
                 HStack {
                     Text("Flat")
                         .modifier(AccidentalStyle())

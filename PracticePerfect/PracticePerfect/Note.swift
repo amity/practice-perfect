@@ -73,4 +73,26 @@ class Note: Equatable, Hashable {
             return Note.all.first!
         }
     }
+    
+    var wholeStepDown: Note {
+        let selfIndex = Note.all.firstIndex(of: Note(note, accidental))
+        if selfIndex == 0 {
+            return Note.all[Note.all.count - 2]
+        } else if selfIndex == 1 {
+            return Note.all[Note.all.count - 1]
+        } else {
+            return Note.all[selfIndex! - 2]
+        }
+    }
+    
+    var wholeStepUp: Note {
+        let selfIndex = Note.all.firstIndex(of: Note(note, accidental))
+        if selfIndex == Note.all.count - 1 {
+            return Note.all[1]
+        } else if selfIndex == Note.all.count - 2 {
+            return Note.all[0]
+        } else {
+            return Note.all[selfIndex! + 2]
+        }
+    }
 }
