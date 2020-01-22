@@ -98,11 +98,8 @@ var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2]),
                     MeasureMetadata(measureNumber: 2, notes: [note3, note4]),
                     MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8])]
 
-// Star multiplier values for 1 through 5 stars (at indices 0 through 4)
-let starMultValues: Array<Float> = [1, 1.5, 2.5, 4.5, 8.5]
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
-//let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
-let streakMultValues: Array<Float> = [1, 2, 3, 4] // Simpler values for testing
+let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
 let streakIncreases: Array<Float> = [10, 25, 50]
 
 struct PlayMode: View, TunerDelegate {
@@ -111,12 +108,6 @@ struct PlayMode: View, TunerDelegate {
     var tempo: Int
     var timeSig: (Int, Int)
     
-    // UNUSED SCORING PARAMETERS
-    // Total score: running count, @State displayed to the user
-    @State var totalScore: Float = 0
-    // Star multiplier: more difficult songs get you more points overall
-    lazy var starMult: Float = starMultValues[songMetadata.level]
-
     // TO DO: Will be created from the score once play along mode is completed
     @State var scoreMetadata: ScoreMetadata = ScoreMetadata(
         newScore: 850000,
@@ -132,8 +123,12 @@ struct PlayMode: View, TunerDelegate {
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
     @State var isOn = true
+    
+    // Tempo variables
     @State var totalElapsedBeats: Float = 0
-    @State var endOfCurrentNoteBeats: Float = 1 // TO-DO: have this not be hardcoded
+    @State var endOfCurrentNoteBeats: Float = testData[0].duration
+    
+    // Test music data - will be replaced with parsed XML
     @State var testNotes: [NoteMetadata] = testData
     @State var testNotesIndex = 0
     
@@ -146,6 +141,7 @@ struct PlayMode: View, TunerDelegate {
     @State var runningScore: Float = 0
     @State var streakCount: Int = 0
     @State var streakValuesIndex: Int = 0
+    @State var streakIncreaseIndex: Int = 0
     
     // Note display variables
     @State var barDist = screenWidth/screenDivisions/2
@@ -196,9 +192,38 @@ struct PlayMode: View, TunerDelegate {
 
                 HStack {
                     VStack {
-                        Text(displayNote(note: note))
+                        if (displayNote(note: note) == testNotes[testNotesIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.green)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175)
+                        } else if (displayNote(note: note.halfStepUp) == testNotes[testNotesIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.yellow)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175)
+                        } else if (displayNote(note: note.halfStepDown) == testNotes[testNotesIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.yellow)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175)
+                        } else if (displayNote(note: note.wholeStepUp) == testNotes[testNotesIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.yellow)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175)
+                        } else if (displayNote(note: note.wholeStepDown) == testNotes[testNotesIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.yellow)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175)
+                        } else {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.red)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175)
+                        }
+                        
                         if cents > 0 {
                             Text("\(roundToFive(num: cents)) cents sharp")
                         } else if cents < 0 {
@@ -256,7 +281,7 @@ struct PlayMode: View, TunerDelegate {
                     
                     Spacer()
                     
-                    Text("Score: " + String(runningScore))
+                    Text("Score: " + String(Int(runningScore)))
                         .font(Font.system(size: 64).weight(.bold))
                     
                     Spacer()
