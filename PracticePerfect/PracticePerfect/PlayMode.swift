@@ -244,6 +244,8 @@ struct PlayMode: View, TunerDelegate {
                                     .offset(y: CGFloat(-54 + self.barDist + 10))
                             }
                             
+                            self.drawKey(fifths: self.measures[self.currBar].fifths)
+                            
                             ForEach(self.measures[self.currBar].notes) { note in
                                 self.drawNote(note: note)
                             }
@@ -398,8 +400,23 @@ struct PlayMode: View, TunerDelegate {
         Int(5 * round(num/5))
     }
     
+    func drawKey(fifths: Int) -> some View {
+        let sharpOrder = ["F", "C", "G", "D", "A", "E", "B"]
+        return Group {
+            if fifths > 0 {
+                ForEach(0 ..< fifths, id: \.self) { index in
+                    Text("♯").modifier(KeyStyle(offset: self.calcNoteOffset(note: sharpOrder[index])))
+                }
+            } else if fifths < 0 {
+                ForEach((7 + fifths ..< 7).reversed(), id: \.self) { index in
+                    Text("♭").modifier(KeyStyle(offset: self.calcNoteOffset(note: sharpOrder[index])))
+                }
+            }
+        }
+    }
+    
     func drawNote(note: NoteMetadata) -> some View {
-        let offset = self.calcNoteOffset(note: note)
+        let offset = self.calcNoteOffset(note: note.step)
         
         return Group {
             if note.duration == 1 {
@@ -430,9 +447,9 @@ struct PlayMode: View, TunerDelegate {
         }
     }
     
-    func calcNoteOffset(note: NoteMetadata) -> Int {
+    func calcNoteOffset(note: String) -> Int {
         var offset = self.barDist + 10
-        switch note.step {
+        switch note {
             case "F":
                 offset *= 0
             case "E":

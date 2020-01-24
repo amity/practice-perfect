@@ -93,3 +93,14 @@ struct NoteDotStyle: ViewModifier {
             .offset(x: -10, y: CGFloat(-75 + offset))
     }
 }
+
+struct KeyStyle: ViewModifier {
+    let offset: Int
+    
+    func body(content: Content) -> some View {
+        return content
+            .padding(.horizontal, 0)
+            .font(.system(size: 30))
+            .offset(y: CGFloat(-75 + offset))
+    }
+}
