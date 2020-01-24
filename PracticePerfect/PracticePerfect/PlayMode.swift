@@ -94,9 +94,9 @@ let note7 = NoteMetadata(step: "B", duration: 1)
 let note8 = NoteMetadata(step: "C", duration: 1)
 
 var testData =  [note1, note2, note3, note4, note5, note6, note7, note8]
-var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2]),
-                    MeasureMetadata(measureNumber: 2, notes: [note3, note4]),
-                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8])]
+var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
+                    MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "C", fifths: 6, mode: "minor"),
+                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "F", fifths: -4, mode: "major")]
 
 // Star multiplier values for 1 through 5 stars (at indices 0 through 4)
 let starMultValues: Array<Float> = [1, 1.5, 2.5, 4.5, 8.5]
@@ -225,12 +225,34 @@ struct PlayMode: View, TunerDelegate {
                         }
 
                         HStack {
+                            if self.measures[self.currBar].clef == "G" {
+                                Image("g_clef")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: self.barDist * 7)
+                            } else if self.measures[self.currBar].clef == "C" {
+                                Image("c_clef")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: self.barDist * 5)
+                                    .offset(y: CGFloat(-75 + self.barDist + 10))
+                            } else if self.measures[self.currBar].clef == "F" {
+                                Image("f_clef")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: self.barDist * 5)
+                                    .offset(y: CGFloat(-54 + self.barDist + 10))
+                            }
+                            
                             ForEach(self.measures[self.currBar].notes) { note in
                                 self.drawNote(note: note)
                             }
+                            
+                            Spacer()
                         }
+                            .offset(x: 50)
                     }
-                    
+
                     Spacer()
                 }
                 

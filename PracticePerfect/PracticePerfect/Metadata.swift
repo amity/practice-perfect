@@ -80,10 +80,16 @@ class MeasureMetadata {
     var id = UUID()
     var measureNumber: Int
     var notes: Array<NoteMetadata> = []
+    var clef: String
+    var fifths: Int
+    var mode: String
 
-    init(measureNumber: Int = 1, notes: Array<NoteMetadata> = []) {
+    init(measureNumber: Int = 1, notes: Array<NoteMetadata> = [], clef: String = "C", fifths: Int = 0, mode: String = "major") {
         self.measureNumber = measureNumber
         self.notes = notes
+        self.clef = clef
+        self.fifths = fifths
+        self.mode = mode
     }
 }
 
