@@ -64,8 +64,6 @@ struct SongInfoView: View {
                             .padding(.top, 5)
                     }
                 }
-//                .padding(.leading, 50)
-//                .padding(.trailing, 50)
                 HStack {
                     Spacer()
                     VStack {
@@ -87,7 +85,6 @@ struct SongInfoView: View {
                         .modifier(MenuButtonStyle())
                     Spacer()
                 }
-//                .padding(50)
             }
                 .font(.system(size: 32))
         }
