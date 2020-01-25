@@ -255,7 +255,7 @@ struct PlayMode: View, TunerDelegate {
                 
                 Spacer()
                 
-                HStack {
+                HStack(spacing: 50) {
                     if isOn {
                         Button(action: {
                             self.tuner.stop()
@@ -264,6 +264,7 @@ struct PlayMode: View, TunerDelegate {
                             Text("Pause")
                         }
                              .modifier(MenuButtonStyle())
+                        .frame(width: 125)
                     } else {
                         Button(action: {
                             self.startTuner()
@@ -271,15 +272,15 @@ struct PlayMode: View, TunerDelegate {
                             Text("Resume")
                         }
                              .modifier(MenuButtonStyle())
+                        .frame(width: 125)
                     }
-                    
-                    Spacer()
-                    
-                    Text("Score: " + String(Int(runningScore)))
+                                        
+                    Text("Score:")
                         .font(Font.system(size: 64).weight(.bold))
-                    
-                    Spacer()
-                    
+                    Text(String(Int(runningScore)))
+                        .font(Font.system(size: 64).weight(.bold))
+                        .frame(width: 150)
+                                        
                     NavigationLink(destination: ResultsPage(scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
                         Text("Results")
                     }
@@ -296,6 +297,7 @@ struct PlayMode: View, TunerDelegate {
                         }
                     })
                         .modifier(MenuButtonStyle())
+                        .frame(width: 125)
                 }
                 .padding(.bottom, 20)
             }

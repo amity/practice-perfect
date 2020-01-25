@@ -37,14 +37,13 @@ struct ResultsPage: View {
                 VStack {
                     Spacer()
                     HStack {
-                        Spacer()
                         VStack {
                             Text("New Score")
                                 .font(.system(size: 30))
                             Text("\(scoreMetadata.newScore)")
                                 .font(.system(size: 48))
                         }
-                        Spacer()
+                            .frame(width: 200)
                         VStack {
                             Text("Grade")
                                 .font(.system(size: 30))
@@ -52,7 +51,7 @@ struct ResultsPage: View {
                             Text("\(calculateRank(newScore: scoreMetadata.newScore, topScore: songMetadata.topScore))")
                                 .font(.system(size: 48))
                         }
-                        Spacer()
+                            .frame(width: 200)
                     }
                     if (scoreMetadata.totalCount > 0) {
                         Text("You played \(Int(100 * Float(scoreMetadata.perfectCount) / Float(scoreMetadata.totalCount)) + Int(100 * Float(scoreMetadata.goodCount) / Float(scoreMetadata.totalCount)))% of your notes in tune or almost in tune this time!")
@@ -65,14 +64,13 @@ struct ResultsPage: View {
                     }
                     Spacer()
                     HStack {
-                        Spacer()
                         VStack {
                             Text("Previous Score")
                                 .font(.system(size: 30))
                             Text("\(songMetadata.highScore)")
                                 .font(.system(size: 48))
                         }
-                        Spacer()
+                            .frame(width: 200)
                         VStack {
                             Text("Grade")
                                 .font(.system(size: 30))
@@ -80,7 +78,7 @@ struct ResultsPage: View {
                             Text("\(calculateRank(newScore: songMetadata.highScore, topScore: songMetadata.topScore))")
                                 .font(.system(size: 48))
                         }
-                        Spacer()
+                            .frame(width: 200)
                     }
                     Spacer()
                 }
