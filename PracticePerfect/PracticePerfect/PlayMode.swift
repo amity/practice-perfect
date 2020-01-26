@@ -94,9 +94,9 @@ let note7 = NoteMetadata(step: "B", duration: 1)
 let note8 = NoteMetadata(step: "C", duration: 1)
 
 var testData =  [note1, note2, note3, note4, note5, note6, note7, note8]
-var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2]),
-                    MeasureMetadata(measureNumber: 2, notes: [note3, note4]),
-                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8])]
+var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
+                    MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "C", fifths: 6, mode: "minor"),
+                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "F", fifths: -4, mode: "major")]
 
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
 let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
@@ -244,12 +244,36 @@ struct PlayMode: View, TunerDelegate {
                         }
 
                         HStack {
+                            if self.measures[self.currBar].clef == "G" {
+                                Image("g_clef")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: self.barDist * 7)
+                            } else if self.measures[self.currBar].clef == "C" {
+                                Image("c_clef")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: self.barDist * 5)
+                                    .offset(y: CGFloat(-75 + self.barDist + 10))
+                            } else if self.measures[self.currBar].clef == "F" {
+                                Image("f_clef")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: self.barDist * 5)
+                                    .offset(y: CGFloat(-54 + self.barDist + 10))
+                            }
+                            
+                            self.drawKey(fifths: self.measures[self.currBar].fifths)
+                            
                             ForEach(self.measures[self.currBar].notes) { note in
                                 self.drawNote(note: note)
                             }
+                            
+                            Spacer()
                         }
+                            .offset(x: 50)
                     }
-                    
+
                     Spacer()
                 }
                 
@@ -404,8 +428,23 @@ struct PlayMode: View, TunerDelegate {
         Int(5 * round(num/5))
     }
     
+    func drawKey(fifths: Int) -> some View {
+        let sharpOrder = ["F", "C", "G", "D", "A", "E", "B"]
+        return Group {
+            if fifths > 0 {
+                ForEach(0 ..< fifths, id: \.self) { index in
+                    Text("♯").modifier(KeyStyle(offset: self.calcNoteOffset(note: sharpOrder[index])))
+                }
+            } else if fifths < 0 {
+                ForEach((7 + fifths ..< 7).reversed(), id: \.self) { index in
+                    Text("♭").modifier(KeyStyle(offset: self.calcNoteOffset(note: sharpOrder[index])))
+                }
+            }
+        }
+    }
+    
     func drawNote(note: NoteMetadata) -> some View {
-        let offset = self.calcNoteOffset(note: note)
+        let offset = self.calcNoteOffset(note: note.step)
         
         return Group {
             if note.duration == 1 {
@@ -436,9 +475,9 @@ struct PlayMode: View, TunerDelegate {
         }
     }
     
-    func calcNoteOffset(note: NoteMetadata) -> Int {
+    func calcNoteOffset(note: String) -> Int {
         var offset = self.barDist + 10
-        switch note.step {
+        switch note {
             case "F":
                 offset *= 0
             case "E":
