@@ -30,11 +30,12 @@ struct SongMetadata: Identifiable, Hashable, Codable {
 // Need to add more fields - scoring history for info page
 struct ScoreMetadata: Hashable, Codable {
     var newScore: Int // Total score
-    var pitchPercent: Int // Percent of notes hit in tune
-    var tempoPercent: Int // Percent of notes hit on beat
-    var perfectPercent: Int // Percent of notes perfect
-    var goodPercent: Int // Percent of notes good
-    var missPercent: Int // Percent of notes missed
+    var inTuneCount: Int // Number of notes hit in tune
+    var inTempoCount: Int // Number of notes hit on beat
+    var perfectCount: Int // Number of notes perfect
+    var goodCount: Int // Number of notes good
+    var missCount: Int // Number of notes missed
+    var totalCount: Int // Total number of notes played 
 }
 
 struct MusicXMLMetadata: Hashable, Codable, Identifiable {

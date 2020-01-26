@@ -108,16 +108,6 @@ struct PlayMode: View, TunerDelegate {
     var tempo: Int
     var timeSig: (Int, Int)
     
-    // TO DO: Will be created from the score once play along mode is completed
-    @State var scoreMetadata: ScoreMetadata = ScoreMetadata(
-        newScore: 850000,
-        pitchPercent: 9560,
-        tempoPercent: 9756,
-        perfectPercent: 9400,
-        goodPercent: 450,
-        missPercent: 250
-    )
-    
     // Tuner variables
     @State var tuner = Tuner()
     @State var cents = 0.0
@@ -142,6 +132,10 @@ struct PlayMode: View, TunerDelegate {
     @State var streakCount: Int = 0
     @State var streakValuesIndex: Int = 0
     @State var streakIncreaseIndex: Int = 0
+    @State var totalNotesPlayed: Int = 0
+    @State var missCount: Int = 0
+    @State var goodCount: Int = 0
+    @State var perfectCount: Int = 0
     
     // Note display variables
     @State var barDist = screenWidth/screenDivisions/2
@@ -261,7 +255,7 @@ struct PlayMode: View, TunerDelegate {
                 
                 Spacer()
                 
-                HStack {
+                HStack(spacing: 50) {
                     if isOn {
                         Button(action: {
                             self.tuner.stop()
@@ -270,6 +264,7 @@ struct PlayMode: View, TunerDelegate {
                             Text("Pause")
                         }
                              .modifier(MenuButtonStyle())
+                        .frame(width: 125)
                     } else {
                         Button(action: {
                             self.startTuner()
@@ -277,16 +272,16 @@ struct PlayMode: View, TunerDelegate {
                             Text("Resume")
                         }
                              .modifier(MenuButtonStyle())
+                        .frame(width: 125)
                     }
-                    
-                    Spacer()
-                    
-                    Text("Score: " + String(Int(runningScore)))
+                                        
+                    Text("Score:")
                         .font(Font.system(size: 64).weight(.bold))
-                    
-                    Spacer()
-                    
-                    NavigationLink(destination: ResultsPage(scoreMetadata: scoreMetadata, songMetadata: songMetadata)) {
+                    Text(String(Int(runningScore)))
+                        .font(Font.system(size: 64).weight(.bold))
+                        .frame(width: 150)
+                                        
+                    NavigationLink(destination: ResultsPage(scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
                         Text("Results")
                     }
                     .simultaneousGesture(TapGesture().onEnded {
@@ -296,10 +291,13 @@ struct PlayMode: View, TunerDelegate {
                         if self.songMetadata.highScoreId == -1 {
                             postNewScore(songId: self.songMetadata.songId, score: Int(self.runningScore))
                         } else {
-                            postScoreUpdate(scoreId: self.songMetadata.highScoreId, score: Int(self.runningScore))
+                            if (Int(self.runningScore) > self.songMetadata.highScore) {
+                                postScoreUpdate(scoreId: self.songMetadata.highScoreId, score: Int(self.runningScore))
+                            }
                         }
                     })
                         .modifier(MenuButtonStyle())
+                        .frame(width: 125)
                 }
                 .padding(.bottom, 20)
             }
@@ -318,20 +316,25 @@ struct PlayMode: View, TunerDelegate {
     
     // If correct note, then 10 points; if one half step away, then 5 points; if one whole step away, then 3 points; increase streak count for target, neutral for half step off, reset for whole note or worse
     func updateScore(value: Note) {
+        totalNotesPlayed += 1
         switch testNotes[testNotesIndex].step {
         case displayNote(note: value):
+            perfectCount += 1
             streakCount += 1
             if streakIncreases.contains(Float(streakCount)) {
                 streakValuesIndex += 1
             }
             runningScore += (10 * streakMultValues[streakValuesIndex])
         case displayNote(note: value.halfStepUp), displayNote(note: value.halfStepDown):
+            goodCount += 1
             runningScore += (5 * streakMultValues[streakValuesIndex])
         case displayNote(note: value.wholeStepUp), displayNote(note: value.wholeStepDown):
+            goodCount += 1
             streakCount = 0
             streakValuesIndex = 0
             runningScore += 3
         default:
+            missCount += 1
             streakCount = 0
             streakValuesIndex = 0
         }
