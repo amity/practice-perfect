@@ -5,7 +5,6 @@
 //  Created by Abigail Chen on 11/3/19.
 //  Copyright © 2019 CS98 Practice Perfect. All rights reserved.
 //
-
 import SwiftUI
 
 // Get screen dimensions
@@ -38,7 +37,7 @@ var musicXMLToParseFromFile: String = loadXML2String(fileName: "apres", fileExte
 // Posts new score to API
 // Posting guidance: https://stackoverflow.com/a/58804263
 func postNewScore(songId: Int, score: Int) -> () {
-    // TO DO: Add user ID as non-hard-coded value 
+    // TO DO: Add user ID as non-hard-coded value
     let params: [String: String] = ["song": String(songId), "user": "1", "score": String(score)]
     let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores")!
     let scoreSession = URLSession.shared
@@ -384,7 +383,7 @@ struct PlayMode: View, TunerDelegate {
             
             updateScore(value: value)
             
-            // Empty current beat note values array for next beat 
+            // Empty current beat note values array for next beat
             currBeatNotes = []
             
             // Go to next note in array
