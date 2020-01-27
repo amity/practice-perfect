@@ -8,23 +8,6 @@
 
 import SwiftUI
 
-// Formats integer in scoreMetadata into percent
-func formatPercent(percentInt: Int) -> String {
-    let convertedString = String(percentInt)
-    // If five digits
-    if percentInt == 10000 {
-        return convertedString.prefix(3) + "." + convertedString.suffix(2) + "%"
-    }
-    // If four digits
-    else if percentInt >= 1000 {
-        return convertedString.prefix(2) + "." + convertedString.suffix(2) + "%"
-    }
-    // If three digits
-    else {
-        return convertedString.prefix(1) + "." + convertedString.suffix(2) + "%"
-    }
-}
-
 func calculateRank(newScore: Int, topScore: Int) -> String {
     if Float(newScore) >= Float(topScore) * 0.8 {
         return "A"
@@ -52,9 +35,55 @@ struct ResultsPage: View {
             HStack {
                 Spacer()
                 VStack {
-                    // Calculate new rank from the new score and top possible score
-                    Text("\(calculateRank(newScore: scoreMetadata.newScore, topScore: songMetadata.topScore))")
-                        .font(.system(size: 60))
+                    Spacer()
+                    HStack {
+                        VStack {
+                            Text("New Score")
+                                .font(.system(size: 30))
+                            Text("\(scoreMetadata.newScore)")
+                                .font(.system(size: 48))
+                        }
+                            .frame(width: 200)
+                        VStack {
+                            Text("Grade")
+                                .font(.system(size: 30))
+                            // Calculate new rank from the new score and top possible score
+                            Text("\(calculateRank(newScore: scoreMetadata.newScore, topScore: songMetadata.topScore))")
+                                .font(.system(size: 48))
+                        }
+                            .frame(width: 200)
+                    }
+                    if (scoreMetadata.totalCount > 0) {
+                        Text("You played \(Int(100 * Float(scoreMetadata.perfectCount) / Float(scoreMetadata.totalCount)) + Int(100 * Float(scoreMetadata.goodCount) / Float(scoreMetadata.totalCount)))% of your notes in tune or almost in tune this time!")
+                            .font(.system(size: 26))
+                            .multilineTextAlignment(.center)
+                    } else {
+                        Text("You played 0% of your notes in tune or almost in tune this time!")
+                            .font(.system(size: 26))
+                            .multilineTextAlignment(.center)
+                    }
+                    Spacer()
+                    HStack {
+                        VStack {
+                            Text("Previous Score")
+                                .font(.system(size: 30))
+                            Text("\(songMetadata.highScore)")
+                                .font(.system(size: 48))
+                        }
+                            .frame(width: 200)
+                        VStack {
+                            Text("Grade")
+                                .font(.system(size: 30))
+                            // Calculate new rank from the new score and top possible score
+                            Text("\(calculateRank(newScore: songMetadata.highScore, topScore: songMetadata.topScore))")
+                                .font(.system(size: 48))
+                        }
+                            .frame(width: 200)
+                    }
+                    Spacer()
+                }
+                Spacer()
+                VStack {
                     NavigationLink(destination: SelectMusic()) {
                         Text("Choose another song")
                             .frame(width: 200)
@@ -69,34 +98,6 @@ struct ResultsPage: View {
                     .modifier(MenuButtonStyle())
                 }
                 Spacer()
-                VStack {
-                    Text("New Score")
-                    Text("\(scoreMetadata.newScore)")
-                        .font(.system(size: 48))
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("Perfect: \(formatPercent(percentInt: scoreMetadata.perfectPercent))")
-                            Text("Good: \(formatPercent(percentInt: scoreMetadata.goodPercent))")
-                            Text("Missed: \(formatPercent(percentInt: scoreMetadata.missPercent))")
-                        }
-                        .padding(.trailing, 20)
-                        VStack(alignment: .leading) {
-                            Text("Pitch: \(formatPercent(percentInt: scoreMetadata.pitchPercent))")
-                                .frame(alignment: .leading)
-                            Text("Tempo: \(formatPercent(percentInt: scoreMetadata.tempoPercent))")
-                                .frame(alignment: .leading)
-                        }
-                        .padding(.leading, 20)
-                    }
-                        .font(.system(size: 24))
-                        .padding(.vertical, 20)
-                    Text("Previous High Score")
-                    Text("\(songMetadata.highScore)")
-                        .font(.system(size: 48))
-                }
-                    .font(Font.system(size: 24).weight(.medium))
-
-                Spacer()
             }
         }
         .navigationBarTitle("")
@@ -109,11 +110,12 @@ struct ResultsPage_Previews: PreviewProvider {
         // Preview with example song metadata
         ResultsPage(scoreMetadata: ScoreMetadata(
                 newScore: 9000,
-                pitchPercent: 9560,
-                tempoPercent: 9756,
-                perfectPercent: 9400,
-                goodPercent: 450,
-                missPercent: 250
+                inTuneCount: 9560,
+                inTempoCount: 9756,
+                perfectCount: 9400,
+                goodCount: 450,
+                missCount: 250,
+                totalCount: 1000000
             ),
             songMetadata: SongMetadata(
                 songId: -1, 

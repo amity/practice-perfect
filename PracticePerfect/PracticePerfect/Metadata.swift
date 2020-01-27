@@ -30,11 +30,12 @@ struct SongMetadata: Identifiable, Hashable, Codable {
 // Need to add more fields - scoring history for info page
 struct ScoreMetadata: Hashable, Codable {
     var newScore: Int // Total score
-    var pitchPercent: Int // Percent of notes hit in tune
-    var tempoPercent: Int // Percent of notes hit on beat
-    var perfectPercent: Int // Percent of notes perfect
-    var goodPercent: Int // Percent of notes good
-    var missPercent: Int // Percent of notes missed
+    var inTuneCount: Int // Number of notes hit in tune
+    var inTempoCount: Int // Number of notes hit on beat
+    var perfectCount: Int // Number of notes perfect
+    var goodCount: Int // Number of notes good
+    var missCount: Int // Number of notes missed
+    var totalCount: Int // Total number of notes played 
 }
 
 struct MusicXMLMetadata: Hashable, Codable, Identifiable {
@@ -80,10 +81,16 @@ class MeasureMetadata {
     var id = UUID()
     var measureNumber: Int
     var notes: Array<NoteMetadata> = []
+    var clef: String
+    var fifths: Int
+    var mode: String
 
-    init(measureNumber: Int = 1, notes: Array<NoteMetadata> = []) {
+    init(measureNumber: Int = 1, notes: Array<NoteMetadata> = [], clef: String = "C", fifths: Int = 0, mode: String = "major") {
         self.measureNumber = measureNumber
         self.notes = notes
+        self.clef = clef
+        self.fifths = fifths
+        self.mode = mode
     }
 }
 

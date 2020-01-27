@@ -94,15 +94,12 @@ let note7 = NoteMetadata(step: "B", duration: 1)
 let note8 = NoteMetadata(step: "C", duration: 1)
 
 var testData =  [note1, note2, note3, note4, note5, note6, note7, note8]
-var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2]),
-                    MeasureMetadata(measureNumber: 2, notes: [note3, note4]),
-                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8])]
+var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
+                    MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "C", fifths: 6, mode: "minor"),
+                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "F", fifths: -4, mode: "major")]
 
-// Star multiplier values for 1 through 5 stars (at indices 0 through 4)
-let starMultValues: Array<Float> = [1, 1.5, 2.5, 4.5, 8.5]
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
-//let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
-let streakMultValues: Array<Float> = [1, 2, 3, 4] // Simpler values for testing
+let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
 let streakIncreases: Array<Float> = [10, 25, 50]
 
 struct PlayMode: View, TunerDelegate {
@@ -111,29 +108,17 @@ struct PlayMode: View, TunerDelegate {
     var tempo: Int
     var timeSig: (Int, Int)
     
-    // UNUSED SCORING PARAMETERS
-    // Total score: running count, @State displayed to the user
-    @State var totalScore: Float = 0
-    // Star multiplier: more difficult songs get you more points overall
-    lazy var starMult: Float = starMultValues[songMetadata.level]
-
-    // TO DO: Will be created from the score once play along mode is completed
-    @State var scoreMetadata: ScoreMetadata = ScoreMetadata(
-        newScore: 850000,
-        pitchPercent: 9560,
-        tempoPercent: 9756,
-        perfectPercent: 9400,
-        goodPercent: 450,
-        missPercent: 250
-    )
-    
     // Tuner variables
     @State var tuner = Tuner()
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
     @State var isOn = true
+    
+    // Tempo variables
     @State var totalElapsedBeats: Float = 0
-    @State var endOfCurrentNoteBeats: Float = 1 // TO-DO: have this not be hardcoded
+    @State var endOfCurrentNoteBeats: Float = testData[0].duration
+    
+    // Test music data - will be replaced with parsed XML
     @State var testNotes: [NoteMetadata] = testData
     @State var testNotesIndex = 0
     
@@ -146,6 +131,11 @@ struct PlayMode: View, TunerDelegate {
     @State var runningScore: Float = 0
     @State var streakCount: Int = 0
     @State var streakValuesIndex: Int = 0
+    @State var streakIncreaseIndex: Int = 0
+    @State var totalNotesPlayed: Int = 0
+    @State var missCount: Int = 0
+    @State var goodCount: Int = 0
+    @State var perfectCount: Int = 0
     
     // Note display variables
     @State var barDist = screenWidth/screenDivisions/2
@@ -196,9 +186,38 @@ struct PlayMode: View, TunerDelegate {
 
                 HStack {
                     VStack {
-                        Text(displayNote(note: note))
+                        if (displayNote(note: note) == testNotes[testNotesIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.green)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175)
+                        } else if (displayNote(note: note.halfStepUp) == testNotes[testNotesIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.yellow)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175)
+                        } else if (displayNote(note: note.halfStepDown) == testNotes[testNotesIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.yellow)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175)
+                        } else if (displayNote(note: note.wholeStepUp) == testNotes[testNotesIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.yellow)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175)
+                        } else if (displayNote(note: note.wholeStepDown) == testNotes[testNotesIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.yellow)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175)
+                        } else {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.red)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175)
+                        }
+                        
                         if cents > 0 {
                             Text("\(roundToFive(num: cents)) cents sharp")
                         } else if cents < 0 {
@@ -225,18 +244,42 @@ struct PlayMode: View, TunerDelegate {
                         }
 
                         HStack {
+                            if self.measures[self.currBar].clef == "G" {
+                                Image("g_clef")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: self.barDist * 7)
+                            } else if self.measures[self.currBar].clef == "C" {
+                                Image("c_clef")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: self.barDist * 5)
+                                    .offset(y: CGFloat(-75 + self.barDist + 10))
+                            } else if self.measures[self.currBar].clef == "F" {
+                                Image("f_clef")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: self.barDist * 5)
+                                    .offset(y: CGFloat(-54 + self.barDist + 10))
+                            }
+                            
+                            self.drawKey(fifths: self.measures[self.currBar].fifths)
+                            
                             ForEach(self.measures[self.currBar].notes) { note in
                                 self.drawNote(note: note)
                             }
+                            
+                            Spacer()
                         }
+                            .offset(x: 50)
                     }
-                    
+
                     Spacer()
                 }
                 
                 Spacer()
                 
-                HStack {
+                HStack(spacing: 50) {
                     if isOn {
                         Button(action: {
                             self.tuner.stop()
@@ -245,6 +288,7 @@ struct PlayMode: View, TunerDelegate {
                             Text("Pause")
                         }
                              .modifier(MenuButtonStyle())
+                        .frame(width: 125)
                     } else {
                         Button(action: {
                             self.startTuner()
@@ -252,16 +296,16 @@ struct PlayMode: View, TunerDelegate {
                             Text("Resume")
                         }
                              .modifier(MenuButtonStyle())
+                        .frame(width: 125)
                     }
-                    
-                    Spacer()
-                    
-                    Text("Score: " + String(runningScore))
+                                        
+                    Text("Score:")
                         .font(Font.system(size: 64).weight(.bold))
-                    
-                    Spacer()
-                    
-                    NavigationLink(destination: ResultsPage(scoreMetadata: scoreMetadata, songMetadata: songMetadata)) {
+                    Text(String(Int(runningScore)))
+                        .font(Font.system(size: 64).weight(.bold))
+                        .frame(width: 150)
+                                        
+                    NavigationLink(destination: ResultsPage(scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
                         Text("Results")
                     }
                     .simultaneousGesture(TapGesture().onEnded {
@@ -271,10 +315,13 @@ struct PlayMode: View, TunerDelegate {
                         if self.songMetadata.highScoreId == -1 {
                             postNewScore(songId: self.songMetadata.songId, score: Int(self.runningScore))
                         } else {
-                            postScoreUpdate(scoreId: self.songMetadata.highScoreId, score: Int(self.runningScore))
+                            if (Int(self.runningScore) > self.songMetadata.highScore) {
+                                postScoreUpdate(scoreId: self.songMetadata.highScoreId, score: Int(self.runningScore))
+                            }
                         }
                     })
                         .modifier(MenuButtonStyle())
+                        .frame(width: 125)
                 }
                 .padding(.bottom, 20)
             }
@@ -293,20 +340,25 @@ struct PlayMode: View, TunerDelegate {
     
     // If correct note, then 10 points; if one half step away, then 5 points; if one whole step away, then 3 points; increase streak count for target, neutral for half step off, reset for whole note or worse
     func updateScore(value: Note) {
+        totalNotesPlayed += 1
         switch testNotes[testNotesIndex].step {
         case displayNote(note: value):
+            perfectCount += 1
             streakCount += 1
             if streakIncreases.contains(Float(streakCount)) {
                 streakValuesIndex += 1
             }
             runningScore += (10 * streakMultValues[streakValuesIndex])
         case displayNote(note: value.halfStepUp), displayNote(note: value.halfStepDown):
+            goodCount += 1
             runningScore += (5 * streakMultValues[streakValuesIndex])
         case displayNote(note: value.wholeStepUp), displayNote(note: value.wholeStepDown):
+            goodCount += 1
             streakCount = 0
             streakValuesIndex = 0
             runningScore += 3
         default:
+            missCount += 1
             streakCount = 0
             streakValuesIndex = 0
         }
@@ -376,8 +428,23 @@ struct PlayMode: View, TunerDelegate {
         Int(5 * round(num/5))
     }
     
+    func drawKey(fifths: Int) -> some View {
+        let sharpOrder = ["F", "C", "G", "D", "A", "E", "B"]
+        return Group {
+            if fifths > 0 {
+                ForEach(0 ..< fifths, id: \.self) { index in
+                    Text("♯").modifier(KeyStyle(offset: self.calcNoteOffset(note: sharpOrder[index])))
+                }
+            } else if fifths < 0 {
+                ForEach((7 + fifths ..< 7).reversed(), id: \.self) { index in
+                    Text("♭").modifier(KeyStyle(offset: self.calcNoteOffset(note: sharpOrder[index])))
+                }
+            }
+        }
+    }
+    
     func drawNote(note: NoteMetadata) -> some View {
-        let offset = self.calcNoteOffset(note: note)
+        let offset = self.calcNoteOffset(note: note.step)
         
         return Group {
             if note.duration == 1 {
@@ -408,9 +475,9 @@ struct PlayMode: View, TunerDelegate {
         }
     }
     
-    func calcNoteOffset(note: NoteMetadata) -> Int {
+    func calcNoteOffset(note: String) -> Int {
         var offset = self.barDist + 10
-        switch note.step {
+        switch note {
             case "F":
                 offset *= 0
             case "E":
