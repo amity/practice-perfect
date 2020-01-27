@@ -92,7 +92,6 @@ let note6 = NoteMetadata(step: "A", duration: 1)
 let note7 = NoteMetadata(step: "B", duration: 1)
 let note8 = NoteMetadata(step: "C", duration: 1)
 
-var testData =  [note1, note2, note3, note4, note5, note6, note7, note8]
 var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
                     MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "C", fifths: 6, mode: "minor"),
                     MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "F", fifths: -4, mode: "major")]
@@ -115,11 +114,7 @@ struct PlayMode: View, TunerDelegate {
     
     // Tempo variables
     @State var totalElapsedBeats: Float = 0
-    @State var endOfCurrentNoteBeats: Float = testData[0].duration
-    
-    // Test music data - will be replaced with parsed XML
-    @State var testNotes: [NoteMetadata] = testData
-    @State var testNotesIndex = 0
+    @State var endOfCurrentNoteBeats: Float = testMeasures[0].notes[0].duration
     
     // Countdown variables
     @State var showCountdown = true
@@ -140,6 +135,8 @@ struct PlayMode: View, TunerDelegate {
     @State var barDist = screenWidth/screenDivisions/2
     @State var currBar = 0
     @State var measures: [MeasureMetadata] = testMeasures
+    @State var measureIndex = 0
+    @State var beatIndex = 0
     
     // File retrieval methods adapted from:
     // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
@@ -185,27 +182,27 @@ struct PlayMode: View, TunerDelegate {
 
                 HStack {
                     VStack {
-                        if (displayNote(note: note) == testNotes[testNotesIndex].step) {
+                        if (displayNote(note: note) == measures[measureIndex].notes[beatIndex].step) {
                             Text(displayNote(note: note))
                             .foregroundColor(.green)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175)
-                        } else if (displayNote(note: note.halfStepUp) == testNotes[testNotesIndex].step) {
+                        } else if (displayNote(note: note.halfStepUp) == measures[measureIndex].notes[beatIndex].step) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175)
-                        } else if (displayNote(note: note.halfStepDown) == testNotes[testNotesIndex].step) {
+                        } else if (displayNote(note: note.halfStepDown) == measures[measureIndex].notes[beatIndex].step) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175)
-                        } else if (displayNote(note: note.wholeStepUp) == testNotes[testNotesIndex].step) {
+                        } else if (displayNote(note: note.wholeStepUp) == measures[measureIndex].notes[beatIndex].step) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175)
-                        } else if (displayNote(note: note.wholeStepDown) == testNotes[testNotesIndex].step) {
+                        } else if (displayNote(note: note.wholeStepDown) == measures[measureIndex].notes[beatIndex].step) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
@@ -340,7 +337,7 @@ struct PlayMode: View, TunerDelegate {
     // If correct note, then 10 points; if one half step away, then 5 points; if one whole step away, then 3 points; increase streak count for target, neutral for half step off, reset for whole note or worse
     func updateScore(value: Note) {
         totalNotesPlayed += 1
-        switch testNotes[testNotesIndex].step {
+        switch measures[measureIndex].notes[beatIndex].step {
         case displayNote(note: value):
             perfectCount += 1
             streakCount += 1
@@ -386,14 +383,20 @@ struct PlayMode: View, TunerDelegate {
             // Empty current beat note values array for next beat
             currBeatNotes = []
             
-            // Go to next note in array
-            if testNotesIndex == testNotes.count - 1 {
-                testNotesIndex = 0
+            // If on last beat of current measure, go to first beat
+            if beatIndex == measures[measureIndex].notes.count - 1 {
+                beatIndex = 0
+                // If finishing last measure, go back to first measure
+                if measureIndex == measures.count - 1 {
+                    measureIndex = 0
+                } else {
+                    measureIndex += 1
+                }
             } else {
-                testNotesIndex += 1
+                beatIndex += 1
             }
-            
-            endOfCurrentNoteBeats = totalElapsedBeats + testNotes[testNotesIndex].duration
+                        
+            endOfCurrentNoteBeats = endOfCurrentNoteBeats + measures[measureIndex].notes[beatIndex].duration
         }
         
         // Keep track of current bar
