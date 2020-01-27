@@ -74,23 +74,23 @@ struct MenuButtonStyle: ViewModifier {
 
 struct NoteStyle: ViewModifier {
     let offset: Int
+    let scrollOffset: Float
     
     func body(content: Content) -> some View {
         return content
             .frame(width: 30.0, height: 30.0)
-            .padding(.trailing, 10)
-            .offset(y: CGFloat(-75 + offset))
+            .offset(x: CGFloat(scrollOffset), y: CGFloat(-75 + offset))
     }
 }
 
 struct NoteDotStyle: ViewModifier {
     let offset: Int
+    let scrollOffset: Float
     
     func body(content: Content) -> some View {
         return content
             .frame(width: 10.0, height: 10.0)
-            .padding(.trailing, 5)
-            .offset(x: -10, y: CGFloat(-75 + offset))
+            .offset(x: CGFloat(scrollOffset + -10), y: CGFloat(-75 + offset))
     }
 }
 

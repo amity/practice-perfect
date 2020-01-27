@@ -261,9 +261,16 @@ struct PlayMode: View, TunerDelegate {
                             
                             self.drawKey(fifths: self.measures[self.currBar].fifths)
                             
-                            ForEach(self.measures[self.currBar].notes) { note in
-                                self.drawNote(note: note)
+                            ZStack {
+                                Rectangle()
+                                    .fill(Color.black)
+                                    .frame(width: 10, height: 200)
+                                
+                                ForEach(self.measures[self.currBar].notes) { note in
+                                    self.drawNote(note: note)
+                                }
                             }
+                            .padding(.leading, 50)
                             
                             Spacer()
                         }
@@ -447,32 +454,48 @@ struct PlayMode: View, TunerDelegate {
     
     func drawNote(note: NoteMetadata) -> some View {
         let offset = self.calcNoteOffset(note: note.step)
+         
+        // Get offset between each pair of notes
+        let index = self.measures[self.currBar].notes.firstIndex(of: note)
+        var beatOffset = 0
+        if index! > 0 {
+            for i in 1...index!{
+                beatOffset += Int(self.measures[self.currBar].notes[i - 1].duration)
+            }
+        }
+              
+        // Calculate x position of note
+        let scrollLength = Float(300)
+        let barBeatDiv: Float = scrollLength / Float(self.timeSig.0)
+        let beat = Int(self.totalElapsedBeats) % self.timeSig.0 + 1
+        let beatDiff = self.totalElapsedBeats - Float(Int(self.totalElapsedBeats))
+        let scrollOffset = barBeatDiv + (barBeatDiv * Float(beatOffset)) - Float(barBeatDiv * (Float(beat) + beatDiff))
         
         return Group {
             if note.duration == 1 {
                 Circle()
-                    .modifier(NoteStyle(offset: offset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset))
             }
             else if note.duration == 2 {
                 Circle()
                     .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset))
             }
             else if note.duration == 3 {
                 Circle()
                     .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset))
                 Circle()
-                    .modifier(NoteDotStyle(offset: offset))
+                    .modifier(NoteDotStyle(offset: offset, scrollOffset: 40 + scrollOffset))
             }
             else if note.duration == 4 {
                 Circle()
                     .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset))
             }
             else {
                 Circle()
-                    .modifier(NoteStyle(offset: offset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset))
             }
         }
     }
