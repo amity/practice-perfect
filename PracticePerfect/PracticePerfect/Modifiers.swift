@@ -34,7 +34,7 @@ struct ScaleStyle: ViewModifier {
     }
 }
 
-struct NoteStyle: ViewModifier {
+struct NoteNameStyle: ViewModifier {
     func body(content: Content) -> some View {
         return content
             .foregroundColor(Color.black)
@@ -80,5 +80,36 @@ struct DisabledButtonStyle: ViewModifier {
             .font(Font.system(size: 18).weight(.bold))
             .background(Color.gray)
             .cornerRadius(40)
+
+struct NoteStyle: ViewModifier {
+    let offset: Int
+    
+    func body(content: Content) -> some View {
+        return content
+            .frame(width: 30.0, height: 30.0)
+            .padding(.trailing, 10)
+            .offset(y: CGFloat(-75 + offset))
+    }
+}
+
+struct NoteDotStyle: ViewModifier {
+    let offset: Int
+    
+    func body(content: Content) -> some View {
+        return content
+            .frame(width: 10.0, height: 10.0)
+            .padding(.trailing, 5)
+            .offset(x: -10, y: CGFloat(-75 + offset))
+    }
+}
+
+struct KeyStyle: ViewModifier {
+    let offset: Int
+    
+    func body(content: Content) -> some View {
+        return content
+            .padding(.horizontal, 0)
+            .font(.system(size: 30))
+            .offset(y: CGFloat(-75 + offset))
     }
 }
