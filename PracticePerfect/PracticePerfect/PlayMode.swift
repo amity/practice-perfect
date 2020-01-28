@@ -268,41 +268,11 @@ struct PlayMode: View, TunerDelegate {
                                     .offset(y: CGFloat(-50 / 4))
                                 
                                 if (self.currBar < self.measures.count - 2) {
-                                    ForEach(self.measures[self.currBar].notes) { note in
-                                        self.drawNote(note: note, barIndex: self.currBar, barNumber: 0)
-                                    }
-                                    self.drawMeasureBar(barNumber: 0)
-                                    ForEach(self.measures[self.currBar + 1].notes) { note in
-                                        self.drawNote(note: note, barIndex: self.currBar + 1, barNumber: 1)
-                                    }
-                                    self.drawMeasureBar(barNumber: 1)
-                                    ForEach(self.measures[self.currBar + 2].notes) { note in
-                                        self.drawNote(note: note, barIndex: self.currBar + 2, barNumber: 2)
-                                    }
+                                    drawMeasure(msr1: self.currBar, msr2: self.currBar + 1, msr3: self.currBar + 2)
                                 } else if (self.currBar < self.measures.count - 1) {
-                                    ForEach(self.measures[self.currBar].notes) { note in
-                                        self.drawNote(note: note, barIndex: self.currBar, barNumber: 0)
-                                    }
-                                    self.drawMeasureBar(barNumber: 0)
-                                    ForEach(self.measures[self.currBar + 1].notes) { note in
-                                        self.drawNote(note: note, barIndex: self.currBar + 1, barNumber: 1)
-                                    }
-                                    self.drawMeasureBar(barNumber: 1)
-                                    ForEach(self.measures[0].notes) { note in
-                                        self.drawNote(note: note, barIndex: 0, barNumber: 2)
-                                    }
+                                    drawMeasure(msr1: self.currBar, msr2: self.currBar + 1, msr3: 0)
                                 } else {
-                                    ForEach(self.measures[self.currBar].notes) { note in
-                                        self.drawNote(note: note, barIndex: self.currBar, barNumber: 0)
-                                    }
-                                    self.drawMeasureBar(barNumber: 0)
-                                    ForEach(self.measures[0].notes) { note in
-                                        self.drawNote(note: note, barIndex: 0, barNumber: 1)
-                                    }
-                                    self.drawMeasureBar(barNumber: 1)
-                                    ForEach(self.measures[1].notes) { note in
-                                        self.drawNote(note: note, barIndex: 1, barNumber: 2)
-                                    }
+                                    drawMeasure(msr1: self.currBar, msr2: 0, msr3: 1)
                                 }
                             }
                             .padding(.leading, 50)
@@ -517,20 +487,29 @@ struct PlayMode: View, TunerDelegate {
             opacity = Double(1) - Double(scrollOffset / -50)
         }
         
+        let facingUp = offset > Int(self.barDist + 10) * 2
+        
         return Group {
             if note.duration == 1 {
                 Circle()
+                    .frame(width: 34.0, height: 34.0)
                     .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                Rectangle()
+                    .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
             }
             else if note.duration == 2 {
                 Circle()
                     .stroke(Color.black, lineWidth: 4)
                     .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                Rectangle()
+                    .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
             }
             else if note.duration == 3 {
                 Circle()
                     .stroke(Color.black, lineWidth: 4)
                     .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                Rectangle()
+                    .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
                 Circle()
                     .modifier(NoteDotStyle(offset: offset, scrollOffset: 40 + scrollOffset, opacity: opacity))
             }
@@ -542,6 +521,24 @@ struct PlayMode: View, TunerDelegate {
             else {
                 Circle()
                     .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                Rectangle()
+                    .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+            }
+        }
+    }
+    
+    func drawMeasure(msr1: Int, msr2: Int, msr3: Int) -> some View {
+        return Group {
+            ForEach(self.measures[msr1].notes) { note in
+                self.drawNote(note: note, barIndex: msr1, barNumber: 0)
+            }
+            self.drawMeasureBar(barNumber: 0)
+            ForEach(self.measures[msr2].notes) { note in
+                self.drawNote(note: note, barIndex: msr2, barNumber: 1)
+            }
+            self.drawMeasureBar(barNumber: 1)
+            ForEach(self.measures[msr3].notes) { note in
+                self.drawNote(note: note, barIndex: msr3, barNumber: 2)
             }
         }
     }
