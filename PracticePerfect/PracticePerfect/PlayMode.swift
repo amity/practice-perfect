@@ -304,6 +304,7 @@ struct PlayMode: View, TunerDelegate {
                                         self.drawNote(note: note, barIndex: 1, barNumber: 2)
                                     }
                                 }
+                                self.drawPlayLine()
                             }
                             .padding(.leading, 50)
                             
@@ -570,6 +571,63 @@ struct PlayMode: View, TunerDelegate {
                 .frame(width: 5, height: 150)
                 .offset(x: CGFloat(scrollOffset), y: CGFloat(-50 / 4))
                 .opacity(opacity)
+        }
+    }
+    
+    func drawPlayLine() -> some View {
+        let currNote = self.measures[measureIndex].notes[beatIndex]
+        let offset = self.calcNoteOffset(note: currNote.step)
+        let fullLength: Float = 75 * currNote.duration
+        let remainingRatio: Float = (endOfCurrentNoteBeats - totalElapsedBeats) / currNote.duration
+        let remainingLength: Float = fullLength * remainingRatio - 20
+        var opacity: Double = 1
+        
+        if remainingLength < 0 {
+            opacity = 0
+        }
+        
+        let colorIndex: Int = feedbackColor(value: note)
+        
+        if colorIndex == 2 {
+            return Group {
+                Rectangle()
+                    .fill(Color.red)
+                    .opacity(opacity)
+                    .frame(width: CGFloat(remainingLength), height: 5)
+                    .offset(x: CGFloat(remainingLength / 2), y: CGFloat(-75 + offset))
+                    .frame(width: 0)
+            }
+        } else if colorIndex == 1 {
+            return Group {
+                Rectangle()
+                    .fill(Color.yellow)
+                    .opacity(opacity)
+                    .frame(width: CGFloat(remainingLength), height: 5)
+                    .offset(x: CGFloat(remainingLength / 2), y: CGFloat(-75 + offset))
+                    .frame(width: 0)
+            }
+        } else {
+            return Group {
+                Rectangle()
+                    .fill(Color.green)
+                    .opacity(opacity)
+                    .frame(width: CGFloat(remainingLength), height: 5)
+                    .offset(x: CGFloat(remainingLength / 2), y: CGFloat(-75 + offset))
+                    .frame(width: 0)
+            }
+        }
+    }
+    
+    func feedbackColor(value: Note) -> Int {
+        switch measures[measureIndex].notes[beatIndex].step {
+        case displayNote(note: value):
+            return 0
+        case displayNote(note: value.halfStepUp), displayNote(note: value.halfStepDown):
+            return 1
+        case displayNote(note: value.wholeStepUp), displayNote(note: value.wholeStepDown):
+            return 1
+        default:
+            return 2
         }
     }
     
