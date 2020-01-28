@@ -80,6 +80,8 @@ struct DisabledButtonStyle: ViewModifier {
             .font(Font.system(size: 18).weight(.bold))
             .background(Color.gray)
             .cornerRadius(40)
+    }
+}
 
 struct NoteStyle: ViewModifier {
     let offset: Int
