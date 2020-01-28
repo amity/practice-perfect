@@ -50,7 +50,7 @@ struct ScaleMetadata: Hashable, Codable, Identifiable {
     var urls: [String]
 }
 
-class NoteMetadata: Identifiable {
+class NoteMetadata: Identifiable, Equatable {
     var id = UUID()
     //later will expand from Perfect/Miss to Perfect/Close/Miss, etc.
     var isRightNote: Bool = false
@@ -74,6 +74,10 @@ class NoteMetadata: Identifiable {
     init(step: String = "C", duration: Float = 1) {
         self.step = step
         self.duration = duration
+    }
+    
+    static func == (lhs: NoteMetadata, rhs: NoteMetadata) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 

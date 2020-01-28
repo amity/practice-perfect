@@ -5,7 +5,6 @@
 //  Created by Abigail Chen on 11/3/19.
 //  Copyright © 2019 CS98 Practice Perfect. All rights reserved.
 //
-
 import SwiftUI
 
 // Get screen dimensions
@@ -38,7 +37,7 @@ var musicXMLToParseFromFile: String = loadXML2String(fileName: "apres", fileExte
 // Posts new score to API
 // Posting guidance: https://stackoverflow.com/a/58804263
 func postNewScore(songId: Int, score: Int) -> () {
-    // TO DO: Add user ID as non-hard-coded value 
+    // TO DO: Add user ID as non-hard-coded value
     let params: [String: String] = ["song": String(songId), "user": "1", "score": String(score)]
     let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores")!
     let scoreSession = URLSession.shared
@@ -93,10 +92,9 @@ let note6 = NoteMetadata(step: "A", duration: 1)
 let note7 = NoteMetadata(step: "B", duration: 1)
 let note8 = NoteMetadata(step: "C", duration: 1)
 
-var testData =  [note1, note2, note3, note4, note5, note6, note7, note8]
-var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
-                    MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "C", fifths: 6, mode: "minor"),
-                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "F", fifths: -4, mode: "major")]
+var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G",                          fifths: 0, mode: "major"),
+                    MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "G", fifths: 0, mode: "major"),
+                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "G", fifths: 0, mode: "major")]
 
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
 let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
@@ -116,11 +114,7 @@ struct PlayMode: View, TunerDelegate {
     
     // Tempo variables
     @State var totalElapsedBeats: Float = 0
-    @State var endOfCurrentNoteBeats: Float = testData[0].duration
-    
-    // Test music data - will be replaced with parsed XML
-    @State var testNotes: [NoteMetadata] = testData
-    @State var testNotesIndex = 0
+    @State var endOfCurrentNoteBeats: Float = testMeasures[0].notes[0].duration
     
     // Countdown variables
     @State var showCountdown = true
@@ -141,6 +135,8 @@ struct PlayMode: View, TunerDelegate {
     @State var barDist = screenWidth/screenDivisions/2
     @State var currBar = 0
     @State var measures: [MeasureMetadata] = testMeasures
+    @State var measureIndex = 0
+    @State var beatIndex = 0
     
     // File retrieval methods adapted from:
     // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
@@ -186,27 +182,27 @@ struct PlayMode: View, TunerDelegate {
 
                 HStack {
                     VStack {
-                        if (displayNote(note: note) == testNotes[testNotesIndex].step) {
+                        if (displayNote(note: note) == measures[measureIndex].notes[beatIndex].step) {
                             Text(displayNote(note: note))
                             .foregroundColor(.green)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175)
-                        } else if (displayNote(note: note.halfStepUp) == testNotes[testNotesIndex].step) {
+                        } else if (displayNote(note: note.halfStepUp) == measures[measureIndex].notes[beatIndex].step) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175)
-                        } else if (displayNote(note: note.halfStepDown) == testNotes[testNotesIndex].step) {
+                        } else if (displayNote(note: note.halfStepDown) == measures[measureIndex].notes[beatIndex].step) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175)
-                        } else if (displayNote(note: note.wholeStepUp) == testNotes[testNotesIndex].step) {
+                        } else if (displayNote(note: note.wholeStepUp) == measures[measureIndex].notes[beatIndex].step) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175)
-                        } else if (displayNote(note: note.wholeStepDown) == testNotes[testNotesIndex].step) {
+                        } else if (displayNote(note: note.wholeStepDown) == measures[measureIndex].notes[beatIndex].step) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
@@ -265,9 +261,51 @@ struct PlayMode: View, TunerDelegate {
                             
                             self.drawKey(fifths: self.measures[self.currBar].fifths)
                             
-                            ForEach(self.measures[self.currBar].notes) { note in
-                                self.drawNote(note: note)
+                            ZStack {
+                                Rectangle()
+                                    .fill(Color.black)
+                                    .frame(width: 10, height: 200)
+                                    .offset(y: CGFloat(-50 / 4))
+                                
+                                if (self.currBar < self.measures.count - 2) {
+                                    ForEach(self.measures[self.currBar].notes) { note in
+                                        self.drawNote(note: note, barIndex: self.currBar, barNumber: 0)
+                                    }
+                                    self.drawMeasureBar(barNumber: 0)
+                                    ForEach(self.measures[self.currBar + 1].notes) { note in
+                                        self.drawNote(note: note, barIndex: self.currBar + 1, barNumber: 1)
+                                    }
+                                    self.drawMeasureBar(barNumber: 1)
+                                    ForEach(self.measures[self.currBar + 2].notes) { note in
+                                        self.drawNote(note: note, barIndex: self.currBar + 2, barNumber: 2)
+                                    }
+                                } else if (self.currBar < self.measures.count - 1) {
+                                    ForEach(self.measures[self.currBar].notes) { note in
+                                        self.drawNote(note: note, barIndex: self.currBar, barNumber: 0)
+                                    }
+                                    self.drawMeasureBar(barNumber: 0)
+                                    ForEach(self.measures[self.currBar + 1].notes) { note in
+                                        self.drawNote(note: note, barIndex: self.currBar + 1, barNumber: 1)
+                                    }
+                                    self.drawMeasureBar(barNumber: 1)
+                                    ForEach(self.measures[0].notes) { note in
+                                        self.drawNote(note: note, barIndex: 0, barNumber: 2)
+                                    }
+                                } else {
+                                    ForEach(self.measures[self.currBar].notes) { note in
+                                        self.drawNote(note: note, barIndex: self.currBar, barNumber: 0)
+                                    }
+                                    self.drawMeasureBar(barNumber: 0)
+                                    ForEach(self.measures[0].notes) { note in
+                                        self.drawNote(note: note, barIndex: 0, barNumber: 1)
+                                    }
+                                    self.drawMeasureBar(barNumber: 1)
+                                    ForEach(self.measures[1].notes) { note in
+                                        self.drawNote(note: note, barIndex: 1, barNumber: 2)
+                                    }
+                                }
                             }
+                            .padding(.leading, 50)
                             
                             Spacer()
                         }
@@ -341,7 +379,7 @@ struct PlayMode: View, TunerDelegate {
     // If correct note, then 10 points; if one half step away, then 5 points; if one whole step away, then 3 points; increase streak count for target, neutral for half step off, reset for whole note or worse
     func updateScore(value: Note) {
         totalNotesPlayed += 1
-        switch testNotes[testNotesIndex].step {
+        switch measures[measureIndex].notes[beatIndex].step {
         case displayNote(note: value):
             perfectCount += 1
             streakCount += 1
@@ -384,17 +422,23 @@ struct PlayMode: View, TunerDelegate {
             
             updateScore(value: value)
             
-            // Empty current beat note values array for next beat 
+            // Empty current beat note values array for next beat
             currBeatNotes = []
             
-            // Go to next note in array
-            if testNotesIndex == testNotes.count - 1 {
-                testNotesIndex = 0
+            // If on last beat of current measure, go to first beat
+            if beatIndex == measures[measureIndex].notes.count - 1 {
+                beatIndex = 0
+                // If finishing last measure, go back to first measure
+                if measureIndex == measures.count - 1 {
+                    measureIndex = 0
+                } else {
+                    measureIndex += 1
+                }
             } else {
-                testNotesIndex += 1
+                beatIndex += 1
             }
-            
-            endOfCurrentNoteBeats = totalElapsedBeats + testNotes[testNotesIndex].duration
+                        
+            endOfCurrentNoteBeats = endOfCurrentNoteBeats + measures[measureIndex].notes[beatIndex].duration
         }
         
         // Keep track of current bar
@@ -443,35 +487,89 @@ struct PlayMode: View, TunerDelegate {
         }
     }
     
-    func drawNote(note: NoteMetadata) -> some View {
+    func drawNote(note: NoteMetadata, barIndex: Int, barNumber: Int) -> some View {
         let offset = self.calcNoteOffset(note: note.step)
+         
+        // Get offset between each pair of notes
+        let index = self.measures[barIndex].notes.firstIndex(of: note)
+        var beatOffset = 0
+        if index! > 0 {
+            for i in 1...index!{
+                beatOffset += Int(self.measures[barIndex].notes[i - 1].duration)
+            }
+        }
+              
+        // Calculate x position of note
+        let scrollLength = Float(300)
+        let barBeatDiv: Float = scrollLength / Float(self.timeSig.0)
+        let beat = Int(self.totalElapsedBeats) % self.timeSig.0 + 1
+        let beatDiff = self.totalElapsedBeats - Float(Int(self.totalElapsedBeats))
+        let scrollOffset = barBeatDiv + (barBeatDiv * Float(beatOffset)) - Float(barBeatDiv * (Float(beat) + beatDiff)) + (Float(barNumber) * scrollLength)
+        
+        var opacity: Double = 0
+        if scrollOffset > 350 {
+            opacity = 0
+        } else if scrollOffset > 300 {
+            opacity = Double(1) - Double((scrollOffset - 300) / 50)
+        } else if scrollOffset >= 0 {
+            opacity = 1
+        } else if scrollOffset >= -50 {
+            opacity = Double(1) - Double(scrollOffset / -50)
+        }
         
         return Group {
             if note.duration == 1 {
                 Circle()
-                    .modifier(NoteStyle(offset: offset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
             }
             else if note.duration == 2 {
                 Circle()
                     .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
             }
             else if note.duration == 3 {
                 Circle()
                     .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                 Circle()
-                    .modifier(NoteDotStyle(offset: offset))
+                    .modifier(NoteDotStyle(offset: offset, scrollOffset: 40 + scrollOffset, opacity: opacity))
             }
             else if note.duration == 4 {
                 Circle()
                     .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
             }
             else {
                 Circle()
-                    .modifier(NoteStyle(offset: offset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
             }
+        }
+    }
+    
+    func drawMeasureBar(barNumber: Int) -> some View {
+        let scrollLength = Float(300)
+        let barBeatDiv: Float = scrollLength / Float(self.timeSig.0)
+        let beat = Int(self.totalElapsedBeats) % self.timeSig.0 + 1
+        let beatDiff = self.totalElapsedBeats - Float(Int(self.totalElapsedBeats))
+        let scrollOffset = scrollLength + (barBeatDiv / 2) - Float(barBeatDiv * (Float(beat) + beatDiff)) + (Float(barNumber) * scrollLength)
+        
+        var opacity: Double = 0
+        if scrollOffset > 350 {
+            opacity = 0
+        } else if scrollOffset > 300 {
+            opacity = Double(1) - Double((scrollOffset - 300) / 50)
+        } else if scrollOffset >= 0 {
+            opacity = 1
+        } else if scrollOffset >= -50 {
+            opacity = Double(1) - Double(scrollOffset / -50)
+        }
+        
+        return Group {
+            Rectangle()
+                .fill(Color.black)
+                .frame(width: 5, height: 150)
+                .offset(x: CGFloat(scrollOffset), y: CGFloat(-50 / 4))
+                .opacity(opacity)
         }
     }
     
