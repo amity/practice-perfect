@@ -92,10 +92,6 @@ let note6 = NoteMetadata(step: "A", duration: 1)
 let note7 = NoteMetadata(step: "B", duration: 1)
 let note8 = NoteMetadata(step: "C", duration: 1)
 
-//var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
-//                    MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "C", fifths: 6, mode: "minor"),
-//                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "F", fifths: -4, mode: "major")]
-
 var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G",                          fifths: 0, mode: "major"),
                     MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "G", fifths: 0, mode: "major"),
                     MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "G", fifths: 0, mode: "major")]
@@ -271,7 +267,7 @@ struct PlayMode: View, TunerDelegate {
                                     .frame(width: 10, height: 200)
                                     .offset(y: CGFloat(-50 / 4))
                                 
-                                if (self.currBar < self.measures.count - 1) {
+                                if (self.currBar < self.measures.count - 2) {
                                     ForEach(self.measures[self.currBar].notes) { note in
                                         self.drawNote(note: note, barIndex: self.currBar, barNumber: 0)
                                     }
@@ -280,6 +276,21 @@ struct PlayMode: View, TunerDelegate {
                                         self.drawNote(note: note, barIndex: self.currBar + 1, barNumber: 1)
                                     }
                                     self.drawMeasureBar(barNumber: 1)
+                                    ForEach(self.measures[self.currBar + 2].notes) { note in
+                                        self.drawNote(note: note, barIndex: self.currBar + 2, barNumber: 2)
+                                    }
+                                } else if (self.currBar < self.measures.count - 1) {
+                                    ForEach(self.measures[self.currBar].notes) { note in
+                                        self.drawNote(note: note, barIndex: self.currBar, barNumber: 0)
+                                    }
+                                    self.drawMeasureBar(barNumber: 0)
+                                    ForEach(self.measures[self.currBar + 1].notes) { note in
+                                        self.drawNote(note: note, barIndex: self.currBar + 1, barNumber: 1)
+                                    }
+                                    self.drawMeasureBar(barNumber: 1)
+                                    ForEach(self.measures[0].notes) { note in
+                                        self.drawNote(note: note, barIndex: 0, barNumber: 2)
+                                    }
                                 } else {
                                     ForEach(self.measures[self.currBar].notes) { note in
                                         self.drawNote(note: note, barIndex: self.currBar, barNumber: 0)
@@ -289,6 +300,9 @@ struct PlayMode: View, TunerDelegate {
                                         self.drawNote(note: note, barIndex: 0, barNumber: 1)
                                     }
                                     self.drawMeasureBar(barNumber: 1)
+                                    ForEach(self.measures[1].notes) { note in
+                                        self.drawNote(note: note, barIndex: 1, barNumber: 2)
+                                    }
                                 }
                             }
                             .padding(.leading, 50)
