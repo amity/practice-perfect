@@ -87,7 +87,7 @@ struct LandingPage: View {
                     .modifier(MenuButtonStyle())
                 }
             }
-            .navigationBarTitle("")
+            .navigationBarTitle(userData["username"]!)
             .navigationBarBackButtonHidden(true)
         }
     }
