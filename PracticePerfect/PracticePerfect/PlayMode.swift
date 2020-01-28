@@ -92,9 +92,13 @@ let note6 = NoteMetadata(step: "A", duration: 1)
 let note7 = NoteMetadata(step: "B", duration: 1)
 let note8 = NoteMetadata(step: "C", duration: 1)
 
-var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
-                    MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "C", fifths: 6, mode: "minor"),
-                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "F", fifths: -4, mode: "major")]
+//var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
+//                    MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "C", fifths: 6, mode: "minor"),
+//                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "F", fifths: -4, mode: "major")]
+
+var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G",                          fifths: 0, mode: "major"),
+                    MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "G", fifths: 0, mode: "major"),
+                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "G", fifths: 0, mode: "major")]
 
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
 let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
@@ -265,9 +269,26 @@ struct PlayMode: View, TunerDelegate {
                                 Rectangle()
                                     .fill(Color.black)
                                     .frame(width: 10, height: 200)
+                                    .offset(y: CGFloat(-50 / 4))
                                 
-                                ForEach(self.measures[self.currBar].notes) { note in
-                                    self.drawNote(note: note)
+                                if (self.currBar < self.measures.count - 1) {
+                                    ForEach(self.measures[self.currBar].notes) { note in
+                                        self.drawNote(note: note, barIndex: self.currBar, barNumber: 0)
+                                    }
+                                    self.drawMeasureBar(barNumber: 0)
+                                    ForEach(self.measures[self.currBar + 1].notes) { note in
+                                        self.drawNote(note: note, barIndex: self.currBar + 1, barNumber: 1)
+                                    }
+                                    self.drawMeasureBar(barNumber: 1)
+                                } else {
+                                    ForEach(self.measures[self.currBar].notes) { note in
+                                        self.drawNote(note: note, barIndex: self.currBar, barNumber: 0)
+                                    }
+                                    self.drawMeasureBar(barNumber: 0)
+                                    ForEach(self.measures[0].notes) { note in
+                                        self.drawNote(note: note, barIndex: 0, barNumber: 1)
+                                    }
+                                    self.drawMeasureBar(barNumber: 1)
                                 }
                             }
                             .padding(.leading, 50)
@@ -452,15 +473,15 @@ struct PlayMode: View, TunerDelegate {
         }
     }
     
-    func drawNote(note: NoteMetadata) -> some View {
+    func drawNote(note: NoteMetadata, barIndex: Int, barNumber: Int) -> some View {
         let offset = self.calcNoteOffset(note: note.step)
          
         // Get offset between each pair of notes
-        let index = self.measures[self.currBar].notes.firstIndex(of: note)
+        let index = self.measures[barIndex].notes.firstIndex(of: note)
         var beatOffset = 0
         if index! > 0 {
             for i in 1...index!{
-                beatOffset += Int(self.measures[self.currBar].notes[i - 1].duration)
+                beatOffset += Int(self.measures[barIndex].notes[i - 1].duration)
             }
         }
               
@@ -469,34 +490,72 @@ struct PlayMode: View, TunerDelegate {
         let barBeatDiv: Float = scrollLength / Float(self.timeSig.0)
         let beat = Int(self.totalElapsedBeats) % self.timeSig.0 + 1
         let beatDiff = self.totalElapsedBeats - Float(Int(self.totalElapsedBeats))
-        let scrollOffset = barBeatDiv + (barBeatDiv * Float(beatOffset)) - Float(barBeatDiv * (Float(beat) + beatDiff))
+        let scrollOffset = barBeatDiv + (barBeatDiv * Float(beatOffset)) - Float(barBeatDiv * (Float(beat) + beatDiff)) + (Float(barNumber) * scrollLength)
+        
+        var opacity: Double = 0
+        if scrollOffset > 350 {
+            opacity = 0
+        } else if scrollOffset > 300 {
+            opacity = Double(1) - Double((scrollOffset - 300) / 50)
+        } else if scrollOffset >= 0 {
+            opacity = 1
+        } else if scrollOffset >= -50 {
+            opacity = Double(1) - Double(scrollOffset / -50)
+        }
         
         return Group {
             if note.duration == 1 {
                 Circle()
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
             }
             else if note.duration == 2 {
                 Circle()
                     .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
             }
             else if note.duration == 3 {
                 Circle()
                     .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                 Circle()
-                    .modifier(NoteDotStyle(offset: offset, scrollOffset: 40 + scrollOffset))
+                    .modifier(NoteDotStyle(offset: offset, scrollOffset: 40 + scrollOffset, opacity: opacity))
             }
             else if note.duration == 4 {
                 Circle()
                     .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
             }
             else {
                 Circle()
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset))
+                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
             }
+        }
+    }
+    
+    func drawMeasureBar(barNumber: Int) -> some View {
+        let scrollLength = Float(300)
+        let barBeatDiv: Float = scrollLength / Float(self.timeSig.0)
+        let beat = Int(self.totalElapsedBeats) % self.timeSig.0 + 1
+        let beatDiff = self.totalElapsedBeats - Float(Int(self.totalElapsedBeats))
+        let scrollOffset = scrollLength + (barBeatDiv / 2) - Float(barBeatDiv * (Float(beat) + beatDiff)) + (Float(barNumber) * scrollLength)
+        
+        var opacity: Double = 0
+        if scrollOffset > 350 {
+            opacity = 0
+        } else if scrollOffset > 300 {
+            opacity = Double(1) - Double((scrollOffset - 300) / 50)
+        } else if scrollOffset >= 0 {
+            opacity = 1
+        } else if scrollOffset >= -50 {
+            opacity = Double(1) - Double(scrollOffset / -50)
+        }
+        
+        return Group {
+            Rectangle()
+                .fill(Color.black)
+                .frame(width: 5, height: 150)
+                .offset(x: CGFloat(scrollOffset), y: CGFloat(-50 / 4))
+                .opacity(opacity)
         }
     }
     

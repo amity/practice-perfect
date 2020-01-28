@@ -75,22 +75,26 @@ struct MenuButtonStyle: ViewModifier {
 struct NoteStyle: ViewModifier {
     let offset: Int
     let scrollOffset: Float
+    let opacity: Double
     
     func body(content: Content) -> some View {
         return content
             .frame(width: 30.0, height: 30.0)
             .offset(x: CGFloat(scrollOffset), y: CGFloat(-75 + offset))
+            .opacity(opacity)
     }
 }
 
 struct NoteDotStyle: ViewModifier {
     let offset: Int
     let scrollOffset: Float
+    let opacity: Double
     
     func body(content: Content) -> some View {
         return content
             .frame(width: 10.0, height: 10.0)
             .offset(x: CGFloat(scrollOffset + -10), y: CGFloat(-75 + offset))
+            .opacity(opacity)
     }
 }
 
