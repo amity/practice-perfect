@@ -85,6 +85,42 @@ struct NoteStyle: ViewModifier {
     }
 }
 
+struct TailStyle: ViewModifier {
+    let offset: Int
+    let scrollOffset: Float
+    let opacity: Double
+    let facingUp: Bool
+    
+    func body(content: Content) -> some View {
+        let yConstant = self.facingUp ? -105 : -45
+        let xConstant = Float(self.facingUp ? 15 : -15)
+
+        return content
+            .frame(width: 4.0, height: 60.0)
+            .offset(x: CGFloat(scrollOffset + xConstant), y: CGFloat(offset + yConstant))
+            .opacity(opacity)
+    }
+}
+
+struct FlagStyle: ViewModifier {
+    let offset: Int
+    let scrollOffset: Float
+    let opacity: Double
+    let facingUp: Bool
+    let position: Int
+    
+    func body(content: Content) -> some View {
+        let yConstant = self.facingUp ? -133 : -17
+        let xConstant = Float(self.facingUp ? 23 : -23)
+        let positionConstant = self.facingUp ? position * 10 : position * -10
+
+        return content
+            .frame(width: 14.0, height: 4.0)
+            .offset(x: CGFloat(scrollOffset + xConstant), y: CGFloat(offset + yConstant + positionConstant))
+            .opacity(opacity)
+    }
+}
+
 struct NoteDotStyle: ViewModifier {
     let offset: Int
     let scrollOffset: Float
