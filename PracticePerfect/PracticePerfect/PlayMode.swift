@@ -92,7 +92,14 @@ let note6 = NoteMetadata(step: "A", duration: 1)
 let note7 = NoteMetadata(step: "B", duration: 1)
 let note8 = NoteMetadata(step: "C", duration: 1)
 
-var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G",                          fifths: 0, mode: "major"),
+let rest1 = NoteMetadata(step: "B", duration: 1, isRest: true)
+let rest2 = NoteMetadata(step: "B", duration: 1, isRest: true)
+let rest3 = NoteMetadata(step: "B", duration: 1, isRest: true)
+let rest4 = NoteMetadata(step: "B", duration: 1, isRest: true)
+
+var testMeasures = [MeasureMetadata(measureNumber: 0, notes: [rest1, rest2, rest3, rest4],
+                        clef: "G", fifths: 0, mode: "major"),
+                    MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G",      fifths: 0, mode: "major"),
                     MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "G", fifths: 0, mode: "major"),
                     MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "G", fifths: 0, mode: "major")]
 
@@ -110,15 +117,14 @@ struct PlayMode: View, TunerDelegate {
     @State var tuner = Tuner()
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
-    @State var isOn = true
+    @State var isOn = false
     
     // Tempo variables
     @State var totalElapsedBeats: Float = 0
     @State var endOfCurrentNoteBeats: Float = testMeasures[0].notes[0].duration
     
     // Countdown variables
-    @State var showCountdown = true
-    let beats = 4
+    @State var countdownShown = false
     
     //  Scoring variables
     @State var currBeatNotes: [Note] = [] // For all notes in current beat
@@ -328,13 +334,22 @@ struct PlayMode: View, TunerDelegate {
                         }
                              .modifier(MenuButtonStyle())
                         .frame(width: 125)
-                    } else {
+                    } else if countdownShown {
                         Button(action: {
                             self.startTuner()
                         }) {
                             Text("Resume")
                         }
                              .modifier(MenuButtonStyle())
+                        .frame(width: 125)
+                    } else {
+                        Button(action: {
+                            self.startTuner()
+                            self.countdownShown = true
+                        }) {
+                            Text("START")
+                        }
+                             .modifier(MenuButtonStyleRed())
                         .frame(width: 125)
                     }
                                         
@@ -363,11 +378,6 @@ struct PlayMode: View, TunerDelegate {
                         .frame(width: 125)
                 }
                 .padding(.bottom, 20)
-            }
-            .blur(radius: showCountdown ? 20 : 0)
-            
-            if showCountdown {
-                Countdown(tempo: self.tempo, beats: self.beats, showCountdown: self.$showCountdown, callback: startTuner)
             }
         }
         .navigationBarTitle("You are playing: " + songMetadata.name)
@@ -519,30 +529,59 @@ struct PlayMode: View, TunerDelegate {
         }
         
         return Group {
-            if note.duration == 1 {
-                Circle()
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-            }
-            else if note.duration == 2 {
-                Circle()
-                    .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-            }
-            else if note.duration == 3 {
-                Circle()
-                    .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-                Circle()
-                    .modifier(NoteDotStyle(offset: offset, scrollOffset: 40 + scrollOffset, opacity: opacity))
-            }
-            else if note.duration == 4 {
-                Circle()
-                    .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+            if note.isRest {
+                if note.duration == 1 {
+                    Rectangle()
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                else if note.duration == 2 {
+                    Rectangle()
+                        .stroke(Color.black, lineWidth: 4)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                else if note.duration == 3 {
+                    Rectangle()
+                        .stroke(Color.black, lineWidth: 4)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                    Rectangle()
+                        .modifier(NoteDotStyle(offset: offset, scrollOffset: 40 + scrollOffset, opacity: opacity))
+                }
+                else if note.duration == 4 {
+                    Rectangle()
+                        .stroke(Color.black, lineWidth: 4)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                else {
+                    Rectangle()
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
             }
             else {
-                Circle()
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                if note.duration == 1 {
+                    Circle()
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                else if note.duration == 2 {
+                    Circle()
+                        .stroke(Color.black, lineWidth: 4)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                else if note.duration == 3 {
+                    Circle()
+                        .stroke(Color.black, lineWidth: 4)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                    Circle()
+                        .modifier(NoteDotStyle(offset: offset, scrollOffset: 40 + scrollOffset, opacity: opacity))
+                }
+                else if note.duration == 4 {
+                    Circle()
+                        .stroke(Color.black, lineWidth: 4)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                else {
+                    Circle()
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
             }
         }
     }
@@ -583,6 +622,10 @@ struct PlayMode: View, TunerDelegate {
         var opacity: Double = 1
         
         if remainingLength < 0 {
+            opacity = 0
+        }
+        
+        if currNote.isRest {
             opacity = 0
         }
         

@@ -76,6 +76,12 @@ class NoteMetadata: Identifiable, Equatable {
         self.duration = duration
     }
     
+    init(step: String = "C", duration: Float = 1, isRest: Bool = false) {
+        self.step = step
+        self.duration = duration
+        self.isRest = isRest
+    }
+    
     static func == (lhs: NoteMetadata, rhs: NoteMetadata) -> Bool {
         return lhs.id == rhs.id
     }

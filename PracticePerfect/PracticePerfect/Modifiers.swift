@@ -24,6 +24,8 @@ let purpleBlue = Color(red: 173.0/255.0, green: 189.0/255.0, blue: 254.0/255.0)
 let aquaBlue = Color(red: 109.0/255.0, green: 214.0/255.0, blue: 253.0/255.0)
 let lightGreen = Color(red: 180.0/255.0, green: 204.0/255.0, blue: 110.0/255.0)
 let darkGreen = Color(red: 160.0/255.0, green: 179.0/255.0, blue: 105.0/255.0)
+let darkRed = Color(red: 255.0/255.0, green: 0/255.0, blue: 0/255.0)
+let lightRed = Color(red: 255.0/255.0, green: 153.0/255.0, blue: 153.0/255.0)
 
 struct ScaleStyle: ViewModifier {
     func body(content: Content) -> some View {
@@ -68,6 +70,17 @@ struct MenuButtonStyle: ViewModifier {
             .foregroundColor(.white)
             .font(Font.system(size: 18).weight(.bold))
             .background(LinearGradient(gradient: Gradient(colors: [darkGreen, lightGreen]), startPoint: .leading, endPoint: .trailing))
+            .cornerRadius(40)
+    }
+}
+
+struct MenuButtonStyleRed: ViewModifier {
+    func body(content: Content) -> some View {
+        return content
+            .padding()
+            .foregroundColor(.white)
+            .font(Font.system(size: 18).weight(.bold))
+            .background(LinearGradient(gradient: Gradient(colors: [darkRed, lightRed]), startPoint: .leading, endPoint: .trailing))
             .cornerRadius(40)
     }
 }
