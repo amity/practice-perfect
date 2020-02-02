@@ -5,6 +5,10 @@
 //  Created by Abigail Chen on 11/3/19.
 //  Copyright © 2019 CS98 Practice Perfect. All rights reserved.
 //
+// Environment variable/UserDefaults use:
+// https://www.hackingwithswift.com/quick-start/swiftui/how-to-use-environmentobject-to-share-data-between-views
+// https://www.hackingwithswift.com/read/12/2/reading-and-writing-basics-userdefaults
+// https://medium.com/better-programming/userdefaults-in-swift-4-d1a278a0ec79
 
 import SwiftUI
 
