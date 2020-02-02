@@ -41,6 +41,7 @@ struct LandingPage: View {
                 Image("full-logo")
                 
                 HStack {
+//                    Text(String(UserDefaults.standard.integer(forKey: "clefIndex")))
                     NavigationLink(destination: LoginPage()) {
                         HStack {
                             Text("Login")
