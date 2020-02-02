@@ -8,17 +8,19 @@
 
 import SwiftUI
 
-//class UserSettings: ObservableObject {
-//    @Published var clefIndex = 0
-//    @Published var keyIndex = 0
-//}
+class UserSettings: ObservableObject {
+    @Published var clefIndex = UserDefaults.standard.integer(forKey: "clefIndex")
+    @Published var keyIndex = UserDefaults.standard.integer(forKey: "keyIndex")
+}
 
 struct SettingsView: View {
+    @EnvironmentObject var settings: UserSettings
+    
     let clefs = ["Treble", "Alto", "Bass"]
     let scales: [ScaleMetadata] = musicData["scales"] ?? []
     
-    @State private var selectedClef: Int = UserDefaults.standard.integer(forKey: "clefIndex")
-    @State private var selectedKey: Int = UserDefaults.standard.integer(forKey: "keyIndex")
+    @State var selectedClef: Int
+    @State var selectedKey: Int
         
     var body: some View {
         ZStack {
@@ -66,7 +68,9 @@ struct SettingsView: View {
                 VStack {
                     Button(action: {
                         UserDefaults.standard.set(self.selectedClef, forKey: "clefIndex")
+                        self.settings.clefIndex = self.selectedClef
                         UserDefaults.standard.set(self.selectedKey, forKey: "keyIndex")
+                        self.settings.keyIndex = self.selectedKey
                     }) {
                         Text("Save Preferences")
                     }
@@ -81,6 +85,6 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        SettingsView(selectedClef: 0, selectedKey: 0)
     }
 }

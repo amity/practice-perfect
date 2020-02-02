@@ -9,6 +9,8 @@
 import SwiftUI
 
 struct LandingPage: View {
+    @EnvironmentObject var settings: UserSettings
+    
     let note: some View = Image("note").resizable().frame(width: 75, height: 75)
     let smallNote: some View = Image("note").resizable().frame(width: 50, height: 50)
     
@@ -41,7 +43,6 @@ struct LandingPage: View {
                 Image("full-logo")
                 
                 HStack {
-//                    Text(String(UserDefaults.standard.integer(forKey: "clefIndex")))
                     NavigationLink(destination: LoginPage()) {
                         HStack {
                             Text("Login")
@@ -78,7 +79,7 @@ struct LandingPage: View {
                     }
                     .modifier(MenuButtonStyle())
                     
-                    NavigationLink(destination: SettingsView()) {
+                    NavigationLink(destination: SettingsView(selectedClef: settings.clefIndex, selectedKey: settings.keyIndex)) {
                         HStack {
                             Image(systemName: "gear")
                             Text("Settings")
