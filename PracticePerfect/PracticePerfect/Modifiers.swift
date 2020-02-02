@@ -134,6 +134,19 @@ struct FlagStyle: ViewModifier {
     }
 }
 
+struct LedgerStyle: ViewModifier {
+    let offset: Int
+    let scrollOffset: Float
+    let opacity: Double
+    
+    func body(content: Content) -> some View {
+        return content
+            .frame(width: 50.0, height: 1.0)
+            .offset(x: CGFloat(scrollOffset), y: CGFloat(-75 + offset))
+            .opacity(opacity)
+    }
+}
+
 struct NoteDotStyle: ViewModifier {
     let offset: Int
     let scrollOffset: Float
