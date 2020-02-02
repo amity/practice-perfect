@@ -42,8 +42,8 @@ struct LoginPage: View {
     
     @ObservedObject private var keyboard = KeyboardResponder()
     @State private var textFieldInput: String = ""
-    @State var showErrorMessage = false
-    @State var loginButtonDisabled = true
+    @State var showErrorMessage: Bool = false
+    @State var loginButtonDisabled: Bool = true
 
     var body: some View {
         ZStack {
@@ -51,8 +51,8 @@ struct LoginPage: View {
 
             VStack {
                 Text("Enter your username and password!")
-                    .padding(.bottom, 15)
                     .font(.system(size: 30))
+                    .padding(.bottom, 15)
                     .frame(width: 500)
                 if(self.showErrorMessage){
                     Text("Error: no account found with this username and password. Please try again.")
@@ -67,15 +67,14 @@ struct LoginPage: View {
                     .background(Color.white)
                     .cornerRadius(5.0)
                     .padding(.bottom, 20)
-                    .frame(width:  CGFloat(500))
-                SecureField("Password", text: $password)
+                    .frame(width: 500)
+               SecureField("Password", text: $password)
                     .padding()
                     .background(Color.white)
                     .cornerRadius(5.0)
                     .padding(.bottom, 20)
                     .frame(width: 500)
                 HStack {
-//                    NavigationLink(destination: LandingPage()) {
                     Button(action: {
                             // Retrieve login data and parse
                         let loginUrl = URL(string: "https://practiceperfect.appspot.com/users/" + self.username + "/" + self.password)!
@@ -94,11 +93,11 @@ struct LoginPage: View {
                             let loginData: AnyObject = try! JSONSerialization.jsonObject(with: unwrappedData, options: JSONSerialization.ReadingOptions.allowFragments) as AnyObject
                             if(loginData["statusCode"] as? Int == 404){
                                 self.showErrorMessage = true
-                                loginButtonDisabled = false
+                                self.loginButtonDisabled = true
                                 userData = ["id": "-1"]
                             } else {
                                 self.showErrorMessage = false
-                                loginButtonDisabled = true
+                                self.loginButtonDisabled = false
                                 userData["id"] = "\(loginData["id"] as! Int)"
                                 userData["username"] = loginData["username"] as! String
                             }
@@ -117,23 +116,12 @@ struct LoginPage: View {
                     .modifier(MenuButtonStyle())
                     NavigationLink(destination: LandingPage()) {
                         HStack {
-                            Text("Login")
+                            Text(self.loginButtonDisabled ? "---" : "Login")
                                 .fixedSize()
                         }
+                        .foregroundColor(self.loginButtonDisabled ? Color.gray : Color.white)
                     }
                     .disabled(loginButtonDisabled)
-                    .modifier(loginButtonDisabled ? DisabledButtonStyle() : MenuButtonStyle())
-                }
-                VStack {
-                    Text("or")
-                        .font(.system(size: 30))
-                        .frame(width: 500)
-                    NavigationLink(destination: SignUpPage(username: username, password: password, keyboard: keyboard)) {
-                        HStack {
-                            Text("Sign Up")
-                                .fixedSize()
-                        }
-                    }
                     .modifier(MenuButtonStyle())
                 }
             }

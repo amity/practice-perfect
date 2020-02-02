@@ -72,17 +72,6 @@ struct MenuButtonStyle: ViewModifier {
     }
 }
 
-struct DisabledButtonStyle: ViewModifier {
-    func body(content: Content) -> some View {
-        return content
-            .padding()
-            .foregroundColor(.white)
-            .font(Font.system(size: 18).weight(.bold))
-            .background(Color.gray)
-            .cornerRadius(40)
-    }
-}
-
 struct NoteStyle: ViewModifier {
     let offset: Int
     let scrollOffset: Float
