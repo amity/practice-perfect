@@ -100,7 +100,14 @@ let note14 = NoteMetadata(step: "E", duration: 0.5, type: "16th")
 let note15 = NoteMetadata(step: "D", duration: 0.5, type: "16th")
 let note16 = NoteMetadata(step: "C", duration: 0.5, type: "16th")
 
-var testMeasures = [MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
+let rest1 = NoteMetadata(step: "B", duration: 1, isRest: true)
+let rest2 = NoteMetadata(step: "B", duration: 1, isRest: true)
+let rest3 = NoteMetadata(step: "B", duration: 1, isRest: true)
+let rest4 = NoteMetadata(step: "B", duration: 1, isRest: true)
+
+var testMeasures = [MeasureMetadata(measureNumber: 0, notes: [rest1, rest2, rest3, rest4],
+                        clef: "G", fifths: 0, mode: "major"),
+                    MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
                     MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "G", fifths: 0, mode: "major"),
                     MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "G", fifths: 0, mode: "major"),
                     MeasureMetadata(measureNumber: 3, notes: [note9, note10, note11, note12, note13, note14, note15, note16], clef: "G", fifths: 0, mode: "major")]
@@ -122,15 +129,14 @@ struct PlayMode: View, TunerDelegate {
     @State var tuner = Tuner()
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
-    @State var isOn = true
+    @State var isOn = false
     
     // Tempo variables
     @State var totalElapsedBeats: Float = 0
     @State var endOfCurrentNoteBeats: Float = testMeasures[0].notes[0].duration
     
     // Countdown variables
-    @State var showCountdown = true
-    let beats = 4
+    @State var countdownShown = false
     
     //  Scoring variables
     @State var currBeatNotes: [Note] = [] // For all notes in current beat
@@ -286,6 +292,7 @@ struct PlayMode: View, TunerDelegate {
                                 } else {
                                     drawMeasure(msr1: self.currBar, msr2: 0, msr3: 1)
                                 }
+                                self.drawPlayLine()
                             }
                             .padding(.leading, 50)
                             
@@ -309,13 +316,22 @@ struct PlayMode: View, TunerDelegate {
                         }
                              .modifier(MenuButtonStyle())
                         .frame(width: 125)
-                    } else {
+                    } else if countdownShown {
                         Button(action: {
                             self.startTuner()
                         }) {
                             Text("Resume")
                         }
                              .modifier(MenuButtonStyle())
+                        .frame(width: 125)
+                    } else {
+                        Button(action: {
+                            self.startTuner()
+                            self.countdownShown = true
+                        }) {
+                            Text("START")
+                        }
+                             .modifier(MenuButtonStyleRed())
                         .frame(width: 125)
                     }
                                         
@@ -344,11 +360,6 @@ struct PlayMode: View, TunerDelegate {
                         .frame(width: 125)
                 }
                 .padding(.bottom, 20)
-            }
-            .blur(radius: showCountdown ? 20 : 0)
-            
-            if showCountdown {
-                Countdown(tempo: self.tempo, beats: self.beats, showCountdown: self.$showCountdown, callback: startTuner)
             }
         }
         .navigationBarTitle("You are playing: " + songMetadata.name)
@@ -507,52 +518,100 @@ struct PlayMode: View, TunerDelegate {
         let facingUp = offset > Int(self.barDist + 10) * 2
         
         return Group {
-            if note.type == "16th" {
-                Circle()
-                    .frame(width: 34.0, height: 34.0)
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-                Rectangle()
-                    .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
-                Rectangle()
-                    .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0))
-                Rectangle()
-                    .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 1))
+            if note.isRest {  
+                if note.type == "16th" {
+                    Rectangle()
+                        .frame(width: 34.0, height: 34.0)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                    Rectangle()
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                    Rectangle()
+                        .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0))
+                    Rectangle()
+                        .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 1))
+                }
+                else if note.type == "eighth" {
+                    Rectangle()
+                        .frame(width: 34.0, height: 34.0)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                    Rectangle()
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                    Rectangle()
+                        .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0))
+                }
+                else if note.type == "quarter" {
+                    Rectangle()
+                        .frame(width: 34.0, height: 34.0)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                    Rectangle()
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                }
+                else if note.type == "half" {
+                    Rectangle()
+                        .stroke(Color.black, lineWidth: 4)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                    Rectangle()
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                }
+                else if note.type == "whole" {
+                    Rectangle()
+                        .stroke(Color.black, lineWidth: 4)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                else {
+                    Rectangle()
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                    Rectangle()
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                }
+            } else {
+                if note.type == "16th" {
+                    Circle()
+                        .frame(width: 34.0, height: 34.0)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                    Rectangle()
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                    Rectangle()
+                        .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0))
+                    Rectangle()
+                        .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 1))
+                }
+                else if note.type == "eighth" {
+                    Circle()
+                        .frame(width: 34.0, height: 34.0)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                    Rectangle()
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                    Rectangle()
+                        .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0))
+                }
+                else if note.type == "quarter" {
+                    Circle()
+                        .frame(width: 34.0, height: 34.0)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                    Rectangle()
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                }
+                else if note.type == "half" {
+                    Circle()
+                        .stroke(Color.black, lineWidth: 4)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                    Rectangle()
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                }
+                else if note.type == "whole" {
+                    Circle()
+                        .stroke(Color.black, lineWidth: 4)
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                else {
+                    Circle()
+                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                    Rectangle()
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                }
             }
-            else if note.type == "eighth" {
-                Circle()
-                    .frame(width: 34.0, height: 34.0)
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-                Rectangle()
-                    .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
-                Rectangle()
-                    .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0))
-            }
-            else if note.type == "quarter" {
-                Circle()
-                    .frame(width: 34.0, height: 34.0)
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-                Rectangle()
-                    .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
-            }
-            else if note.type == "half" {
-                Circle()
-                    .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-                Rectangle()
-                    .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
-            }
-            else if note.type == "whole" {
-                Circle()
-                    .stroke(Color.black, lineWidth: 4)
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-            }
-            else {
-                Circle()
-                    .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-                Rectangle()
-                    .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
-            }
-            
+
             if note.dot {
                 Circle()
                     .modifier(NoteDotStyle(offset: offset, scrollOffset: 40 + scrollOffset, opacity: opacity))
@@ -590,6 +649,67 @@ struct PlayMode: View, TunerDelegate {
                 .frame(width: 5, height: 150)
                 .offset(x: CGFloat(scrollOffset), y: CGFloat(-50 / 4))
                 .opacity(opacity)
+        }
+    }
+    
+    func drawPlayLine() -> some View {
+        let currNote = self.measures[measureIndex].notes[beatIndex]
+        let offset = self.calcNoteOffset(note: currNote.step)
+        let fullLength: Float = (scrollLength / Float(timeSig.0)) * currNote.duration
+        let remainingRatio: Float = (endOfCurrentNoteBeats - totalElapsedBeats) / currNote.duration
+        let remainingLength: Float = fullLength * remainingRatio - 20
+        var opacity: Double = 1
+        
+        if remainingLength < 0 {
+            opacity = 0
+        }
+        
+        if currNote.isRest {
+            opacity = 0
+        }
+        
+        let colorIndex: Int = feedbackColor(value: note)
+        
+        if colorIndex == 2 {
+            return Group {
+                Rectangle()
+                    .fill(Color.red)
+                    .opacity(opacity)
+                    .frame(width: CGFloat(remainingLength), height: 5)
+                    .offset(x: CGFloat(remainingLength / 2), y: CGFloat(-75 + offset))
+                    .frame(width: 0)
+            }
+        } else if colorIndex == 1 {
+            return Group {
+                Rectangle()
+                    .fill(Color.yellow)
+                    .opacity(opacity)
+                    .frame(width: CGFloat(remainingLength), height: 5)
+                    .offset(x: CGFloat(remainingLength / 2), y: CGFloat(-75 + offset))
+                    .frame(width: 0)
+            }
+        } else {
+            return Group {
+                Rectangle()
+                    .fill(Color.green)
+                    .opacity(opacity)
+                    .frame(width: CGFloat(remainingLength), height: 5)
+                    .offset(x: CGFloat(remainingLength / 2), y: CGFloat(-75 + offset))
+                    .frame(width: 0)
+            }
+        }
+    }
+    
+    func feedbackColor(value: Note) -> Int {
+        switch measures[measureIndex].notes[beatIndex].step {
+        case displayNote(note: value):
+            return 0
+        case displayNote(note: value.halfStepUp), displayNote(note: value.halfStepDown):
+            return 1
+        case displayNote(note: value.wholeStepUp), displayNote(note: value.wholeStepDown):
+            return 1
+        default:
+            return 2
         }
     }
     

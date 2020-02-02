@@ -33,7 +33,6 @@
 		72F3276D237FF72600EF9F57 /* ParseSongsMusicXML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F3276C237FF72600EF9F57 /* ParseSongsMusicXML.swift */; };
 		72F3276F237FF74100EF9F57 /* ParseMeasuresMusicXML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F3276E237FF74100EF9F57 /* ParseMeasuresMusicXML.swift */; };
 		72F32771237FF74F00EF9F57 /* ParseNotesMusicXML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F32770237FF74F00EF9F57 /* ParseNotesMusicXML.swift */; };
-		BD0FFB20237E02AF009E9CC6 /* CountdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0FFB1F237E02AF009E9CC6 /* CountdownView.swift */; };
 		BD3E0B65237A2645003F04A8 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3E0B64237A2645003F04A8 /* Data.swift */; };
 		BD51384E236F7401004F2220 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD51384D236F7401004F2220 /* SettingsView.swift */; };
 		BD513850236F7416004F2220 /* TunerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD51384F236F7416004F2220 /* TunerView.swift */; };
@@ -78,7 +77,6 @@
 		72F3276E237FF74100EF9F57 /* ParseMeasuresMusicXML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseMeasuresMusicXML.swift; sourceTree = "<group>"; };
 		72F32770237FF74F00EF9F57 /* ParseNotesMusicXML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseNotesMusicXML.swift; sourceTree = "<group>"; };
 		AE4CBC2ABD6D6E4986B1F28B /* Pods-PracticePerfect.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PracticePerfect.release.xcconfig"; path = "Target Support Files/Pods-PracticePerfect/Pods-PracticePerfect.release.xcconfig"; sourceTree = "<group>"; };
-		BD0FFB1F237E02AF009E9CC6 /* CountdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownView.swift; sourceTree = "<group>"; };
 		BD3E0B64237A2645003F04A8 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Data.swift; path = PracticePerfect/Data.swift; sourceTree = SOURCE_ROOT; };
 		BD51384D236F7401004F2220 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BD51384F236F7416004F2220 /* TunerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunerView.swift; sourceTree = "<group>"; };
@@ -143,7 +141,6 @@
 				722A8952236F643E0030B009 /* Info.plist */,
 				722A8958236F65CC0030B009 /* AddMusic.swift */,
 				722A8944236F643C0030B009 /* AppDelegate.swift */,
-				BD0FFB1F237E02AF009E9CC6 /* CountdownView.swift */,
 				BD3E0B64237A2645003F04A8 /* Data.swift */,
 				722A895C236F65F80030B009 /* LandingPage.swift */,
 				14E995AF23CE702D00F4C08D /* LoginPage.swift */,
@@ -357,7 +354,6 @@
 				729620432373F6ED00706B82 /* PracticePerfect.xcdatamodeld in Sources */,
 				145E432223CF837700C8C98A /* SongSearchPage.swift in Sources */,
 				BD5D3EF92381F30100CA92F0 /* ScalePicker.swift in Sources */,
-				BD0FFB20237E02AF009E9CC6 /* CountdownView.swift in Sources */,
 				BD9597F123732FEB002A9651 /* Pitch.swift in Sources */,
 				BD9597EF23732FD6002A9651 /* Note.swift in Sources */,
 				149053F1236F8FA800D36A10 /* SongThumbnail.swift in Sources */,
