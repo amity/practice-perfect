@@ -52,7 +52,6 @@ struct LoginPage: View {
             VStack {
                 Text("Enter your username and password!")
                     .font(.system(size: 30))
-                    .padding(.bottom, 15)
                     .frame(width: 500)
                 if(self.showErrorMessage){
                     Text("Error: no account found with this username and password. Please try again.")
@@ -66,13 +65,13 @@ struct LoginPage: View {
                     .padding()
                     .background(Color.white)
                     .cornerRadius(5.0)
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 5)
                     .frame(width: 500)
                SecureField("Password", text: $password)
                     .padding()
                     .background(Color.white)
                     .cornerRadius(5.0)
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 5)
                     .frame(width: 500)
                 HStack {
                     Button(action: {
@@ -124,6 +123,14 @@ struct LoginPage: View {
                     .disabled(loginButtonDisabled)
                     .modifier(MenuButtonStyle())
                 }
+                Text("or").fixedSize().padding(.bottom, 5)
+                NavigationLink(destination: SignUpPage(username: username, password: password, keyboard: keyboard)) {
+                    HStack {
+                        Text("Sign Up")
+                            .fixedSize()
+                    }
+                }
+                .modifier(MenuButtonStyle())
             }
         }.padding(.bottom, keyboard.currentHeight)
         .edgesIgnoringSafeArea(.bottom)

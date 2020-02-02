@@ -49,7 +49,7 @@ struct SignUpPage: View {
                         .cornerRadius(5.0)
                         .padding(.bottom, 20)
                         .frame(width: 300)
-                    TextField("Password", text: $password)
+                    SecureField("Password", text: $password)
                         .padding()
                         .background(Color.white)
                         .cornerRadius(5.0)
