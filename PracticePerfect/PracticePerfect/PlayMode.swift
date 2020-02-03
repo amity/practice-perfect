@@ -83,17 +83,17 @@ func postScoreUpdate(scoreId: Int, score: Int) -> () {
 }
 
 // Test data - to be removed when parsing XML is done
-let note1 = NoteMetadata(step: "C", duration: 2, type: "half")
-let note2 = NoteMetadata(step: "D", duration: 2, type: "half")
+let note1 = NoteMetadata(step: "C", duration: 2, type: "half", octave: 3)
+let note2 = NoteMetadata(step: "D", duration: 2, type: "half", octave: 3)
 let note3 = NoteMetadata(step: "E", duration: 3, type: "half", dot: true)
 let note4 = NoteMetadata(step: "F", duration: 1, type: "quarter")
-let note5 = NoteMetadata(step: "G", duration: 1.5, type: "quarter", dot: true)
-let note6 = NoteMetadata(step: "A", duration: 0.5, type: "eighth")
+let note5 = NoteMetadata(step: "G", duration: 1.5, type: "quarter", dot: true, octave: 5)
+let note6 = NoteMetadata(step: "A", duration: 0.5, type: "eighth", octave: 5)
 let note7 = NoteMetadata(step: "B", duration: 1.5, type: "quarter", dot: true)
 let note8 = NoteMetadata(step: "C", duration: 0.5, type: "eighth")
 let note9 = NoteMetadata(step: "C", duration: 0.5, type: "16th")
 let note10 = NoteMetadata(step: "B", duration: 0.5, type: "16th")
-let note11 = NoteMetadata(step: "A", duration: 0.5, type: "16th")
+let note11 = NoteMetadata(step: "A", duration: 0.5, type: "16th", octave: 3)
 let note12 = NoteMetadata(step: "G", duration: 0.5, type: "16th")
 let note13 = NoteMetadata(step: "F", duration: 0.5, type: "16th")
 let note14 = NoteMetadata(step: "E", duration: 0.5, type: "16th")
@@ -496,7 +496,7 @@ struct PlayMode: View, TunerDelegate {
     }
     
     func drawNote(note: NoteMetadata, barIndex: Int, barNumber: Int) -> some View {
-        let offset = self.calcNoteOffset(note: note.step)
+        let offset = self.calcNoteOffset(note: note.step, octave: note.octave)
          
         // Get offset between each pair of notes
         let index = self.measures[barIndex].notes.firstIndex(of: note)
@@ -516,6 +516,19 @@ struct PlayMode: View, TunerDelegate {
         let opacity = calcOpacity(scrollOffset: scrollOffset)
         
         let facingUp = offset > Int(self.barDist + 10) * 2
+        
+        let aboveStaff = [Int(self.barDist + 10) * -1, Int(self.barDist + 10) * -2, Int(self.barDist + 10) * -3, Int(self.barDist + 10) * -4, Int(self.barDist + 10) * -5]
+        let belowStaff = [Int(self.barDist + 10) * 5, Int(self.barDist + 10) * 6, Int(self.barDist + 10) * 7, Int(self.barDist + 10) * 8, Int(self.barDist + 10) * 9]
+        
+        var ledgerLines: [Int] {
+            if note.octave > 4 {
+                return aboveStaff.filter { $0 >= offset }
+            } else if note.octave < 4 {
+                return belowStaff.filter { $0 <= offset }
+            } else {
+                return []
+            }
+        }
         
         return Group {
             if note.isRest {  
@@ -565,6 +578,11 @@ struct PlayMode: View, TunerDelegate {
                         .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
                 }
             } else {
+                ForEach(ledgerLines, id: \.self) { line in
+                    Rectangle()
+                    .modifier(LedgerStyle(offset: line, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                
                 if note.type == "16th" {
                     Circle()
                         .frame(width: 34.0, height: 34.0)
@@ -611,7 +629,7 @@ struct PlayMode: View, TunerDelegate {
                         .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
                 }
             }
-
+            
             if note.dot {
                 Circle()
                     .modifier(NoteDotStyle(offset: offset, scrollOffset: 40 + scrollOffset, opacity: opacity))
@@ -654,7 +672,7 @@ struct PlayMode: View, TunerDelegate {
     
     func drawPlayLine() -> some View {
         let currNote = self.measures[measureIndex].notes[beatIndex]
-        let offset = self.calcNoteOffset(note: currNote.step)
+        let offset = self.calcNoteOffset(note: currNote.step, octave: currNote.octave)
         let fullLength: Float = (scrollLength / Float(timeSig.0)) * currNote.duration
         let remainingRatio: Float = (endOfCurrentNoteBeats - totalElapsedBeats) / currNote.duration
         let remainingLength: Float = fullLength * remainingRatio - 20
@@ -713,28 +731,31 @@ struct PlayMode: View, TunerDelegate {
         }
     }
     
-    func calcNoteOffset(note: String) -> Int {
-        var offset = self.barDist + 10
+    func calcNoteOffset(note: String, octave: Int = 4) -> Int {
+        let base = Float(self.barDist + 10)
+        var offset: Float
         switch note {
             case "F":
-                offset *= 0
+                offset = 0
             case "E":
-                offset *= 0.5
+                offset = 0.5
             case "D":
-                offset *= 1
+                offset = 1
             case "C":
-                offset *= 1.5
+                offset = 1.5
             case "B":
-                offset *= 2
+                offset = 2
             case "A":
-                offset *= 2.5
+                offset = 2.5
             case "G":
-                offset *= 3
+                offset = 3
             default:
-                offset *= 1.5
+                offset = 1.5
         }
         
-        return Int(offset)
+        offset += 3.5 * Float(4 - octave)
+        
+        return Int(base * offset)
     }
 }
 
