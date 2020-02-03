@@ -157,3 +157,15 @@ struct KeyStyle: ViewModifier {
             .offset(y: CGFloat(-75 + offset))
     }
 }
+
+struct RestStyle: ViewModifier {
+    let offset: Int
+    let scrollOffset: Float
+    let opacity: Double
+    
+    func body(content: Content) -> some View {
+        return content
+            .offset(x: CGFloat(scrollOffset), y: CGFloat(-75 + offset))
+            .opacity(opacity)
+    }
+}
