@@ -224,23 +224,21 @@ struct PlayMode: View, TunerDelegate {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(height: self.barDist * 7)
-                                    .offset(x: CGFloat(-50))
                             } else if self.measures[self.currBar].clef == "C" {
                                 Image("c_clef")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(height: self.barDist * 5)
-                                    .offset(x: CGFloat(-50), y: CGFloat(-75 + self.barDist + 10))
+                                    .offset(y: CGFloat(-75 + self.barDist + 10))
                             } else if self.measures[self.currBar].clef == "F" {
                                 Image("f_clef")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(height: self.barDist * 5)
-                                    .offset(x: CGFloat(-50), y: CGFloat(-54 + self.barDist + 10))
+                                    .offset(y: CGFloat(-54 + self.barDist + 10))
                             }
                             
                             self.drawKey(fifths: self.measures[self.currBar].fifths)
-                                .offset(x: CGFloat(-50))
                             
                             ZStack {
                                 Rectangle()
@@ -258,11 +256,9 @@ struct PlayMode: View, TunerDelegate {
                                 self.drawPlayLine()
                             }
                             .padding(.leading, 50)
-                            .offset(x: CGFloat(-50))
                             
                             Spacer()
                         }
-                            .offset(x: 50)
                     }
 
                     Spacer()
@@ -496,17 +492,19 @@ struct PlayMode: View, TunerDelegate {
     }
     
     func calcOpacity(scrollOffset: Float) -> Double {
+        let opacityRange = Float(50)
+        let keySigOffset = Float(Double(measures[measureIndex].fifths) * 20.0)
         let scrollDiff = barLength - scrollLength
         var opacity: Double = 0
-        if scrollOffset > scrollLength - 50 {
+        if scrollOffset > scrollLength - opacityRange - keySigOffset {
             opacity = 0
-        } else if scrollOffset > scrollLength - scrollDiff {
+        } else if scrollOffset > scrollLength - scrollDiff - keySigOffset {
             print(String(scrollOffset) + ", " + String(scrollLength))
-            opacity = Double(1) - Double((scrollOffset - scrollLength + scrollDiff) / 50)
+            opacity = Double(1) - Double((scrollOffset - scrollLength + scrollDiff + keySigOffset) / opacityRange)
         } else if scrollOffset >= 0 {
             opacity = 1
-        } else if scrollOffset >= -50 {
-            opacity = Double(1) - Double(scrollOffset / -50)
+        } else if scrollOffset >= -opacityRange {
+            opacity = Double(1) - Double(scrollOffset / -opacityRange)
         }
         
         return opacity
