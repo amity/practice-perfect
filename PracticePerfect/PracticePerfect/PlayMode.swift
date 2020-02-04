@@ -130,13 +130,15 @@ struct PlayMode: View, TunerDelegate {
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
     @State var isOn = false
+    @State var backgroundMeanAmplitude: Float = 0.0
+    @State var backgroundReadingCount: Int = 0
     
     // Tempo variables
     @State var totalElapsedBeats: Float = 0
     @State var endOfCurrentNoteBeats: Float = testMeasures[0].notes[0].duration
     
     // Countdown variables
-    @State var countdownShown = false
+    @State var startedPlaying = false
     
     //  Scoring variables
     @State var currBeatNotes: [Note] = [] // For all notes in current beat
@@ -316,7 +318,7 @@ struct PlayMode: View, TunerDelegate {
                         }
                              .modifier(MenuButtonStyle())
                         .frame(width: 125)
-                    } else if countdownShown {
+                    } else if startedPlaying {
                         Button(action: {
                             self.startTuner()
                         }) {
@@ -327,7 +329,7 @@ struct PlayMode: View, TunerDelegate {
                     } else {
                         Button(action: {
                             self.startTuner()
-                            self.countdownShown = true
+                            self.startedPlaying = true
                         }) {
                             Text("START")
                         }
@@ -399,7 +401,14 @@ struct PlayMode: View, TunerDelegate {
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
         let newElapsedBeats: Float = Float(beatCount) * Float(0.05) / Float(60) * Float(tempo)
-        
+         
+        // If still in the countdown, take readings to calculate background noise and update threshold
+        if !(Int(newElapsedBeats) > timeSig.0) {
+            backgroundReadingCount += 1
+            backgroundMeanAmplitude = (Float(backgroundReadingCount - 1) * backgroundMeanAmplitude + Float(tuner.tracker.amplitude)) / Float(backgroundReadingCount)
+            tuner.updateThreshold(newThreshold: backgroundMeanAmplitude)
+        }
+                        
         // If still on current note, add pitch reading to array
         if newElapsedBeats <= endOfCurrentNoteBeats {
             currBeatNotes.append(pitch.note)
