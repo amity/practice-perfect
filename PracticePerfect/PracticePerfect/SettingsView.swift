@@ -31,8 +31,7 @@ struct SettingsView: View {
                     Spacer()
                     HStack {
                         Text("What clef would you like to use?")
-                            .font(Font.system(size:28).weight(.bold))
-                            .frame(maxWidth: 300)
+                            .font(Font.title.weight(.bold))
                         Spacer()
                         VStack {
                             Picker(selection: $selectedClef, label: EmptyView()) {
@@ -48,8 +47,7 @@ struct SettingsView: View {
                     Spacer()
                     HStack {
                         Text("What key is your instrument tuned to?")
-                            .font(Font.system(size:28).weight(.bold))
-                            .frame(maxWidth: 300)
+                            .font(Font.title.weight(.bold))
                         Spacer()
                         VStack {
                             Picker(selection: $selectedKey, label: EmptyView()) {
@@ -74,11 +72,12 @@ struct SettingsView: View {
                     }) {
                         Text("Save Preferences")
                     }
-                            .modifier(MenuButtonStyle())
+                        .modifier(MenuButtonStyle())
                 }
                 Spacer()
             }
         }
+        .foregroundColor(.black)
         .navigationBarTitle("Settings")
     }
 }

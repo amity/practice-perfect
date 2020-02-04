@@ -308,7 +308,7 @@ struct PlayMode: View, TunerDelegate {
                 
                 Spacer()
                 
-                HStack(spacing: 50) {
+                HStack {
                     if isOn {
                         Button(action: {
                             self.tuner.stop()
@@ -336,34 +336,35 @@ struct PlayMode: View, TunerDelegate {
                              .modifier(MenuButtonStyleRed())
                         .frame(width: 125)
                     }
-                                        
+                                                            
                     Text("Score:")
-                        .font(Font.system(size: 64).weight(.bold))
+                        .font(.largeTitle)
                     Text(String(Int(runningScore)))
-                        .font(Font.system(size: 64).weight(.bold))
+                        .font(.largeTitle)
                         .frame(width: 150)
                                         
                     NavigationLink(destination: ResultsPage(scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
                         Text("Results")
                     }
-                    .simultaneousGesture(TapGesture().onEnded {
-                        // TO DO: Right now, sends new high score to server when pause button is pressed. This will need to be updated
-                        self.tuner.stop()
-                        // If highScoreId of -1, i.e. no existing score, then create; otherwise update
-                        if self.songMetadata.highScoreId == -1 {
-                            postNewScore(songId: self.songMetadata.songId, score: Int(self.runningScore))
-                        } else {
-                            if (Int(self.runningScore) > self.songMetadata.highScore) {
-                                postScoreUpdate(scoreId: self.songMetadata.highScoreId, score: Int(self.runningScore))
+                        .simultaneousGesture(TapGesture().onEnded {
+                            // TO DO: Right now, sends new high score to server when pause button is pressed. This will need to be updated
+                            self.tuner.stop()
+                            // If highScoreId of -1, i.e. no existing score, then create; otherwise update
+                            if self.songMetadata.highScoreId == -1 {
+                                postNewScore(songId: self.songMetadata.songId, score: Int(self.runningScore))
+                            } else {
+                                if (Int(self.runningScore) > self.songMetadata.highScore) {
+                                    postScoreUpdate(scoreId: self.songMetadata.highScoreId, score: Int(self.runningScore))
+                                }
                             }
-                        }
-                    })
+                        })
                         .modifier(MenuButtonStyle())
                         .frame(width: 125)
                 }
                 .padding(.bottom, 20)
             }
         }
+        .foregroundColor(.black)
         .navigationBarTitle("You are playing: " + songMetadata.name)
         .onAppear {
             self.getXML()

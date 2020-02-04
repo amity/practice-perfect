@@ -26,7 +26,7 @@ struct SignUpPage: View {
             VStack {
                 Text("Enter your information below!")
                     .padding(.bottom, 15)
-                    .font(.system(size: 32))
+                    .font(.largeTitle)
                     .frame(width: 500)
                 HStack {
                     TextField("Name", text: $name)
@@ -61,13 +61,14 @@ struct SignUpPage: View {
                         HStack {
                             Image(systemName: "play.fill")
                             Text("Create Account")
-                                .fixedSize()
                         }
                     }
                     .modifier(MenuButtonStyle())
                 }
             }
-        }.padding(.bottom, keyboard.currentHeight)
+        }
+        .foregroundColor(.black)
+        .padding(.bottom, keyboard.currentHeight)
         .edgesIgnoringSafeArea(.bottom)
         .animation(.easeOut(duration: 0.16))
     }
