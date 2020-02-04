@@ -40,7 +40,7 @@ struct NoteNameStyle: ViewModifier {
     func body(content: Content) -> some View {
         return content
             .foregroundColor(Color.black)
-            .font(Font.system(size: 100).weight(.bold))
+            .font(Font.system(size: 90).weight(.bold))
     }
 }
 
