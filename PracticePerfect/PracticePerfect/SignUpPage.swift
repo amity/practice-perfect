@@ -25,8 +25,8 @@ struct SignUpPage: View {
 
             VStack {
                 Text("Enter your information below!")
-                    .font(.system(size: 30))
                     .padding(.bottom, 15)
+                    .font(.system(size: 32))
                     .frame(width: 500)
                 HStack {
                     TextField("Name", text: $name)
@@ -49,7 +49,7 @@ struct SignUpPage: View {
                         .cornerRadius(5.0)
                         .padding(.bottom, 20)
                         .frame(width: 300)
-                    TextField("Password", text: $password)
+                    SecureField("Password", text: $password)
                         .padding()
                         .background(Color.white)
                         .cornerRadius(5.0)

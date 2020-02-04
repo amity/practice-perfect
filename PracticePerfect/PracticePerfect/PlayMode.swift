@@ -100,10 +100,10 @@ let note14 = NoteMetadata(step: "E", duration: 0.5, type: "16th")
 let note15 = NoteMetadata(step: "D", duration: 0.5, type: "16th")
 let note16 = NoteMetadata(step: "C", duration: 0.5, type: "16th")
 
-let rest1 = NoteMetadata(step: "B", duration: 1, isRest: true)
-let rest2 = NoteMetadata(step: "B", duration: 1, isRest: true)
-let rest3 = NoteMetadata(step: "B", duration: 1, isRest: true)
-let rest4 = NoteMetadata(step: "B", duration: 1, isRest: true)
+let rest1 = NoteMetadata(duration: 1, type: "16th", isRest: true)
+let rest2 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
+let rest3 = NoteMetadata(duration: 1, type: "half", isRest: true)
+let rest4 = NoteMetadata(duration: 1, type: "whole", isRest: true)
 
 var testMeasures = [MeasureMetadata(measureNumber: 0, notes: [rest1, rest2, rest3, rest4],
                         clef: "G", fifths: 0, mode: "major"),
@@ -506,7 +506,7 @@ struct PlayMode: View, TunerDelegate {
                 beatOffset += self.measures[barIndex].notes[i - 1].duration
             }
         }
-              
+
         // Calculate x position of note
         let barBeatDiv: Float = scrollLength / Float(self.timeSig.0)
         let beat = Int(self.totalElapsedBeats) % self.timeSig.0 + 1
@@ -533,49 +533,43 @@ struct PlayMode: View, TunerDelegate {
         return Group {
             if note.isRest {  
                 if note.type == "16th" {
-                    Rectangle()
-                        .frame(width: 34.0, height: 34.0)
-                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-                    Rectangle()
-                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
-                    Rectangle()
-                        .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0))
-                    Rectangle()
-                        .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 1))
+                    Image("16th_rest")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: self.barDist * 2)
+                        .modifier(RestStyle(offset: Int((self.barDist + 10) * 2), scrollOffset: scrollOffset, opacity: opacity))
                 }
                 else if note.type == "eighth" {
-                    Rectangle()
-                        .frame(width: 34.0, height: 34.0)
-                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-                    Rectangle()
-                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
-                    Rectangle()
-                        .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0))
+                    Image("eighth_rest")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: self.barDist * 2)
+                        .modifier(RestStyle(offset: Int((self.barDist + 10) * 2), scrollOffset: scrollOffset, opacity: opacity))
                 }
                 else if note.type == "quarter" {
-                    Rectangle()
-                        .frame(width: 34.0, height: 34.0)
-                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-                    Rectangle()
-                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                    Image("crotchet_rest")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: self.barDist * 4)
+                        .modifier(RestStyle(offset: Int((self.barDist + 10) * 2), scrollOffset: scrollOffset, opacity: opacity))
                 }
                 else if note.type == "half" {
                     Rectangle()
-                        .stroke(Color.black, lineWidth: 4)
-                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-                    Rectangle()
-                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                        .frame(width: 25.0, height: self.barDist / 2)
+                        .offset(x: CGFloat(scrollOffset), y: -75 + CGFloat(Int(self.barDist * 2.5)))
+                        .opacity(opacity)
                 }
                 else if note.type == "whole" {
                     Rectangle()
-                        .stroke(Color.black, lineWidth: 4)
-                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                        .frame(width: 25.0, height: self.barDist / 2)
+                        .offset(x: CGFloat(scrollOffset), y: -75 + CGFloat(Int(self.barDist * 1.75)))
+                        .opacity(opacity)
                 }
                 else {
                     Rectangle()
-                        .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
-                    Rectangle()
-                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                        .frame(width: 25.0, height: self.barDist / 2)
+                        .offset(x: CGFloat(scrollOffset), y: -75 + CGFloat(Int(self.barDist * 1.75)))
+                        .opacity(opacity)
                 }
             } else {
                 ForEach(ledgerLines, id: \.self) { line in

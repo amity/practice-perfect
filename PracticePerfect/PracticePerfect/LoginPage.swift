@@ -8,6 +8,8 @@
 
 import SwiftUI
 
+public var userData: [String:String] = ["username":"Not signed in", "id": "-1"]
+
 // https://stackoverflow.com/a/58242249
 final class KeyboardResponder: ObservableObject {
     private var notificationCenter: NotificationCenter
@@ -40,6 +42,8 @@ struct LoginPage: View {
     
     @ObservedObject private var keyboard = KeyboardResponder()
     @State private var textFieldInput: String = ""
+    @State var showErrorMessage: Bool = false
+    @State var loginButtonDisabled: Bool = true
 
     var body: some View {
         ZStack {
@@ -48,38 +52,85 @@ struct LoginPage: View {
             VStack {
                 Text("Enter your username and password!")
                     .font(.system(size: 30))
-                    .padding(.bottom, 15)
                     .frame(width: 500)
+                if(self.showErrorMessage){
+                    Text("Error: no account found with this username and password. Please try again.")
+                        .background(Color.red)
+                        .foregroundColor(Color.white)
+                        .font(.system(size: 14))
+                        .frame(width: 500)
+                }
                 TextField("Username", text: $username)
+                    .autocapitalization(UITextAutocapitalizationType.none)
                     .padding()
                     .background(Color.white)
                     .cornerRadius(5.0)
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 5)
                     .frame(width: 500)
-                TextField("Password", text: $password)
+               SecureField("Password", text: $password)
                     .padding()
                     .background(Color.white)
                     .cornerRadius(5.0)
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 5)
                     .frame(width: 500)
                 HStack {
+                    Button(action: {
+                            // Retrieve login data and parse
+                        let loginUrl = URL(string: "https://practiceperfect.appspot.com/users/" + self.username + "/" + self.password)!
+                        let loginSession = URLSession.shared
+                        var loginRequest = URLRequest(url: loginUrl)
+                        loginRequest.httpMethod = "GET"
+
+                        let loginSemaphore = DispatchSemaphore(value: 0)
+                        let loginTask = loginSession.dataTask(with: loginRequest) { data, response, error in
+                            // Unwrap data
+                            guard let unwrappedData = data else {
+                                print(error!)
+                                return
+                            }
+                            // Get json object from data
+                            let loginData: AnyObject = try! JSONSerialization.jsonObject(with: unwrappedData, options: JSONSerialization.ReadingOptions.allowFragments) as AnyObject
+                            if(loginData["statusCode"] as? Int == 404){
+                                self.showErrorMessage = true
+                                self.loginButtonDisabled = true
+                                userData = ["id": "-1"]
+                            } else {
+                                self.showErrorMessage = false
+                                self.loginButtonDisabled = false
+                                userData["id"] = "\(loginData["id"] as! Int)"
+                                userData["username"] = loginData["username"] as! String
+                            }
+                            loginSemaphore.signal()
+                        }
+                        loginTask.resume()
+                        // Wait for the login to be retrieved before displaying all of them
+                        _ = loginSemaphore.wait(wallTimeout: .distantFuture)
+                        
+                    }) {
+                        HStack {
+                            Text("Verify")
+                                .fixedSize()
+                        }
+                    }
+                    .modifier(MenuButtonStyle())
                     NavigationLink(destination: LandingPage()) {
                         HStack {
-                            Image(systemName: "play.fill")
-                            Text("Login")
+                            Text(self.loginButtonDisabled ? "---" : "Login")
                                 .fixedSize()
                         }
+                        .foregroundColor(self.loginButtonDisabled ? Color.gray : Color.white)
                     }
-                    .modifier(MenuButtonStyle())
-                    NavigationLink(destination: SignUpPage(username: username, password: password, keyboard: keyboard)) {
-                        HStack {
-                            Image(systemName: "play.fill")
-                            Text("Sign Up")
-                                .fixedSize()
-                        }
-                    }
+                    .disabled(loginButtonDisabled)
                     .modifier(MenuButtonStyle())
                 }
+                Text("or").fixedSize().padding(.bottom, 5)
+                NavigationLink(destination: SignUpPage(username: username, password: password, keyboard: keyboard)) {
+                    HStack {
+                        Text("Sign Up")
+                            .fixedSize()
+                    }
+                }
+                .modifier(MenuButtonStyle())
             }
         }.padding(.bottom, keyboard.currentHeight)
         .edgesIgnoringSafeArea(.bottom)
