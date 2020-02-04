@@ -40,7 +40,7 @@ struct NoteNameStyle: ViewModifier {
     func body(content: Content) -> some View {
         return content
             .foregroundColor(Color.black)
-            .font(Font.system(size: 100).weight(.bold))
+            .font(Font.system(size: 90).weight(.bold))
     }
 }
 
@@ -167,6 +167,7 @@ struct KeyStyle: ViewModifier {
         return content
             .padding(.horizontal, 0)
             .font(.system(size: 30))
+            .frame(width: 20.0, height: 20.0)
             .offset(y: CGFloat(-75 + offset))
     }
 }

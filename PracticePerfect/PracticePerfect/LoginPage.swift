@@ -109,14 +109,15 @@ struct LoginPage: View {
                         }
                     }
                     .modifier(MenuButtonStyle())
-                    NavigationLink(destination: LandingPage()) {
-                        HStack {
-                            Text(self.loginButtonDisabled ? "---" : "Login")
+                    
+                    if(!self.loginButtonDisabled){
+                        NavigationLink(destination: LandingPage()) {
+                            HStack {
+                                Text("Login")
+                            }
                         }
-                        .foregroundColor(self.loginButtonDisabled ? Color.gray : Color.white)
+                        .modifier(MenuButtonStyle())
                     }
-                    .disabled(loginButtonDisabled)
-                    .modifier(MenuButtonStyle())
                 }
                 Text("or").fixedSize().padding(.bottom, 5)
                 NavigationLink(destination: SignUpPage(username: username, password: password, keyboard: keyboard)) {
