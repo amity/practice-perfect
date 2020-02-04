@@ -100,6 +100,11 @@ let note14 = NoteMetadata(step: "E", duration: 0.5, type: "16th")
 let note15 = NoteMetadata(step: "D", duration: 0.5, type: "16th")
 let note16 = NoteMetadata(step: "C", duration: 0.5, type: "16th")
 
+let note17 = NoteMetadata(step: "F", duration: 0.25, type: "16th")
+let note18 = NoteMetadata(step: "E", duration: 0.25, type: "16th")
+let note19 = NoteMetadata(step: "D", duration: 0.25, type: "16th")
+let note20 = NoteMetadata(step: "C", duration: 0.25, type: "16th")
+
 let rest1 = NoteMetadata(duration: 1, type: "16th", isRest: true)
 let rest2 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
 let rest3 = NoteMetadata(duration: 1, type: "half", isRest: true)
@@ -108,7 +113,7 @@ let rest4 = NoteMetadata(duration: 1, type: "whole", isRest: true)
 var testMeasures = [MeasureMetadata(measureNumber: 0, notes: [rest1, rest2, rest3, rest4],
                         clef: "G", fifths: 0, mode: "major"),
                     MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
-                    MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "G", fifths: 0, mode: "major"),
+                    MeasureMetadata(measureNumber: 2, notes: [note3, note17, note18, note19, note20], clef: "G", fifths: 0, mode: "major"),
                     MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "G", fifths: 0, mode: "major"),
                     MeasureMetadata(measureNumber: 3, notes: [note9, note10, note11, note12, note13, note14, note15, note16], clef: "G", fifths: 0, mode: "major")]
 
@@ -117,7 +122,8 @@ let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
 let streakIncreases: Array<Float> = [10, 25, 50]
 
 // For animation
-let scrollLength = Float(400)
+let barLength = Float(screenSize.width) - Float(100)
+let scrollLength = Float(screenSize.width) - Float(200)
 
 struct PlayMode: View, TunerDelegate {
     // Song metadata passed from song selection - used to retrieve music data from backed through API
@@ -201,65 +207,18 @@ struct PlayMode: View, TunerDelegate {
                 Spacer()
 
                 HStack {
-                    VStack {
-                        if (displayNote(note: note) == measures[measureIndex].notes[beatIndex].step) {
-                            Text(displayNote(note: note))
-                            .foregroundColor(.green)
-                            .modifier(NoteNameStyle())
-                            .frame(minWidth: 175, maxWidth: 175)
-                        } else if (displayNote(note: note.halfStepUp) == measures[measureIndex].notes[beatIndex].step) {
-                            Text(displayNote(note: note))
-                            .foregroundColor(.yellow)
-                            .modifier(NoteNameStyle())
-                            .frame(minWidth: 175, maxWidth: 175)
-                        } else if (displayNote(note: note.halfStepDown) == measures[measureIndex].notes[beatIndex].step) {
-                            Text(displayNote(note: note))
-                            .foregroundColor(.yellow)
-                            .modifier(NoteNameStyle())
-                            .frame(minWidth: 175, maxWidth: 175)
-                        } else if (displayNote(note: note.wholeStepUp) == measures[measureIndex].notes[beatIndex].step) {
-                            Text(displayNote(note: note))
-                            .foregroundColor(.yellow)
-                            .modifier(NoteNameStyle())
-                            .frame(minWidth: 175, maxWidth: 175)
-                        } else if (displayNote(note: note.wholeStepDown) == measures[measureIndex].notes[beatIndex].step) {
-                            Text(displayNote(note: note))
-                            .foregroundColor(.yellow)
-                            .modifier(NoteNameStyle())
-                            .frame(minWidth: 175, maxWidth: 175)
-                        } else {
-                            Text(displayNote(note: note))
-                            .foregroundColor(.red)
-                            .modifier(NoteNameStyle())
-                            .frame(minWidth: 175, maxWidth: 175)
-                        }
-                        
-                        if cents > 0 {
-                            Text("\(roundToFive(num: cents)) cents sharp")
-                        } else if cents < 0 {
-                            Text("\(roundToFive(num: abs(cents))) cents flat")
-                        } else {
-                            Text("In tune!")
-                        }
-                        Text(String(Int(totalElapsedBeats) % timeSig.0 + 1))
-                            .font(Font.system(size:64).weight(.bold))
-                    }
-                        .font(Font.system(size: 16).weight(.bold))
-
-                    Spacer()
-                    
                     ZStack {
                         // draws staff
                         VStack {
                             ForEach(0 ..< 5) { index in
                                 Rectangle()
-                                    .frame(width: 500.0, height: 1.0)
+                                    .frame(width: CGFloat(barLength), height: 1.0)
                                     .padding(.bottom, self.barDist)
                                     .padding(.top, 0)
                             }
                         }
 
-                        HStack {
+                        HStack(spacing: 0) {
                             if self.measures[self.currBar].clef == "G" {
                                 Image("g_clef")
                                     .resizable()
@@ -300,15 +259,59 @@ struct PlayMode: View, TunerDelegate {
                             
                             Spacer()
                         }
-                            .offset(x: 50)
                     }
 
                     Spacer()
                 }
+                .padding(.top, 20)
                 
                 Spacer()
                 
-                HStack(spacing: 50) {
+                HStack(spacing: 25) {
+                    VStack(spacing: 1) {
+                        if (displayNote(note: note) == measures[measureIndex].notes[beatIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.green)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
+                        } else if (displayNote(note: note.halfStepUp) == measures[measureIndex].notes[beatIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.yellow)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
+                        } else if (displayNote(note: note.halfStepDown) == measures[measureIndex].notes[beatIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.yellow)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
+                        } else if (displayNote(note: note.wholeStepUp) == measures[measureIndex].notes[beatIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.yellow)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
+                        } else if (displayNote(note: note.wholeStepDown) == measures[measureIndex].notes[beatIndex].step) {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.yellow)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
+                        } else {
+                            Text(displayNote(note: note))
+                            .foregroundColor(.red)
+                            .modifier(NoteNameStyle())
+                            .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
+                        }
+                        
+                        if cents > 0 {
+                            Text("\(roundToFive(num: cents)) cents sharp")
+                        } else if cents < 0 {
+                            Text("\(roundToFive(num: abs(cents))) cents flat")
+                        } else {
+                            Text("In tune!")
+                        }
+                    }
+                        .font(Font.system(size: 16).weight(.bold))
+                        .frame(maxWidth: 125, maxHeight: 150)
+                    
                     if isOn {
                         Button(action: {
                             self.tuner.stop()
@@ -338,9 +341,9 @@ struct PlayMode: View, TunerDelegate {
                     }
                                         
                     Text("Score:")
-                        .font(Font.system(size: 64).weight(.bold))
+                        .font(Font.system(size: 60).weight(.bold))
                     Text(String(Int(runningScore)))
-                        .font(Font.system(size: 64).weight(.bold))
+                        .font(Font.system(size: 60).weight(.bold))
                         .frame(width: 150)
                                         
                     NavigationLink(destination: ResultsPage(scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
@@ -361,7 +364,6 @@ struct PlayMode: View, TunerDelegate {
                         .modifier(MenuButtonStyle())
                         .frame(width: 125)
                 }
-                .padding(.bottom, 20)
             }
         }
         .navigationBarTitle("You are playing: " + songMetadata.name)
@@ -400,7 +402,7 @@ struct PlayMode: View, TunerDelegate {
     // Updates current note information from microphone
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
-        let newElapsedBeats: Float = Float(beatCount) * Float(0.05) / Float(60) * Float(tempo)
+        let newElapsedBeats: Float = Float(beatCount) * Float(tuner.pollingInterval) / Float(60) * Float(tempo)
          
         // If still in the countdown, take readings to calculate background noise and update threshold
         if !(Int(newElapsedBeats) > timeSig.0) {
@@ -490,15 +492,19 @@ struct PlayMode: View, TunerDelegate {
     }
     
     func calcOpacity(scrollOffset: Float) -> Double {
+        let opacityRange = Float(50)
+        let keySigOffset = Float(Double(measures[measureIndex].fifths) * 20.0)
+        let scrollDiff = barLength - scrollLength
         var opacity: Double = 0
-        if scrollOffset > scrollLength + 50 {
+        if scrollOffset > scrollLength - opacityRange - keySigOffset {
             opacity = 0
-        } else if scrollOffset > scrollLength {
-            opacity = Double(1) - Double((scrollOffset - 300) / 50)
+        } else if scrollOffset > scrollLength - scrollDiff - keySigOffset {
+            print(String(scrollOffset) + ", " + String(scrollLength))
+            opacity = Double(1) - Double((scrollOffset - scrollLength + scrollDiff + keySigOffset) / opacityRange)
         } else if scrollOffset >= 0 {
             opacity = 1
-        } else if scrollOffset >= -50 {
-            opacity = Double(1) - Double(scrollOffset / -50)
+        } else if scrollOffset >= -opacityRange {
+            opacity = Double(1) - Double(scrollOffset / -opacityRange)
         }
         
         return opacity
@@ -660,15 +666,15 @@ struct PlayMode: View, TunerDelegate {
         let barBeatDiv: Float = scrollLength / Float(self.timeSig.0)
         let beat = Int(self.totalElapsedBeats) % self.timeSig.0 + 1
         let beatDiff = self.totalElapsedBeats - Float(Int(self.totalElapsedBeats))
-        let scrollOffset = scrollLength + (barBeatDiv / 2) - Float(barBeatDiv * (Float(beat) + beatDiff)) + (Float(barNumber) * scrollLength)
+        let scrollOffset = scrollLength + (barBeatDiv * 0.875) - Float(barBeatDiv * (Float(beat) + beatDiff)) + (Float(barNumber) * scrollLength)
         
         let opacity = calcOpacity(scrollOffset: scrollOffset)
         
         return Group {
             Rectangle()
                 .fill(Color.black)
-                .frame(width: 5, height: 150)
-                .offset(x: CGFloat(scrollOffset), y: CGFloat(-50 / 4))
+                .frame(width: 5, height: 126)
+                .offset(x: CGFloat(scrollOffset), y: CGFloat(-11))
                 .opacity(opacity)
         }
     }
@@ -678,7 +684,7 @@ struct PlayMode: View, TunerDelegate {
         let offset = self.calcNoteOffset(note: currNote.step, octave: currNote.octave)
         let fullLength: Float = (scrollLength / Float(timeSig.0)) * currNote.duration
         let remainingRatio: Float = (endOfCurrentNoteBeats - totalElapsedBeats) / currNote.duration
-        let remainingLength: Float = fullLength * remainingRatio - 20
+        let remainingLength: Float = fullLength * remainingRatio - 25
         var opacity: Double = 1
         
         if remainingLength < 0 {
