@@ -402,7 +402,7 @@ struct PlayMode: View, TunerDelegate {
     // Updates current note information from microphone
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
-        let newElapsedBeats: Float = Float(beatCount) * Float(0.05) / Float(60) * Float(tempo)
+        let newElapsedBeats: Float = Float(beatCount) * Float(tuner.pollingInterval) / Float(60) * Float(tempo)
          
         // If still in the countdown, take readings to calculate background noise and update threshold
         if !(Int(newElapsedBeats) > timeSig.0) {

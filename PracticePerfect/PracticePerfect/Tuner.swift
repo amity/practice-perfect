@@ -61,7 +61,7 @@ class Tuner {
     let mic: AKMicrophone
     let tracker: AKFrequencyTracker
     let silence: AKBooster
-    let pollingInterval = 0.05
+    let pollingInterval = 0.02
     var pollingTimer: Timer?
     var delegate: TunerDelegate?
     var beatCount: Int = 0
