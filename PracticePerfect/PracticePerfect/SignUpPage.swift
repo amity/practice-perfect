@@ -93,7 +93,7 @@ struct SignUpPage: View {
                                 self.showErrorMessage = false
                                 self.continueButtonDisabled = false
                                 userData["id"] = "\(signupData["id"] as! Int)"
-                                userData["username"] = signupData["username"] as! String
+                                userData["username"] = (signupData["username"] as! String)
                             }
                             signupSemaphore.signal()
                         }

@@ -328,7 +328,6 @@ struct PlayMode: View, TunerDelegate {
                             Text("Resume")
                         }
                              .modifier(MenuButtonStyle())
-                        .frame(width: 125)
                     } else {
                         Button(action: {
                             self.startTuner()
@@ -337,11 +336,10 @@ struct PlayMode: View, TunerDelegate {
                             Text("START")
                         }
                              .modifier(MenuButtonStyleRed())
-                        .frame(width: 125)
                     }
                                                             
                     Text("Score:")
-                        .font(Font.largeTitle.weight(.bold))
+                        .font(Font.title.weight(.bold))
                     Text(String(Int(runningScore)))
                         .font(Font.largeTitle.weight(.bold))
                         .frame(width: 150)
@@ -500,7 +498,6 @@ struct PlayMode: View, TunerDelegate {
         if scrollOffset > scrollLength - opacityRange - keySigOffset {
             opacity = 0
         } else if scrollOffset > scrollLength - scrollDiff - keySigOffset {
-            print(String(scrollOffset) + ", " + String(scrollLength))
             opacity = Double(1) - Double((scrollOffset - scrollLength + scrollDiff + keySigOffset) / opacityRange)
         } else if scrollOffset >= 0 {
             opacity = 1
