@@ -19,22 +19,11 @@ let mainGradient: some View = LinearGradient(gradient: Gradient(colors: [
 // Color Palette:
 let baseBlue = Color(red: 184.0/255.0, green: 234.0/255.0, blue: 252.0/255.0)
 
-let mutedBlue = Color(red: 156.0/255.0, green: 191.0/255.0, blue: 230.0/255.0)
-let purpleBlue = Color(red: 173.0/255.0, green: 189.0/255.0, blue: 254.0/255.0)
 let aquaBlue = Color(red: 109.0/255.0, green: 214.0/255.0, blue: 253.0/255.0)
 let lightGreen = Color(red: 180.0/255.0, green: 204.0/255.0, blue: 110.0/255.0)
 let darkGreen = Color(red: 160.0/255.0, green: 179.0/255.0, blue: 105.0/255.0)
 let darkRed = Color(red: 255.0/255.0, green: 0/255.0, blue: 0/255.0)
 let lightRed = Color(red: 255.0/255.0, green: 153.0/255.0, blue: 153.0/255.0)
-
-struct ScaleStyle: ViewModifier {
-    func body(content: Content) -> some View {
-        return content
-            .foregroundColor(.white)
-            .font(.system(size: 22))
-            .padding([.leading, .top], 15)
-    }
-}
 
 struct NoteNameStyle: ViewModifier {
     func body(content: Content) -> some View {
@@ -48,7 +37,7 @@ struct AccidentalStyle: ViewModifier {
     func body(content: Content) -> some View {
         return content
             .foregroundColor(Color.black)
-            .font(Font.system(size: 50).weight(.bold))
+            .font(Font.largeTitle.weight(.bold))
     }
 }
 
