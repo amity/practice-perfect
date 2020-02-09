@@ -266,7 +266,7 @@ struct PlayMode: View, TunerDelegate {
                 .padding(.top, 20)
                 
                 Spacer()
-                
+
                 HStack(spacing: 25) {
                     VStack(spacing: 1) {
                         if (displayNote(note: note) == measures[measureIndex].notes[beatIndex].step) {
@@ -309,7 +309,7 @@ struct PlayMode: View, TunerDelegate {
                             Text("In tune!")
                         }
                     }
-                        .font(Font.system(size: 16).weight(.bold))
+                        .font(Font.body.weight(.bold))
                         .frame(maxWidth: 125, maxHeight: 150)
                     
                     if isOn {
@@ -328,7 +328,6 @@ struct PlayMode: View, TunerDelegate {
                             Text("Resume")
                         }
                              .modifier(MenuButtonStyle())
-                        .frame(width: 125)
                     } else {
                         Button(action: {
                             self.startTuner()
@@ -337,35 +336,35 @@ struct PlayMode: View, TunerDelegate {
                             Text("START")
                         }
                              .modifier(MenuButtonStyleRed())
-                        .frame(width: 125)
                     }
-                                        
+                                                            
                     Text("Score:")
-                        .font(Font.system(size: 60).weight(.bold))
+                        .font(Font.title.weight(.bold))
                     Text(String(Int(runningScore)))
-                        .font(Font.system(size: 60).weight(.bold))
+                        .font(Font.largeTitle.weight(.bold))
                         .frame(width: 150)
                                         
                     NavigationLink(destination: ResultsPage(scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
                         Text("Results")
                     }
-                    .simultaneousGesture(TapGesture().onEnded {
-                        // TO DO: Right now, sends new high score to server when pause button is pressed. This will need to be updated
-                        self.tuner.stop()
-                        // If highScoreId of -1, i.e. no existing score, then create; otherwise update
-                        if self.songMetadata.highScoreId == -1 {
-                            postNewScore(songId: self.songMetadata.songId, score: Int(self.runningScore))
-                        } else {
-                            if (Int(self.runningScore) > self.songMetadata.highScore) {
-                                postScoreUpdate(scoreId: self.songMetadata.highScoreId, score: Int(self.runningScore))
+                        .simultaneousGesture(TapGesture().onEnded {
+                            // TO DO: Right now, sends new high score to server when pause button is pressed. This will need to be updated
+                            self.tuner.stop()
+                            // If highScoreId of -1, i.e. no existing score, then create; otherwise update
+                            if self.songMetadata.highScoreId == -1 {
+                                postNewScore(songId: self.songMetadata.songId, score: Int(self.runningScore))
+                            } else {
+                                if (Int(self.runningScore) > self.songMetadata.highScore) {
+                                    postScoreUpdate(scoreId: self.songMetadata.highScoreId, score: Int(self.runningScore))
+                                }
                             }
-                        }
-                    })
+                        })
                         .modifier(MenuButtonStyle())
                         .frame(width: 125)
                 }
             }
         }
+        .foregroundColor(.black)
         .navigationBarTitle("You are playing: " + songMetadata.name)
         .onAppear {
             self.getXML()
@@ -499,7 +498,6 @@ struct PlayMode: View, TunerDelegate {
         if scrollOffset > scrollLength - opacityRange - keySigOffset {
             opacity = 0
         } else if scrollOffset > scrollLength - scrollDiff - keySigOffset {
-            print(String(scrollOffset) + ", " + String(scrollLength))
             opacity = Double(1) - Double((scrollOffset - scrollLength + scrollDiff + keySigOffset) / opacityRange)
         } else if scrollOffset >= 0 {
             opacity = 1

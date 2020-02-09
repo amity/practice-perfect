@@ -128,7 +128,7 @@ struct SelectMusic: View {
                 Spacer()
                 HStack {
                     Text("What song will you play?")
-                        .font(.system(size: 44))
+                        .font(.largeTitle)
                     NavigationLink(destination: SongSearchPage(songList: allSongs)) {
                         Text("Search songs")
                     }

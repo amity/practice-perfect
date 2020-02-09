@@ -51,14 +51,11 @@ struct LoginPage: View {
 
             VStack {
                 Text("Enter your username and password!")
-                    .font(.system(size: 30))
-                    .frame(width: 500)
-                if(self.showErrorMessage){
+                    .font(.largeTitle)
+                if self.showErrorMessage {
                     Text("Error: no account found with this username and password. Please try again.")
                         .background(Color.red)
                         .foregroundColor(Color.white)
-                        .font(.system(size: 14))
-                        .frame(width: 500)
                 }
                 TextField("Username", text: $username)
                     .autocapitalization(UITextAutocapitalizationType.none)
@@ -98,7 +95,7 @@ struct LoginPage: View {
                                 self.showErrorMessage = false
                                 self.loginButtonDisabled = false
                                 userData["id"] = "\(loginData["id"] as! Int)"
-                                userData["username"] = loginData["username"] as! String
+                                userData["username"] = (loginData["username"] as! String)
                             }
                             loginSemaphore.signal()
                         }
@@ -109,7 +106,6 @@ struct LoginPage: View {
                     }) {
                         HStack {
                             Text("Verify")
-                                .fixedSize()
                         }
                     }
                     .modifier(MenuButtonStyle())
@@ -118,7 +114,6 @@ struct LoginPage: View {
                         NavigationLink(destination: LandingPage()) {
                             HStack {
                                 Text("Login")
-                                    .fixedSize()
                             }
                         }
                         .modifier(MenuButtonStyle())
@@ -128,12 +123,13 @@ struct LoginPage: View {
                 NavigationLink(destination: SignUpPage(username: username, password: password, keyboard: keyboard)) {
                     HStack {
                         Text("Sign Up")
-                            .fixedSize()
                     }
                 }
                 .modifier(MenuButtonStyle())
             }
-        }.padding(.bottom, keyboard.currentHeight)
+        }
+        .foregroundColor(.black)
+        .padding(.bottom, keyboard.currentHeight)
         .edgesIgnoringSafeArea(.bottom)
         .animation(.easeOut(duration: 0.16))
     }
