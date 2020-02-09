@@ -183,3 +183,16 @@ struct RestStyle: ViewModifier {
             .opacity(opacity)
     }
 }
+
+struct AccidentalScrollStyle: ViewModifier {
+    let offset: Int
+    let scrollOffset: Float
+    let opacity: Double
+    
+    func body(content: Content) -> some View {
+        return content
+            .font(.title)
+            .offset(x: CGFloat(-25 + scrollOffset), y: CGFloat(-75 + offset))
+            .opacity(opacity)
+    }
+}

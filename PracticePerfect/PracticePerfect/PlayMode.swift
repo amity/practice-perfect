@@ -84,9 +84,9 @@ func postScoreUpdate(scoreId: Int, score: Int) -> () {
 
 // Test data - to be removed when parsing XML is done
 let note1 = NoteMetadata(step: "C", duration: 2, type: "half")
-let note2 = NoteMetadata(step: "D", duration: 2, type: "half")
-let note3 = NoteMetadata(step: "E", duration: 3, type: "half", dot: true)
-let note4 = NoteMetadata(step: "F", duration: 1, type: "quarter")
+let note2 = NoteMetadata(step: "D", duration: 2, type: "half", accidental: "sharp")
+let note3 = NoteMetadata(step: "E", duration: 3, type: "half", accidental: "flat", dot: true)
+let note4 = NoteMetadata(step: "F", duration: 1, type: "quarter", accidental: "natural")
 let note5 = NoteMetadata(step: "G", duration: 1.5, type: "quarter", dot: true)
 let note6 = NoteMetadata(step: "A", duration: 0.5, type: "eighth")
 let note7 = NoteMetadata(step: "B", duration: 1.5, type: "quarter", dot: true)
@@ -586,6 +586,22 @@ struct PlayMode: View, TunerDelegate {
                 ForEach(ledgerLines, id: \.self) { line in
                     Rectangle()
                     .modifier(LedgerStyle(offset: line, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                
+                if note.accidental == "sharp" {
+                    Text("♯").modifier(AccidentalScrollStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                if note.accidental == "flat" {
+                    Text("♭").modifier(AccidentalScrollStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                if note.accidental == "natural" {
+                    Text("♮").modifier(AccidentalScrollStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                if note.accidental == "double-sharp" {
+                    Text("𝄪").modifier(AccidentalScrollStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
+                }
+                if note.accidental == "flat-flat" {
+                    Text("𝄫").modifier(AccidentalScrollStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                 }
                 
                 if note.type == "16th" {

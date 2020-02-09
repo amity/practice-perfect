@@ -65,18 +65,16 @@ class NoteMetadata: Identifiable, Equatable {
     //var alter: Int? //Going to need to ask about this; example value: -1
     var octave: Int = 0 //Octaves are represented by the numbers 0 to 9, where 4 indicates the octave started by middle C
     var duration: Float //Usually 1 per quarter note but it depends on the file
-    var type: String //Usually 1 per quarter note but it depends on the file
-    //<voice> tag currently ignored so we can only support one pitch/hand/instrument at a time
-    var noteType: String = "" //quarter, half, whole, eight, etc.
-    
-    var position: Int = 0 //if same position as last note, it's a chord
-    
+    var type: String //quarter, half, whole, eight, etc.
+    var accidental: String // sharp, flat, natural
     var dot: Bool //If the note is dotted or note
     
-    init(step: String = "C", duration: Float = 1.0, type: String = "quarter", dot: Bool = false, octave: Int = 4, isRest: Bool = false) {
+    init(step: String = "C", duration: Float = 1.0, type: String = "quarter", accidental: String = "none",
+         dot: Bool = false, octave: Int = 4, isRest: Bool = false) {
         self.step = step
         self.duration = duration
         self.type = type
+        self.accidental = accidental
         self.dot = dot
         self.octave = octave
         self.isRest = isRest
