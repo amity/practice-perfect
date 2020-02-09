@@ -740,22 +740,6 @@ struct PlayMode: View, TunerDelegate {
         let base = Float(self.barDist + 10)
         var offset: Float
         switch note {
-//            case "F":
-//                offset = 0
-//            case "E":
-//                offset = 0.5
-//            case "D":
-//                offset = 1
-//            case "C":
-//                offset = 1.5
-//            case "B":
-//                offset = 2
-//            case "A":
-//                offset = 2.5
-//            case "G":
-//                offset = 3
-//            default:
-//                offset = 1.5
             case "C":
                 offset = 5
             case "D":
