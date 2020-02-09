@@ -28,7 +28,7 @@ struct SignUpPage: View {
             VStack {
                 Text("Enter your information below!")
                     .padding(.bottom, 15)
-                    .font(.system(size: 32))
+                    .font(.largeTitle)
                     .frame(width: 500)
                 if(self.showErrorMessage){
                     Text("Error creating account. Please try again later.")
@@ -93,7 +93,7 @@ struct SignUpPage: View {
                                 self.showErrorMessage = false
                                 self.continueButtonDisabled = false
                                 userData["id"] = "\(signupData["id"] as! Int)"
-                                userData["username"] = signupData["username"] as! String
+                                userData["username"] = (signupData["username"] as! String)
                             }
                             signupSemaphore.signal()
                         }
@@ -103,8 +103,8 @@ struct SignUpPage: View {
                         
                     }) {
                         HStack {
+
                             Text("Verify")
-                                .fixedSize()
                         }
                     }
                     .modifier(MenuButtonStyle())
@@ -119,7 +119,9 @@ struct SignUpPage: View {
                     }
                 }
             }
-        }.padding(.bottom, keyboard.currentHeight)
+        }
+        .foregroundColor(.black)
+        .padding(.bottom, keyboard.currentHeight)
         .edgesIgnoringSafeArea(.bottom)
         .animation(.easeOut(duration: 0.16))
     }

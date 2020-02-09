@@ -40,7 +40,7 @@ struct NoteNameStyle: ViewModifier {
     func body(content: Content) -> some View {
         return content
             .foregroundColor(Color.black)
-            .font(Font.system(size: 100).weight(.bold))
+            .font(Font.system(size: 90).weight(.bold))
     }
 }
 
@@ -57,7 +57,7 @@ struct ButtonStyle: ViewModifier {
         return content
             .padding()
             .foregroundColor(.black)
-            .font(Font.system(size: 18).weight(.bold))
+            .font(Font.headline.weight(.bold))
             .background(LinearGradient(gradient: Gradient(colors: [.gray, .white]), startPoint: .leading, endPoint: .trailing))
             .cornerRadius(40)
     }
@@ -68,7 +68,7 @@ struct MenuButtonStyle: ViewModifier {
         return content
             .padding()
             .foregroundColor(.white)
-            .font(Font.system(size: 18).weight(.bold))
+            .font(Font.headline.weight(.bold))
             .background(LinearGradient(gradient: Gradient(colors: [darkGreen, lightGreen]), startPoint: .leading, endPoint: .trailing))
             .cornerRadius(40)
     }
@@ -79,7 +79,7 @@ struct MenuButtonStyleRed: ViewModifier {
         return content
             .padding()
             .foregroundColor(.white)
-            .font(Font.system(size: 18).weight(.bold))
+            .font(Font.headline.weight(.bold))
             .background(LinearGradient(gradient: Gradient(colors: [darkRed, lightRed]), startPoint: .leading, endPoint: .trailing))
             .cornerRadius(40)
     }
@@ -167,6 +167,7 @@ struct KeyStyle: ViewModifier {
         return content
             .padding(.horizontal, 0)
             .font(.system(size: 30))
+            .frame(width: 20.0, height: 20.0)
             .offset(y: CGFloat(-75 + offset))
     }
 }

@@ -22,53 +22,51 @@ struct SongInfoView: View {
         ZStack {
             mainGradient
             HStack {
+                Spacer()
+
                 VStack {
+                    Spacer()
+
                     Text(songMetadata.name)
-                        .font(.system(size: 52))
-                        .padding(.bottom, 15)
-                        .fixedSize()
+                        .font(.largeTitle)
+                        .padding(.bottom, 10)
+
                     HStack {
                         Text("High Score: ")
-                            .font(.system(size: 42))
-                            .padding(.top, 5)
+                            .font(.largeTitle)
                         Spacer()
                         Text("\(songMetadata.highScore)")
-                            .font(.system(size: 42))
-                            .padding(.top, 5)
+                            .font(.largeTitle)
                     }
                     HStack {
                         Text("Rank: ")
-                            .font(.system(size: 42))
-                            .padding(.top, 5)
+                            .font(.largeTitle)
                         Spacer()
                         Text(songMetadata.rank)
-                            .font(.system(size: 42))
-                            .padding(.top, 5)
+                            .font(.largeTitle)
                     }
                     HStack {
                         Text("Artist: ")
-                            .font(.system(size: 42))
-                            .padding(.top, 5)
+                            .font(.largeTitle)
                         Spacer()
                         Text("\(songMetadata.artist)")
-                            .font(.system(size: 42))
-                            .padding(.top, 5)
+                            .font(.largeTitle)
                     }
                     HStack {
                         Text("Year: ")
-                            .font(.system(size: 42))
-                            .padding(.top, 5)
+                            .font(.largeTitle)
                         Spacer()
                         Text("\(String(songMetadata.year))")
-                            .font(.system(size: 42))
-                            .padding(.top, 5)
+                            .font(.largeTitle)
                     }
+
+                    Spacer()
                 }
                 HStack {
                     Spacer()
                     VStack {
                         Text("Tempo")
-                            .font(Font.system(size:20).weight(.bold))
+                            .font(.title)
                         Picker(selection: $selectedTempo, label: EmptyView()) {
                             ForEach(0 ..< tempoValues.count) {
                                 Text(String(self.tempoValues[$0]))
@@ -77,17 +75,16 @@ struct SongInfoView: View {
                             .frame(maxWidth: 100, maxHeight: 70)
                             .clipped()
                     }
-                    Spacer()
                     NavigationLink(destination: PlayMode(songMetadata: songMetadata, tempo: self.tempoValues[self.selectedTempo], timeSig: timeSig)) {
                         Text("Play!")
-                        .font(.system(size: 32))
+                            .font(.title)
                     }
                         .modifier(MenuButtonStyle())
                     Spacer()
                 }
             }
-                .font(.system(size: 32))
         }
+            .foregroundColor(.black)
     }
 }
 

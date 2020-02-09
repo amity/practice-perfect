@@ -494,19 +494,23 @@
 			baseConfigurationReference = 36D794BC0AE93474820CFDBB /* Pods-PracticePerfect.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"PracticePerfect/Preview Content\"";
-				DEVELOPMENT_TEAM = ZL2D24962N;
+				DEVELOPMENT_TEAM = JQ28K6Y7JE;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = PracticePerfect/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = cs98.PracticePerfect;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.dartmouth.PracticePerfect;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore edu.dartmouth.PracticePerfect";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -515,19 +519,23 @@
 			baseConfigurationReference = AE4CBC2ABD6D6E4986B1F28B /* Pods-PracticePerfect.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"PracticePerfect/Preview Content\"";
-				DEVELOPMENT_TEAM = ZL2D24962N;
+				DEVELOPMENT_TEAM = JQ28K6Y7JE;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = PracticePerfect/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = cs98.PracticePerfect;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.dartmouth.PracticePerfect;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore edu.dartmouth.PracticePerfect";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};

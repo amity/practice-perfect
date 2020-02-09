@@ -39,46 +39,54 @@ struct ResultsPage: View {
                     HStack {
                         VStack {
                             Text("New Score")
-                                .font(.system(size: 30))
+                                .font(Font.title.weight(.bold))
                             Text("\(scoreMetadata.newScore)")
-                                .font(.system(size: 48))
+                                .font(.largeTitle)
                         }
-                            .frame(width: 200)
+
+                        Spacer()
+
                         VStack {
                             Text("Grade")
-                                .font(.system(size: 30))
+                                .font(Font.title.weight(.bold))
                             // Calculate new rank from the new score and top possible score
                             Text("\(calculateRank(newScore: scoreMetadata.newScore, topScore: songMetadata.topScore))")
-                                .font(.system(size: 48))
+                                .font(.largeTitle)
                         }
-                            .frame(width: 200)
                     }
+
+                    Spacer()
+
                     if (scoreMetadata.totalCount > 0) {
                         Text("You played \(Int(100 * Float(scoreMetadata.perfectCount) / Float(scoreMetadata.totalCount)) + Int(100 * Float(scoreMetadata.goodCount) / Float(scoreMetadata.totalCount)))% of your notes in tune or almost in tune this time!")
-                            .font(.system(size: 26))
+                            .font(.title)
                             .multilineTextAlignment(.center)
                     } else {
                         Text("You played 0% of your notes in tune or almost in tune this time!")
-                            .font(.system(size: 26))
+                            .font(.title)
                             .multilineTextAlignment(.center)
                     }
+
                     Spacer()
+
                     HStack {
                         VStack {
                             Text("Previous Score")
-                                .font(.system(size: 30))
+                                .font(Font.title.weight(.bold))
                             Text("\(songMetadata.highScore)")
-                                .font(.system(size: 48))
+                                .font(.largeTitle)
                         }
-                            .frame(width: 200)
+
+                        Spacer()
+
                         VStack {
                             Text("Grade")
-                                .font(.system(size: 30))
+                                .font(Font.title.weight(.bold))
                             // Calculate new rank from the new score and top possible score
                             Text("\(calculateRank(newScore: songMetadata.highScore, topScore: songMetadata.topScore))")
-                                .font(.system(size: 48))
+                                .font(.largeTitle)
+//                                .font(.system(size: 48))
                         }
-                            .frame(width: 200)
                     }
                     Spacer()
                 }
@@ -100,6 +108,7 @@ struct ResultsPage: View {
                 Spacer()
             }
         }
+        .foregroundColor(.black)
         .navigationBarTitle("")
         .navigationBarBackButtonHidden(true)
     }
