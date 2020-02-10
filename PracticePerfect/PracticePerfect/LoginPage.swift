@@ -7,8 +7,8 @@
 //
 
 import SwiftUI
+import GoogleSignIn
 
-public var userData: [String:String] = ["username":"Not signed in", "id": "-1"]
 
 // https://stackoverflow.com/a/58242249
 final class KeyboardResponder: ObservableObject {
@@ -44,6 +44,7 @@ struct LoginPage: View {
     @State private var textFieldInput: String = ""
     @State var showErrorMessage: Bool = false
     @State var loginButtonDisabled: Bool = true
+
 
     var body: some View {
         ZStack {
@@ -125,6 +126,17 @@ struct LoginPage: View {
                     }
                 }
                 Text("or").fixedSize().padding(.bottom, 5)
+                Button(action: {
+                    GIDSignIn.sharedInstance().clientID = "379100583609-kjmvkoo9dl6v2i0mah3fuib337f8c77o.apps.googleusercontent.com"
+                    GIDSignIn.sharedInstance().signIn()
+                }) {
+                    HStack {
+                        Text("Google Sign-In")
+                            .fixedSize()
+                    }
+                }
+
+                .modifier(MenuButtonStyle())
                 NavigationLink(destination: SignUpPage(username: username, password: password, keyboard: keyboard)) {
                     HStack {
                         Text("Sign Up")

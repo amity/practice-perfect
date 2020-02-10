@@ -10,6 +10,8 @@ target 'PracticePerfect' do
 
   pod 'SWXMLHash', '~> 5.0.0'
   
+  pod 'GoogleSignIn'
+  
 end
 
 workspace 'PracticePerfect'

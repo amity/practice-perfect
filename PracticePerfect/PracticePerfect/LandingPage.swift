@@ -93,7 +93,7 @@ struct LandingPage: View {
                     .modifier(MenuButtonStyle())
                 }
             }
-            .navigationBarTitle(userData["username"]!)
+            .navigationBarTitle(userData["username"] ?? "not signed in")
             .navigationBarBackButtonHidden(true)
         }
     }
