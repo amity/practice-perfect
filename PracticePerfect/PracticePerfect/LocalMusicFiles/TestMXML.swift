@@ -63,24 +63,6 @@ var hbdTestMeasures : Array<MeasureMetadata> = [
     MeasureMetadata(measureNumber: 7, notes: [hbdNote20, hbdNote21, hbdNote22, hbdNote23], clef: "G", fifths: 0, mode: "major"),
     MeasureMetadata(measureNumber: 8, notes: [hbdNote24, hbdNote25], clef: "G", fifths: 0, mode: "major")]
 
-
-
-//let note7 = NoteMetadata(step: "B", duration: 1.5, type: "quarter", dot: true)
-//let note8 = NoteMetadata(step: "C", duration: 0.5, type: "eighth")
-//let note9 = NoteMetadata(step: "C", duration: 0.5, type: "16th")
-//let note10 = NoteMetadata(step: "B", duration: 0.5, type: "16th")
-//let note11 = NoteMetadata(step: "A", duration: 0.5, type: "16th", octave: 3)
-//let note12 = NoteMetadata(step: "G", duration: 0.5, type: "16th")
-//let note13 = NoteMetadata(step: "F", duration: 0.5, type: "16th")
-//let note14 = NoteMetadata(step: "E", duration: 0.5, type: "16th")
-//let note15 = NoteMetadata(step: "D", duration: 0.5, type: "16th")
-//let note16 = NoteMetadata(step: "C", duration: 0.5, type: "16th")
-//
-//let note17 = NoteMetadata(step: "F", duration: 0.25, type: "16th")
-//let note18 = NoteMetadata(step: "E", duration: 0.25, type: "16th")
-//let note19 = NoteMetadata(step: "D", duration: 0.25, type: "16th")
-//let note20 = NoteMetadata(step: "C", duration: 0.25, type: "16th")
-
 let hbdRest1 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
 let hbdRest2 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
 let hbdRest3 = NoteMetadata(duration: 1, type: "quarter", isRest: true)

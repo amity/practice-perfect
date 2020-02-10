@@ -82,41 +82,6 @@ func postScoreUpdate(scoreId: Int, score: Int) -> () {
     _ = semaphore.wait(wallTimeout: .distantFuture)
 }
 
-// Test data - to be removed when parsing XML is done
-let note1 = NoteMetadata(step: "C", duration: 2, type: "half")
-let note2 = NoteMetadata(step: "D", duration: 2, type: "half", accidental: "sharp")
-let note3 = NoteMetadata(step: "E", duration: 3, type: "half", accidental: "flat", dot: true)
-let note4 = NoteMetadata(step: "F", duration: 1, type: "quarter", accidental: "natural")
-let note5 = NoteMetadata(step: "G", duration: 1.5, type: "quarter", dot: true)
-let note6 = NoteMetadata(step: "A", duration: 0.5, type: "eighth")
-let note7 = NoteMetadata(step: "B", duration: 1.5, type: "quarter", dot: true)
-let note8 = NoteMetadata(step: "C", duration: 0.5, type: "eighth", octave: 5)
-let note9 = NoteMetadata(step: "C", duration: 0.5, type: "16th", octave: 5)
-let note10 = NoteMetadata(step: "B", duration: 0.5, type: "16th", octave: 3)
-let note11 = NoteMetadata(step: "A", duration: 0.5, type: "16th", octave: 5)
-let note12 = NoteMetadata(step: "G", duration: 0.5, type: "16th")
-let note13 = NoteMetadata(step: "F", duration: 0.5, type: "16th", octave: 5)
-let note14 = NoteMetadata(step: "E", duration: 0.5, type: "16th")
-let note15 = NoteMetadata(step: "D", duration: 0.5, type: "16th")
-let note16 = NoteMetadata(step: "C", duration: 0.5, type: "16th")
-
-let note17 = NoteMetadata(step: "F", duration: 0.25, type: "16th")
-let note18 = NoteMetadata(step: "E", duration: 0.25, type: "16th")
-let note19 = NoteMetadata(step: "D", duration: 0.25, type: "16th")
-let note20 = NoteMetadata(step: "C", duration: 0.25, type: "16th")
-
-let rest1 = NoteMetadata(duration: 1, type: "16th", isRest: true)
-let rest2 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
-let rest3 = NoteMetadata(duration: 1, type: "half", isRest: true)
-let rest4 = NoteMetadata(duration: 1, type: "whole", isRest: true)
-
-//var testMeasures = [MeasureMetadata(measureNumber: 0, notes: [rest1, rest2, rest3, rest4],
-//                        clef: "G", fifths: 0, mode: "major"),
-//                    MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
-//                    MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "G", fifths: 0, mode: "major"),
-//                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "G", fifths: 0, mode: "major"),
-//                    MeasureMetadata(measureNumber: 3, notes: [note9, note10, note11, note12, note13, note14, note15, note16], clef: "G", fifths: 0, mode: "major")]
-
 var testMeasures = hbdTestMeasures
 
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
