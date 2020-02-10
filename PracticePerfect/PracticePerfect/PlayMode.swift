@@ -110,12 +110,14 @@ let rest2 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
 let rest3 = NoteMetadata(duration: 1, type: "half", isRest: true)
 let rest4 = NoteMetadata(duration: 1, type: "whole", isRest: true)
 
-var testMeasures = [MeasureMetadata(measureNumber: 0, notes: [rest1, rest2, rest3, rest4],
-                        clef: "G", fifths: 0, mode: "major"),
-                    MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
-                    MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "G", fifths: 0, mode: "major"),
-                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "G", fifths: 0, mode: "major"),
-                    MeasureMetadata(measureNumber: 3, notes: [note9, note10, note11, note12, note13, note14, note15, note16], clef: "G", fifths: 0, mode: "major")]
+//var testMeasures = [MeasureMetadata(measureNumber: 0, notes: [rest1, rest2, rest3, rest4],
+//                        clef: "G", fifths: 0, mode: "major"),
+//                    MeasureMetadata(measureNumber: 1, notes: [note1, note2], clef: "G", fifths: 0, mode: "major"),
+//                    MeasureMetadata(measureNumber: 2, notes: [note3, note4], clef: "G", fifths: 0, mode: "major"),
+//                    MeasureMetadata(measureNumber: 3, notes: [note5, note6, note7, note8], clef: "G", fifths: 0, mode: "major"),
+//                    MeasureMetadata(measureNumber: 3, notes: [note9, note10, note11, note12, note13, note14, note15, note16], clef: "G", fifths: 0, mode: "major")]
+
+var testMeasures = hbdTestMeasures
 
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
 let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]

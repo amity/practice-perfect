@@ -16,7 +16,7 @@ struct SongInfoView: View {
     
     // These need to be in the API eventually - time signature and default tempo
     @State private var selectedTempo = 100
-    let timeSig = (4,4)
+    let timeSig = (3,4)
 
     var body: some View {
         ZStack {
