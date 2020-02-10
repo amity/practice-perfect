@@ -30,6 +30,7 @@
 		729620432373F6ED00706B82 /* PracticePerfect.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 729620412373F6ED00706B82 /* PracticePerfect.xcdatamodeld */; };
 		7296206C237405B400706B82 /* Song+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7296206A237405B300706B82 /* Song+CoreDataProperties.swift */; };
 		7296206D237405B400706B82 /* Song+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7296206B237405B400706B82 /* Song+CoreDataClass.swift */; };
+		72C6698C23F0E675000D33A5 /* TestMXML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C6698B23F0E675000D33A5 /* TestMXML.swift */; };
 		72F3276D237FF72600EF9F57 /* ParseSongsMusicXML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F3276C237FF72600EF9F57 /* ParseSongsMusicXML.swift */; };
 		72F3276F237FF74100EF9F57 /* ParseMeasuresMusicXML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F3276E237FF74100EF9F57 /* ParseMeasuresMusicXML.swift */; };
 		72F32771237FF74F00EF9F57 /* ParseNotesMusicXML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F32770237FF74F00EF9F57 /* ParseNotesMusicXML.swift */; };
@@ -73,6 +74,7 @@
 		729620422373F6ED00706B82 /* PracticePerfect.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PracticePerfect.xcdatamodel; sourceTree = "<group>"; };
 		7296206A237405B300706B82 /* Song+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Song+CoreDataProperties.swift"; path = "PracticePerfect/Data/Song+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		7296206B237405B400706B82 /* Song+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Song+CoreDataClass.swift"; path = "PracticePerfect/Data/Song+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		72C6698B23F0E675000D33A5 /* TestMXML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestMXML.swift; sourceTree = "<group>"; };
 		72F3276C237FF72600EF9F57 /* ParseSongsMusicXML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseSongsMusicXML.swift; sourceTree = "<group>"; };
 		72F3276E237FF74100EF9F57 /* ParseMeasuresMusicXML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseMeasuresMusicXML.swift; sourceTree = "<group>"; };
 		72F32770237FF74F00EF9F57 /* ParseNotesMusicXML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseNotesMusicXML.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 			children = (
 				728160BA2380919500608307 /* apres.musicxml */,
 				728160BD238091D000608307 /* test.musicxml */,
+				72C6698B23F0E675000D33A5 /* TestMXML.swift */,
 			);
 			path = LocalMusicFiles;
 			sourceTree = "<group>";
@@ -346,6 +349,7 @@
 				14952320237B08AE0077BA97 /* ResultsPage.swift in Sources */,
 				72F32771237FF74F00EF9F57 /* ParseNotesMusicXML.swift in Sources */,
 				722A895D236F65F80030B009 /* LandingPage.swift in Sources */,
+				72C6698C23F0E675000D33A5 /* TestMXML.swift in Sources */,
 				7296206D237405B400706B82 /* Song+CoreDataClass.swift in Sources */,
 				14E995B223CE7B9300F4C08D /* SignUpPage.swift in Sources */,
 				722A8947236F643C0030B009 /* SceneDelegate.swift in Sources */,
