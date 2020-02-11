@@ -13,11 +13,12 @@ class UserSettings: ObservableObject {
     @Published var keyIndex = UserDefaults.standard.integer(forKey: "keyIndex")
 }
 
+let scaleOrder: [String] = ["G♭", "D♭", "A♭", "E♭", "B♭", "F", "C", "G", "D", "A", "E", "B", "F♯"].reversed()
+
 struct SettingsView: View {
     @EnvironmentObject var settings: UserSettings
     
     let clefs = ["Treble", "Alto", "Bass"]
-    let scales: [ScaleMetadata] = musicData["scales"] ?? []
     
     @State var selectedClef: Int
     @State var selectedKey: Int
@@ -51,8 +52,8 @@ struct SettingsView: View {
                         Spacer()
                         VStack {
                             Picker(selection: $selectedKey, label: EmptyView()) {
-                                ForEach(0 ..< scales.count) {
-                                    Text(String(self.scales[$0].name))
+                                ForEach(0 ..< scaleOrder.count) {
+                                    Text(String(scaleOrder[$0]))
                                 }
                             }.labelsHidden()
                             .frame(maxWidth: 200)
