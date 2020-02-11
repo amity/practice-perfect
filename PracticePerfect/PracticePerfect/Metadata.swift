@@ -69,7 +69,7 @@ class NoteMetadata: Identifiable, Equatable {
     var accidental: String // sharp, flat, natural
     var dot: Bool //If the note is dotted or note
     
-    init(step: String = "C", duration: Float = 1.0, type: String = "quarter", accidental: String = "none",
+    init(step: String = "C", duration: Float = 1.0, type: String = "quarter", accidental: String = "",
          dot: Bool = false, octave: Int = 4, isRest: Bool = false) {
         self.step = step
         self.duration = duration

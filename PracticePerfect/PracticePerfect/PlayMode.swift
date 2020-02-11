@@ -82,6 +82,221 @@ func postScoreUpdate(scoreId: Int, score: Int) -> () {
     _ = semaphore.wait(wallTimeout: .distantFuture)
 }
 
+// Used for creating tranposing correspondences and plotting key signatures
+let sharpOrder = ["F", "C", "G", "D", "A", "E", "B"]
+let flatOrder = ["B", "E", "A", "D", "G", "C", "F"]
+
+// Creates list of notes for transposition
+func createNotesList(fifth: Int) -> Array<String> {
+    let notesOrder = ["A", "B", "C", "D", "E", "F", "G"]
+    let key: String = scaleOrder[fifth + 6]
+    let index = notesOrder.firstIndex(of: String(key.prefix(1)))!
+   
+    // Get the list of notes that have accidentals in the key signature itself
+    var keySigAccidentals: [String] = []
+    if fifth < 0 {
+        keySigAccidentals = Array<String>(sharpOrder[0 ... -fifth - 1])
+    } else if fifth > 0 {
+        keySigAccidentals = Array<String>(flatOrder[0 ... fifth - 1])
+    }
+    
+    var notesList: [String] = []
+    
+    // End of list
+    for i in index ... notesOrder.count - 1 {
+        let currNote = notesOrder[i]
+        // FLAT
+        // If current note has an accidental in key signature
+        if keySigAccidentals.contains(currNote) {
+            // If already flatted, make double flat
+            if fifth < 0 {
+                notesList.append(currNote + "𝄫")
+            // If already sharp, make natural
+            } else if fifth > 0 {
+                notesList.append(currNote + "♮")
+            }
+        // If not accidental in key signature
+        } else {
+            notesList.append(currNote + "♭")
+        }
+        
+        // NOTE ITSELF
+        // If current note has accidental in key signature
+        if keySigAccidentals.contains(currNote) {
+            // If flatted
+            if fifth < 0 {
+                notesList.append(currNote + "♭")
+            } else if fifth > 0 {
+                notesList.append(currNote + "♯")
+            }
+        // If not accidental in key signature
+        } else {
+            notesList.append(currNote)
+        }
+        
+        // SHARP
+        // If current note has accidental in key signature
+        if keySigAccidentals.contains(currNote) {
+            // If already flatted, make natural
+            if fifth < 0 {
+                notesList.append(currNote + "♮")
+            // If already sharp, make double sharp
+            } else if fifth > 0 {
+                notesList.append(currNote + "𝄪")
+            }
+        // If not accidental in key signature
+        } else {
+            notesList.append(currNote + "♯")
+        }
+    }
+    // Beginning of list if not already done whole list
+    if (index - 1 >= 0) {
+        for j in 0 ... index - 1 {
+            let currNote = notesOrder[j]
+            // FLAT
+            // If current note has an accidental in key signature
+            if keySigAccidentals.contains(currNote) {
+                // If already flatted, make double flat
+                if fifth < 0 {
+                    notesList.append(currNote + "𝄫")
+                // If already sharp, make natural
+                } else if fifth > 0 {
+                    notesList.append(currNote + "♮")
+                }
+            // If not accidental in key signature
+            } else {
+                notesList.append(currNote + "♭")
+            }
+            
+            // NOTE ITSELF
+            // If current note has accidental in key signature
+            if keySigAccidentals.contains(currNote) {
+                // If flatted
+                if fifth < 0 {
+                    notesList.append(currNote + "♭")
+                } else if fifth > 0 {
+                    notesList.append(currNote + "♯")
+                }
+            // If not accidental in key signature
+            } else {
+                notesList.append(currNote)
+            }
+            
+            // SHARP
+            // If current note has accidental in key signature
+            if keySigAccidentals.contains(currNote) {
+                // If already flatted, make natural
+                if fifth < 0 {
+                    notesList.append(currNote + "♮")
+                // If already sharp, make double sharp
+                } else if fifth > 0 {
+                    notesList.append(currNote + "𝄪")
+                }
+            // If not accidental in key signature
+            } else {
+                notesList.append(currNote + "♯")
+            }
+        }
+    }
+    
+    return notesList
+}
+
+// Used to determine which notes should be moved up or down an octave when the key is changed
+let changeOctave: [Int: [String]] = [
+    6: ["C", "D", "E"],
+    5: ["B"],
+    4: ["C", "D"],
+    3: ["C", "D", "E", "F", "G"],
+    2: ["C"],
+    1: ["C", "D", "E", "F"],
+    0: [],
+    -1: ["C", "D", "E"],
+    -2: ["B"],
+    -3: ["C", "D"],
+    -4: ["C", "D", "E", "F", "G"],
+    -5: ["C"],
+    -6: ["C", "D", "E", "F"]
+]
+
+// Whether notes should be moved up an octave or not (and therefore down an octave)
+let changeUp: [Int: Bool] = [
+    6: false,
+    5: true,
+    4: false,
+    3: false,
+    2: false,
+    1: false,
+    -1: false,
+    -2: true,
+    -3: false,
+    -4: false,
+    -5: false,
+    -6: false
+]
+
+// Shifts notes depending on key
+func transposeSong(originalMeasures: Array<MeasureMetadata>, halfStepOffset: Int) -> Array<MeasureMetadata> {
+    // New list of transposed MeasureMetadata to be returned
+    var transposed: Array<MeasureMetadata> = []
+    
+    // Get list of notes that will change octave after transpotiion
+    let octChangeSet = Array<String>(changeOctave[halfStepOffset]!)
+    
+    // For each measure
+    for i in 0...originalMeasures.count - 1 {
+        let oldMeasure = originalMeasures[i]
+        
+        var transposeDict: [String: String] = [:]
+        for (index, element) in createNotesList(fifth: oldMeasure.fifths).enumerated() {
+            transposeDict[element] = createNotesList(fifth: oldMeasure.fifths - halfStepOffset)[index]
+        }
+        
+        var newNotes: [NoteMetadata] = []
+        
+        // For each note in the measure
+        for j in 0...oldMeasure.notes.count - 1 {
+            let oldNote: NoteMetadata = oldMeasure.notes[j]
+            var oldString: String = oldNote.step
+            if oldNote.accidental != "" {
+                oldString += oldNote.accidental
+            }
+            let newString: String = transposeDict[oldString]!
+            let newStep: String = String(newString.prefix(1))
+            
+            var newAccidental: String = ""
+            if newString.count > 1 {
+                newAccidental = String(newString.suffix(1))
+            }
+            
+            var octChange = false
+            if octChangeSet.contains(newStep) {
+                octChange = true
+            }
+            
+            var newOctave = oldNote.octave
+            if octChange {
+                if octChangeSet.contains(newStep) {
+                    if changeUp[halfStepOffset]! {
+                        newOctave -= 1
+                    } else {
+                        newOctave += 1
+                    }
+                }
+            }
+                        
+            let newNote: NoteMetadata = NoteMetadata(step: newStep, duration: oldNote.duration, type: oldNote.type, accidental: newAccidental,
+                dot: oldNote.dot, octave: newOctave, isRest: oldNote.isRest)
+            newNotes.append(newNote)
+        }
+        
+        let newMeasure = MeasureMetadata(measureNumber: oldMeasure.measureNumber, notes: newNotes, clef: oldMeasure.clef, fifths: oldMeasure.fifths + halfStepOffset, mode: oldMeasure.mode)
+        transposed.append(newMeasure)
+    }
+    
+    return transposed
+}
+
 var testMeasures = hbdTestMeasures
 
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
@@ -93,6 +308,8 @@ let barLength = Float(screenSize.width) - Float(100)
 let scrollLength = Float(screenSize.width) - Float(200)
 
 struct PlayMode: View, TunerDelegate {
+    @EnvironmentObject var settings: UserSettings
+    
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     var songMetadata: SongMetadata
     var tempo: Int
@@ -186,18 +403,18 @@ struct PlayMode: View, TunerDelegate {
                         }
 
                         HStack(spacing: 0) {
-                            if self.measures[self.currBar].clef == "G" {
+                            if settings.clefIndex == 0 {
                                 Image("g_clef")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(height: self.barDist * 7)
-                            } else if self.measures[self.currBar].clef == "C" {
+                            } else if settings.clefIndex == 1 {
                                 Image("c_clef")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                                    .frame(height: self.barDist * 5)
-                                    .offset(y: CGFloat(-75 + self.barDist + 10))
-                            } else if self.measures[self.currBar].clef == "F" {
+                                    .frame(height: self.barDist * 6 - 7)
+                                    .offset(y: CGFloat(-self.barDist / 2))
+                            } else if settings.clefIndex == 2 {
                                 Image("f_clef")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
@@ -236,27 +453,27 @@ struct PlayMode: View, TunerDelegate {
 
                 HStack(spacing: 25) {
                     VStack(spacing: 1) {
-                        if (displayNote(note: note) == measures[measureIndex].notes[beatIndex].step) {
+                        if (displayNote(note: note) == measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental) {
                             Text(displayNote(note: note))
                             .foregroundColor(.green)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
-                        } else if (displayNote(note: note.halfStepUp) == measures[measureIndex].notes[beatIndex].step) {
+                        } else if (displayNote(note: note.halfStepUp) == measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
-                        } else if (displayNote(note: note.halfStepDown) == measures[measureIndex].notes[beatIndex].step) {
+                        } else if (displayNote(note: note.halfStepDown) == measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
-                        } else if (displayNote(note: note.wholeStepUp) == measures[measureIndex].notes[beatIndex].step) {
+                        } else if (displayNote(note: note.wholeStepUp) == measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
-                        } else if (displayNote(note: note.wholeStepDown) == measures[measureIndex].notes[beatIndex].step) {
+                        } else if (displayNote(note: note.wholeStepDown) == measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
@@ -335,6 +552,9 @@ struct PlayMode: View, TunerDelegate {
         .navigationBarTitle("You are playing: " + songMetadata.name)
         .onAppear {
             self.getXML()
+            if self.settings.keyIndex - 6 != 0 {
+                self.measures = transposeSong(originalMeasures: self.measures, halfStepOffset: self.settings.keyIndex - 6)
+            }
         }
         .onDisappear(perform: self.tuner.stop)
     }
@@ -342,7 +562,7 @@ struct PlayMode: View, TunerDelegate {
     // If correct note, then 10 points; if one half step away, then 5 points; if one whole step away, then 3 points; increase streak count for target, neutral for half step off, reset for whole note or worse
     func updateScore(value: Note) {
         totalNotesPlayed += 1
-        switch measures[measureIndex].notes[beatIndex].step {
+        switch measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental {
         case displayNote(note: value):
             perfectCount += 1
             streakCount += 1
@@ -442,16 +662,28 @@ struct PlayMode: View, TunerDelegate {
         Int(5 * round(num/5))
     }
     
+    // Used to determine which octave the key signature accidentals should be in
+    func determineOctave(text: String, index: Int, keys: [String]) -> some View {
+        if !keys.contains(sharpOrder[index]) {
+            return Group {
+                Text(text).modifier(KeyStyle(offset: self.calcNoteOffset(note: sharpOrder[index], octave: 5)))
+            }
+        } else {
+            return Group {
+                Text(text).modifier(KeyStyle(offset: self.calcNoteOffset(note: sharpOrder[index], octave: 4)))
+            }
+        }
+    }
+    
     func drawKey(fifths: Int) -> some View {
-        let sharpOrder = ["F", "C", "G", "D", "A", "E", "B"]
         return Group {
             if fifths > 0 {
                 ForEach(0 ..< fifths, id: \.self) { index in
-                    Text("♯").modifier(KeyStyle(offset: self.calcNoteOffset(note: sharpOrder[index])))
+                    self.determineOctave(text: "♯", index: index, keys: ["A", "B"])
                 }
             } else if fifths < 0 {
                 ForEach((7 + fifths ..< 7).reversed(), id: \.self) { index in
-                    Text("♭").modifier(KeyStyle(offset: self.calcNoteOffset(note: sharpOrder[index])))
+                    self.determineOctave(text: "♭", index: index, keys: ["A", "B", "G"])
                 }
             }
         }
@@ -508,6 +740,14 @@ struct PlayMode: View, TunerDelegate {
             }
         }
         
+        var keySigAccidentals: [String] = []
+        let fifths = self.measures[self.measureIndex].fifths
+        if fifths > 0 {
+            keySigAccidentals = Array<String>(sharpOrder[0 ... fifths - 1])
+        } else if fifths < 0 {
+            keySigAccidentals = Array<String>(flatOrder[0 ... -fifths - 1])
+        }
+        
         return Group {
             if note.isRest {  
                 if note.type == "16th" {
@@ -555,19 +795,19 @@ struct PlayMode: View, TunerDelegate {
                     .modifier(LedgerStyle(offset: line, scrollOffset: scrollOffset, opacity: opacity))
                 }
                 
-                if note.accidental == "sharp" {
+                if (note.accidental == "♯") && (!keySigAccidentals.contains(note.step)) {
                     Text("♯").modifier(AccidentalScrollStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                 }
-                if note.accidental == "flat" {
+                if (note.accidental == "♭") && (!keySigAccidentals.contains(note.step)) {
                     Text("♭").modifier(AccidentalScrollStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                 }
-                if note.accidental == "natural" {
+                if note.accidental == "♮" {
                     Text("♮").modifier(AccidentalScrollStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                 }
-                if note.accidental == "double-sharp" {
+                if note.accidental == "𝄪" {
                     Text("𝄪").modifier(AccidentalScrollStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                 }
-                if note.accidental == "flat-flat" {
+                if note.accidental == "𝄫" {
                     Text("𝄫").modifier(AccidentalScrollStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                 }
                 
@@ -707,7 +947,7 @@ struct PlayMode: View, TunerDelegate {
     }
     
     func feedbackColor(value: Note) -> Int {
-        switch measures[measureIndex].notes[beatIndex].step {
+        switch measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental {
         case displayNote(note: value):
             return 0
         case displayNote(note: value.halfStepUp), displayNote(note: value.halfStepDown):
@@ -741,7 +981,15 @@ struct PlayMode: View, TunerDelegate {
                 offset = 5
         }
         
-        offset += 3.5 * Float(4 - octave)
+        if settings.clefIndex == 0 {
+            offset += 3.5 * Float(4 - octave)
+        } else if settings.clefIndex == 1 {
+            offset += 3.5 * Float(4 - (octave - 1))
+            offset -= 3
+        } else if settings.clefIndex == 2 {
+            offset += 3.5 * Float(4 - (octave - 2))
+            offset -= 6
+        }
         
         return Int(base * offset)
     }
