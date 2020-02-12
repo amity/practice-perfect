@@ -111,6 +111,7 @@ struct FlagStyle: ViewModifier {
     let facingUp: Bool
     let position: Int
     let givenWidth: Double
+    let angle: Double
     
     func body(content: Content) -> some View {
         var width = self.givenWidth
@@ -124,6 +125,7 @@ struct FlagStyle: ViewModifier {
 
         return content
             .frame(width: CGFloat(width), height: 4.0)
+            .rotationEffect(Angle(radians: angle), anchor: .topLeading)
             .offset(x: CGFloat(scrollOffset + xConstant), y: CGFloat(offset + yConstant + positionConstant))
             .opacity(opacity)
             .frame(width: 1)

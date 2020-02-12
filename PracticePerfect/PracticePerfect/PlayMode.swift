@@ -707,6 +707,21 @@ struct PlayMode: View, TunerDelegate {
         return opacity
     }
     
+    // Calculates length and angle of connecting bar
+    func calcFlagAngle(startNote: NoteMetadata, endNote: NoteMetadata, length: Double) -> (Double, Double) {
+        let startOffset = self.calcNoteOffset(note: startNote.step, octave: startNote.octave)
+        let endOffset = self.calcNoteOffset(note: endNote.step, octave: endNote.octave)
+        let vertDist: Int = endOffset - startOffset
+        
+        let hypotenuse: Double = Double(Double(vertDist * vertDist) + Double(length * length)).squareRoot()
+        var angle: Double = 0
+        if hypotenuse > 0 {
+            angle = asin(Double(vertDist) / hypotenuse)
+        }
+                
+        return (hypotenuse, angle)
+    }
+    
     func drawNote(note: NoteMetadata, barIndex: Int, barNumber: Int) -> some View {
         let offset = self.calcNoteOffset(note: note.step, octave: note.octave)
          
@@ -728,11 +743,13 @@ struct PlayMode: View, TunerDelegate {
         }
         var followingSame: Int = 0
         var breakReached: Bool = false
+        var endNote: NoteMetadata = note
         if (note.type == "eighth")  {
             if index! < self.measures[barIndex].notes.count - 1 {
                 if self.measures[barIndex].notes[index! + 1].type == note.type {
                     if !self.measures[barIndex].notes[index! + 1].isRest {
                         followingSame += 1
+                        endNote = self.measures[barIndex].notes[index! + 1]
                     }
                 }
             }
@@ -743,6 +760,7 @@ struct PlayMode: View, TunerDelegate {
                         if self.measures[barIndex].notes[i].type == note.type {
                             if !self.measures[barIndex].notes[i].isRest {
                                 followingSame += 1
+                                endNote = self.measures[barIndex].notes[i]
                                 if followingSame == 3 {
                                     breakReached = true
                                 }
@@ -788,7 +806,14 @@ struct PlayMode: View, TunerDelegate {
         
         let eighthFlagLength: Double = Double(barBeatDiv / 2)
         let sixteenthFlagLength: Double = Double(barBeatDiv / 4) * Double(followingSame)
-        
+        var flagLength: Double = 0
+        var flagAngle: Double = 0
+        if note.type == "eighth" {
+            (flagLength, flagAngle) = self.calcFlagAngle(startNote: note, endNote: endNote, length: eighthFlagLength)
+        } else if note.type == "16th" {
+            (flagLength, flagAngle) = self.calcFlagAngle(startNote: note, endNote: endNote, length: sixteenthFlagLength)
+        }
+                
         return Group {
             if note.isRest {  
                 if note.type == "16th" {
@@ -860,14 +885,14 @@ struct PlayMode: View, TunerDelegate {
                         .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
                     if (followingSame >= 1) && (!prevSame){
                         Rectangle()
-                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: sixteenthFlagLength))
+                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: flagLength, angle: flagAngle))
                         Rectangle()
-                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 1, givenWidth: sixteenthFlagLength))
+                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 1, givenWidth: flagLength, angle: flagAngle))
                     } else if !prevSame {
                         Rectangle()
-                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: -1))
+                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: -1, angle: flagAngle))
                         Rectangle()
-                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 1, givenWidth: -1))
+                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 1, givenWidth: -1, angle: flagAngle))
                     }
                 }
                 else if note.type == "eighth" {
@@ -879,10 +904,10 @@ struct PlayMode: View, TunerDelegate {
                     
                     if (followingSame >= 1) && (!prevSame) {
                         Rectangle()
-                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: eighthFlagLength))
+                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: flagLength, angle: flagAngle))
                     } else if !prevSame {
                         Rectangle()
-                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: -1))
+                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: -1, angle: flagAngle))
                     }
                 }
                 else if note.type == "quarter" {
