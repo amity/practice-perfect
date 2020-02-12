@@ -110,16 +110,23 @@ struct FlagStyle: ViewModifier {
     let opacity: Double
     let facingUp: Bool
     let position: Int
+    let givenWidth: Double
     
     func body(content: Content) -> some View {
+        var width = self.givenWidth
+        if width == -1 {
+            width = 14.0
+        }
+        
         let yConstant = self.facingUp ? -133 : -17
-        let xConstant = Float(self.facingUp ? 23 : -23)
+        let xConstant = Float(width / 2) + (self.facingUp ? Float(16.0) : Float(-16.0)) // Note width / 2
         let positionConstant = self.facingUp ? position * 10 : position * -10
 
         return content
-            .frame(width: 14.0, height: 4.0)
+            .frame(width: CGFloat(width), height: 4.0)
             .offset(x: CGFloat(scrollOffset + xConstant), y: CGFloat(offset + yConstant + positionConstant))
             .opacity(opacity)
+            .frame(width: 1)
     }
 }
 

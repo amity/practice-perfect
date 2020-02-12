@@ -718,6 +718,44 @@ struct PlayMode: View, TunerDelegate {
                 beatOffset += self.measures[barIndex].notes[i - 1].duration
             }
         }
+        
+        // For flag animation calculation
+        var prevSame: Bool = false
+        if index! > 0 {
+            if (self.measures[barIndex].notes[index! - 1].type == note.type) && (!self.measures[barIndex].notes[index! - 1].isRest) {
+                prevSame = true
+            }
+        }
+        var followingSame: Int = 0
+        var breakReached: Bool = false
+        if (note.type == "eighth")  {
+            if index! < self.measures[barIndex].notes.count - 1 {
+                if self.measures[barIndex].notes[index! + 1].type == note.type {
+                    if !self.measures[barIndex].notes[index! + 1].isRest {
+                        followingSame += 1
+                    }
+                }
+            }
+        } else if (note.type == "16th") {
+            if index! < self.measures[barIndex].notes.count - 1 {
+                for i in index! + 1 ... self.measures[barIndex].notes.count - 1 {
+                    if !breakReached {
+                        if self.measures[barIndex].notes[i].type == note.type {
+                            if !self.measures[barIndex].notes[i].isRest {
+                                followingSame += 1
+                                if followingSame == 3 {
+                                    breakReached = true
+                                }
+                            } else {
+                                breakReached = true
+                            }
+                        } else {
+                            breakReached = true
+                        }
+                    }
+                }
+            }
+        }
 
         // Calculate x position of note
         let barBeatDiv: Float = scrollLength / Float(self.timeSig.0)
@@ -747,6 +785,9 @@ struct PlayMode: View, TunerDelegate {
         } else if fifths < 0 {
             keySigAccidentals = Array<String>(flatOrder[0 ... -fifths - 1])
         }
+        
+        let eighthFlagLength: Double = Double(barBeatDiv / 2)
+        let sixteenthFlagLength: Double = Double(barBeatDiv / 4) * Double(followingSame)
         
         return Group {
             if note.isRest {  
@@ -817,10 +858,17 @@ struct PlayMode: View, TunerDelegate {
                         .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                     Rectangle()
                         .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
-                    Rectangle()
-                        .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0))
-                    Rectangle()
-                        .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 1))
+                    if (followingSame >= 1) && (!prevSame){
+                        Rectangle()
+                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: sixteenthFlagLength))
+                        Rectangle()
+                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 1, givenWidth: sixteenthFlagLength))
+                    } else if !prevSame {
+                        Rectangle()
+                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: -1))
+                        Rectangle()
+                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 1, givenWidth: -1))
+                    }
                 }
                 else if note.type == "eighth" {
                     Circle()
@@ -828,8 +876,14 @@ struct PlayMode: View, TunerDelegate {
                         .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                     Rectangle()
                         .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
-                    Rectangle()
-                        .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0))
+                    
+                    if (followingSame >= 1) && (!prevSame) {
+                        Rectangle()
+                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: eighthFlagLength))
+                    } else if !prevSame {
+                        Rectangle()
+                            .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: -1))
+                    }
                 }
                 else if note.type == "quarter" {
                     Circle()
