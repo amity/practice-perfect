@@ -708,10 +708,34 @@ struct PlayMode: View, TunerDelegate {
     }
     
     // Calculates length and angle of connecting bar
-    func calcFlagAngle(startNote: NoteMetadata, endNote: NoteMetadata, length: Double) -> (Double, Double) {
+    func calcFlagAngle(startNote: NoteMetadata, endNote: NoteMetadata, currNote: NoteMetadata, length: Double, ratio: Double) -> (Double, Double, Double, Bool) {
         let startOffset = self.calcNoteOffset(note: startNote.step, octave: startNote.octave)
         let endOffset = self.calcNoteOffset(note: endNote.step, octave: endNote.octave)
         let vertDist: Int = endOffset - startOffset
+        let currOffset = self.calcNoteOffset(note: currNote.step, octave: currNote.octave)
+
+        let startFacingUp = startOffset > Int(self.barDist + 10) * 2
+        
+        var tailLengthChange: Double = 0
+        var otherSide: Bool = false
+        // If above the bar, 60 is length of tail stem
+        if ((currOffset - startOffset) < -60) && startFacingUp {
+            otherSide = true
+            let topOfBeam: Double = Double(startOffset) - 60.0 + Double(vertDist) * (ratio - 34.0 / length)
+            let bottomOfFlag: Double = Double(currOffset) - 60.0
+            tailLengthChange = bottomOfFlag - topOfBeam - Double(self.barDist / 2)
+        // If below the bar
+        } else if ((currOffset - startOffset) > 60) && !startFacingUp {
+            otherSide = true
+            let bottomOfBeam: Double = Double(startOffset) + 60.0 + Double(vertDist) * (ratio - 34.0 / length)
+            let topOfFlag: Double = Double(currOffset) + 60.0
+            tailLengthChange = bottomOfBeam - topOfFlag // + Double(self.barDist / 2)
+        } else {
+            let changeForSlope = Double(vertDist) * -ratio
+            let changeForOffset = Double(startOffset - currOffset)
+            let currFacingUp = currOffset > Int(self.barDist + 10) * 2
+            tailLengthChange = currFacingUp ? (changeForSlope - changeForOffset) : (changeForOffset - changeForSlope)
+        }
         
         let hypotenuse: Double = Double(Double(vertDist * vertDist) + Double(length * length)).squareRoot()
         var angle: Double = 0
@@ -719,7 +743,7 @@ struct PlayMode: View, TunerDelegate {
             angle = asin(Double(vertDist) / hypotenuse)
         }
                 
-        return (hypotenuse, angle)
+        return (hypotenuse, angle, tailLengthChange, otherSide)
     }
     
     func drawNote(note: NoteMetadata, barIndex: Int, barNumber: Int) -> some View {
@@ -734,34 +758,61 @@ struct PlayMode: View, TunerDelegate {
             }
         }
         
-        // For flag animation calculation
-        var prevSame: Bool = false
+        // If previous is the same, this note will have the beam starting at it
+        var isPrevSame: Bool = false
         if index! > 0 {
             if (self.measures[barIndex].notes[index! - 1].type == note.type) && (!self.measures[barIndex].notes[index! - 1].isRest) {
-                prevSame = true
+                isPrevSame = true
             }
         }
-        var followingSame: Int = 0
-        var breakReached: Bool = false
-        var endNote: NoteMetadata = note
+        
+        var followingSameCount: Int = 0 // Used to calculate how long the beam should be
+        var prevSameCount: Int = 0 // Used to calculate how long the beam should be
+        var breakReached: Bool = false // Used for calculting how many notes should be connected with the beam
+        var startNote: NoteMetadata = note // First note in beam set
+        var endNote: NoteMetadata = note // Last note in beam set
+        
+        // If eighth note, check whether there is a following eighth note
         if (note.type == "eighth")  {
             if index! < self.measures[barIndex].notes.count - 1 {
                 if self.measures[barIndex].notes[index! + 1].type == note.type {
                     if !self.measures[barIndex].notes[index! + 1].isRest {
-                        followingSame += 1
+                        followingSameCount += 1
                         endNote = self.measures[barIndex].notes[index! + 1]
                     }
                 }
             }
+        // If 16th note, need to explore previous and following notes to see if matching
         } else if (note.type == "16th") {
             if index! < self.measures[barIndex].notes.count - 1 {
                 for i in index! + 1 ... self.measures[barIndex].notes.count - 1 {
                     if !breakReached {
                         if self.measures[barIndex].notes[i].type == note.type {
                             if !self.measures[barIndex].notes[i].isRest {
-                                followingSame += 1
+                                followingSameCount += 1
                                 endNote = self.measures[barIndex].notes[i]
-                                if followingSame == 3 {
+                                if followingSameCount == 3 {
+                                    breakReached = true
+                                }
+                            } else {
+                                breakReached = true
+                            }
+                        } else {
+                            breakReached = true
+                        }
+                    }
+                }
+                breakReached = false
+            }
+            if index! > 0 {
+                let revPrevNotes = Array<NoteMetadata>(self.measures[barIndex].notes[0 ... index! - 1].reversed())
+                for i in 0 ... revPrevNotes.count - 1 {
+                    if !breakReached {
+                        if revPrevNotes[i].type == note.type {
+                            if !revPrevNotes[i].isRest {
+                                prevSameCount += 1
+                                startNote = revPrevNotes[i]
+                                if prevSameCount == 3 {
                                     breakReached = true
                                 }
                             } else {
@@ -804,16 +855,18 @@ struct PlayMode: View, TunerDelegate {
             keySigAccidentals = Array<String>(flatOrder[0 ... -fifths - 1])
         }
         
-        let eighthFlagLength: Double = Double(barBeatDiv / 2)
-        let sixteenthFlagLength: Double = Double(barBeatDiv / 4) * Double(followingSame)
+        // Calculate the flag length and angle as well as the tail length offset for the current note (also whether it lies on the "wrong" side of the beam)
         var flagLength: Double = 0
         var flagAngle: Double = 0
+        var additionalOffset: Double = 0
+        var otherSide: Bool = false
+        
         if note.type == "eighth" {
-            (flagLength, flagAngle) = self.calcFlagAngle(startNote: note, endNote: endNote, length: eighthFlagLength)
+            (flagLength, flagAngle, additionalOffset, otherSide) = self.calcFlagAngle(startNote: startNote, endNote: endNote, currNote: note, length: Double(barBeatDiv / 2), ratio: (Double(prevSameCount) / Double(followingSameCount + prevSameCount)))
         } else if note.type == "16th" {
-            (flagLength, flagAngle) = self.calcFlagAngle(startNote: note, endNote: endNote, length: sixteenthFlagLength)
+            (flagLength, flagAngle, additionalOffset, otherSide) = self.calcFlagAngle(startNote: startNote, endNote: endNote, currNote: note, length: Double(barBeatDiv / 4) * Double(followingSameCount + prevSameCount), ratio: (Double(prevSameCount) / Double(followingSameCount + prevSameCount)))
         }
-                
+        
         return Group {
             if note.isRest {  
                 if note.type == "16th" {
@@ -882,13 +935,13 @@ struct PlayMode: View, TunerDelegate {
                         .frame(width: 34.0, height: 34.0)
                         .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                     Rectangle()
-                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
-                    if (followingSame >= 1) && (!prevSame){
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, additionalHeight: additionalOffset, otherSide: otherSide))
+                    if (followingSameCount >= 1) && (!isPrevSame){
                         Rectangle()
                             .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: flagLength, angle: flagAngle))
                         Rectangle()
                             .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 1, givenWidth: flagLength, angle: flagAngle))
-                    } else if !prevSame {
+                    } else if !isPrevSame {
                         Rectangle()
                             .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: -1, angle: flagAngle))
                         Rectangle()
@@ -900,12 +953,12 @@ struct PlayMode: View, TunerDelegate {
                         .frame(width: 34.0, height: 34.0)
                         .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                     Rectangle()
-                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, additionalHeight: 0, otherSide: otherSide))
                     
-                    if (followingSame >= 1) && (!prevSame) {
+                    if (followingSameCount >= 1) && (!isPrevSame) {
                         Rectangle()
                             .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: flagLength, angle: flagAngle))
-                    } else if !prevSame {
+                    } else if !isPrevSame {
                         Rectangle()
                             .modifier(FlagStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, position: 0, givenWidth: -1, angle: flagAngle))
                     }
@@ -915,14 +968,14 @@ struct PlayMode: View, TunerDelegate {
                         .frame(width: 34.0, height: 34.0)
                         .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                     Rectangle()
-                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, additionalHeight: 0, otherSide: otherSide))
                 }
                 else if note.type == "half" {
                     Circle()
                         .stroke(Color.black, lineWidth: 4)
                         .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                     Rectangle()
-                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, additionalHeight: 0, otherSide: otherSide))
                 }
                 else if note.type == "whole" {
                     Circle()
@@ -933,7 +986,7 @@ struct PlayMode: View, TunerDelegate {
                     Circle()
                         .modifier(NoteStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity))
                     Rectangle()
-                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp))
+                        .modifier(TailStyle(offset: offset, scrollOffset: scrollOffset, opacity: opacity, facingUp: facingUp, additionalHeight: 0, otherSide: otherSide))
                 }
             }
             

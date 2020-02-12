@@ -92,14 +92,18 @@ struct TailStyle: ViewModifier {
     let scrollOffset: Float
     let opacity: Double
     let facingUp: Bool
+    let additionalHeight: Double
+    let otherSide: Bool
     
     func body(content: Content) -> some View {
         let yConstant = self.facingUp ? -105 : -45
         let xConstant = Float(self.facingUp ? 15 : -15)
+        let addConstant = self.facingUp ? ((additionalHeight / 2) - (self.otherSide ? 60.0 + additionalHeight : 0 )) : ((-additionalHeight / 2) + (self.otherSide ? 60.0 + additionalHeight : 0))
 
+        
         return content
-            .frame(width: 4.0, height: 60.0)
-            .offset(x: CGFloat(scrollOffset + xConstant), y: CGFloat(offset + yConstant))
+            .frame(width: 4.0, height: CGFloat(60.0 + additionalHeight))
+            .offset(x: CGFloat(scrollOffset + xConstant), y: CGFloat(Double(offset) + Double(yConstant) - addConstant))
             .opacity(opacity)
     }
 }
