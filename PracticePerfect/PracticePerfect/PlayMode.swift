@@ -521,12 +521,16 @@ struct PlayMode: View, TunerDelegate {
                         }
                              .modifier(MenuButtonStyleRed())
                     }
-                                                            
-                    Text("Score:")
-                        .font(Font.title.weight(.bold))
-                    Text(String(Int(runningScore)))
-                        .font(Font.largeTitle.weight(.bold))
-                        .frame(width: 150)
+                    VStack {
+                        HStack {
+                            Text("Score:")
+                                .font(Font.title.weight(.bold))
+                            Text(String(Int(runningScore)))
+                                .font(Font.largeTitle.weight(.bold))
+                                .frame(width: 150)
+                        }
+                        Text("Measure: " + String(Int(currBar)) + " / " + String(Int(measures.count) - 1))
+                    }
                                         
                     NavigationLink(destination: ResultsPage(scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
                         Text("Results")
