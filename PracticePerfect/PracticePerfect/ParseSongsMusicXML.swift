@@ -18,6 +18,25 @@ func getTotalNumNotes() -> Int {
     return count
 }
 
+//Currently loads local file to String
+func loadXML2String(fileName : String, fileExtension: String) -> String {
+    if let filepath = Bundle.main.path(forResource: fileName, ofType: fileExtension) {
+        do {
+            let contents = try String(contentsOfFile: filepath)
+            print(contents)
+            return(contents)
+        } catch {
+            return "file contents could not be loaded"
+        }
+    } else {
+        return "file not found"
+    }
+}
+
+//***TEMPORARILY HOT CODED TO LOCAL FILE APRES***
+var musicXMLToParseFromFile: String = loadXML2String(fileName: "apres", fileExtension: "musicxml")
+
+
 //initialize SWXMLHash object
 let playSongSWXML = SWXMLHash.config {
             config in

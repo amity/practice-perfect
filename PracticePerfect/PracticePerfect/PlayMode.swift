@@ -16,24 +16,6 @@ let screenHeight = CGFloat(screenSize.height)
 let screenDivisions : CGFloat = 20
 let offsets : [CGFloat] = [screenWidth/screenDivisions,screenWidth/screenDivisions * 2, 0, screenWidth/(-screenDivisions), screenWidth/(-screenDivisions) * 2]
 
-//Currently loads local file to String
-func loadXML2String(fileName : String, fileExtension: String) -> String {
-    if let filepath = Bundle.main.path(forResource: fileName, ofType: fileExtension) {
-        do {
-            let contents = try String(contentsOfFile: filepath)
-            print(contents)
-            return(contents)
-        } catch {
-            return "file contents could not be loaded"
-        }
-    } else {
-        return "file not found"
-    }
-}
-
-//***TEMPORARILY HOT CODED TO LOCAL FILE APRES***
-var musicXMLToParseFromFile: String = loadXML2String(fileName: "apres", fileExtension: "musicxml")
-
 // Posts new score to API
 // Posting guidance: https://stackoverflow.com/a/58804263
 func postNewScore(songId: Int, score: Int) -> () {
@@ -348,41 +330,6 @@ struct PlayMode: View, TunerDelegate {
     @State var measureIndex = 0
     @State var beatIndex = 0
     
-    // File retrieval methods adapted from:
-    // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
-    private func getXML() {
-        dataTask?.cancel()
-        
-        if var urlComponents = URLComponents(string: songMetadata.resourceUrl) {
-            guard let url = urlComponents.url else {
-                return
-            }
-            
-            dataTask = downloadSession.dataTask(with: url) { (data, response, error) in
-                defer {
-                    self.dataTask = nil
-                }
-
-                if let error = error {
-                    self.errorMessage += "DataTask error: " + error.localizedDescription + "\n"
-                } else if let data = data, let response = response as? HTTPURLResponse,
-                    response.statusCode == 200 {
-                    self.XMLString = String(data: data, encoding: .utf8) ?? ""
-                    print(self.XMLString)
-                    print(self.songMetadata.resourceUrl)
-                }
-            }
-            dataTask?.resume()
-        }
-    }
-    
-    // XML Retrieval
-    @State var downloadSession = URLSession(configuration: .default)
-    @State var dataTask: URLSessionDataTask?
-    @State var errorMessage = ""
-    @State var results = ""
-    @State var XMLString = ""
-    
     var body: some View {
         ZStack {
             mainGradient
@@ -422,7 +369,8 @@ struct PlayMode: View, TunerDelegate {
                                     .offset(y: CGFloat(-54 + self.barDist + 10))
                             }
                             
-                            self.drawKey(fifths: self.measures[self.currBar].fifths)
+                            
+                            self.drawKey(fifths: self.measures[Int(min(self.currBar, self.measures.count - 1))].fifths)
                             
                             ZStack {
                                 Rectangle()
@@ -430,13 +378,7 @@ struct PlayMode: View, TunerDelegate {
                                     .frame(width: 10, height: 200)
                                     .offset(y: CGFloat(-50 / 4))
                                 
-                                if (self.currBar < self.measures.count - 2) {
-                                    drawMeasure(msr1: self.currBar, msr2: self.currBar + 1, msr3: self.currBar + 2)
-                                } else if (self.currBar < self.measures.count - 1) {
-                                    drawMeasure(msr1: self.currBar, msr2: self.currBar + 1, msr3: 0)
-                                } else {
-                                    drawMeasure(msr1: self.currBar, msr2: 0, msr3: 1)
-                                }
+                                drawMeasure(msr: self.currBar)
                                 self.drawPlayLine()
                             }
                             .padding(.leading, 50)
@@ -496,7 +438,14 @@ struct PlayMode: View, TunerDelegate {
                         .font(Font.body.weight(.bold))
                         .frame(maxWidth: 125, maxHeight: 150)
                     
-                    if isOn {
+                    if currBar >= measures.count {
+                        Button(action: {
+                            print("TODO")
+                        }) {
+                            Text("RESTART")
+                        }
+                             .modifier(MenuButtonStyleRed())
+                    } else if isOn {
                         Button(action: {
                             self.tuner.stop()
                             self.isOn = false
@@ -529,7 +478,7 @@ struct PlayMode: View, TunerDelegate {
                                 .font(Font.largeTitle.weight(.bold))
                                 .frame(width: 150)
                         }
-                        Text("Measure: " + String(Int(currBar)) + " / " + String(Int(measures.count) - 1))
+                        Text("Measure: " + String(Int(min(currBar, measures.count - 1))) + " / " + String(Int(measures.count) - 1))
                     }
                                         
                     NavigationLink(destination: ResultsPage(scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
@@ -555,7 +504,6 @@ struct PlayMode: View, TunerDelegate {
         .foregroundColor(.black)
         .navigationBarTitle("You are playing: " + songMetadata.name)
         .onAppear {
-            self.getXML()
             if self.settings.keyIndex - 6 != 0 {
                 self.measures = transposeSong(originalMeasures: self.measures, halfStepOffset: self.settings.keyIndex - 6)
             }
@@ -641,9 +589,9 @@ struct PlayMode: View, TunerDelegate {
             self.currBar += 1
         }
         
-        // temp safety
-        if self.currBar >= testMeasures.count {
-            self.currBar = 0
+        // end song
+        if self.currBar >= self.measures.count {
+            self.tuner.stop()
         }
         
         // Update tempo count
@@ -1001,23 +949,33 @@ struct PlayMode: View, TunerDelegate {
         }
     }
     
-    func drawMeasure(msr1: Int, msr2: Int, msr3: Int) -> some View {
+    func drawMeasure(msr: Int) -> some View {
         return Group {
-            ForEach(self.measures[msr1].notes) { note in
-                self.drawNote(note: note, barIndex: msr1, barNumber: 0)
+            if msr < self.measures.count {
+                ForEach(self.measures[msr].notes) { note in
+                    self.drawNote(note: note, barIndex: msr, barNumber: 0)
+                }
             }
-            self.drawMeasureBar(barNumber: 0)
-            ForEach(self.measures[msr2].notes) { note in
-                self.drawNote(note: note, barIndex: msr2, barNumber: 1)
+            if msr + 1 < self.measures.count {
+                self.drawMeasureBar(barNumber: 0, end: false)
+                ForEach(self.measures[msr + 1].notes) { note in
+                    self.drawNote(note: note, barIndex: msr + 1, barNumber: 1)
+                }
+            } else {
+                self.drawMeasureBar(barNumber: 0, end: true)
             }
-            self.drawMeasureBar(barNumber: 1)
-            ForEach(self.measures[msr3].notes) { note in
-                self.drawNote(note: note, barIndex: msr3, barNumber: 2)
+            if msr + 2 < self.measures.count {
+                self.drawMeasureBar(barNumber: 1, end: false)
+                ForEach(self.measures[msr + 2].notes) { note in
+                    self.drawNote(note: note, barIndex: msr + 2, barNumber: 2)
+                }
+            } else {
+                self.drawMeasureBar(barNumber: 1, end: true)
             }
         }
     }
     
-    func drawMeasureBar(barNumber: Int) -> some View {
+    func drawMeasureBar(barNumber: Int, end: Bool) -> some View {
         let barBeatDiv: Float = scrollLength / Float(self.timeSig.0)
         let beat = Int(self.totalElapsedBeats) % self.timeSig.0 + 1
         let beatDiff = self.totalElapsedBeats - Float(Int(self.totalElapsedBeats))
@@ -1031,6 +989,13 @@ struct PlayMode: View, TunerDelegate {
                 .frame(width: 5, height: 126)
                 .offset(x: CGFloat(scrollOffset), y: CGFloat(-11))
                 .opacity(opacity)
+            if end {
+                Rectangle()
+                .fill(Color.black)
+                .frame(width: 9, height: 126)
+                .offset(x: CGFloat(scrollOffset) + 11, y: CGFloat(-11))
+                .opacity(opacity)
+            }
         }
     }
     
