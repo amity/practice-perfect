@@ -370,11 +370,7 @@ struct PlayMode: View, TunerDelegate {
                             }
                             
                             
-                            if self.currBar < self.measures.count {
-                                self.drawKey(fifths: self.measures[self.currBar].fifths)
-                            } else {
-                                self.drawKey(fifths: self.measures[self.measures.count - 1].fifths)
-                            }
+                            self.drawKey(fifths: self.measures[Int(min(self.currBar, self.measures.count - 1))].fifths)
                             
                             ZStack {
                                 Rectangle()
@@ -482,11 +478,7 @@ struct PlayMode: View, TunerDelegate {
                                 .font(Font.largeTitle.weight(.bold))
                                 .frame(width: 150)
                         }
-                        if currBar < measures.count {
-                            Text("Measure: " + String(Int(currBar)) + " / " + String(Int(measures.count) - 1))
-                        } else {
-                            Text("Measure: " + String(Int(measures.count) - 1) + " / " + String(Int(measures.count) - 1))
-                        }
+                        Text("Measure: " + String(Int(min(currBar, measures.count - 1))) + " / " + String(Int(measures.count) - 1))
                     }
                                         
                     NavigationLink(destination: ResultsPage(scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
