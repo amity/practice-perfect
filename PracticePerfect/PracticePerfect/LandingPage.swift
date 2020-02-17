@@ -9,6 +9,9 @@
 // https://www.hackingwithswift.com/quick-start/swiftui/how-to-use-environmentobject-to-share-data-between-views
 // https://www.hackingwithswift.com/read/12/2/reading-and-writing-basics-userdefaults
 // https://medium.com/better-programming/userdefaults-in-swift-4-d1a278a0ec79
+//
+// isActive navigation method inspired by: https://stackoverflow.com/a/59662275
+
 
 import SwiftUI
 
