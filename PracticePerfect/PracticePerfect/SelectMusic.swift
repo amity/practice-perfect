@@ -76,6 +76,7 @@ func retrieveSongs(userId: Int) -> Array<SongMetadata> {
         // Unwrap data
         guard let unwrappedData = data else {
             print(error!)
+            scoreSemaphore.signal()
             return
         }
         // Get json object from data
@@ -101,6 +102,7 @@ func retrieveSongs(userId: Int) -> Array<SongMetadata> {
         // Unwrap data
         guard let unwrappedData = data else {
             print(error!)
+            songSemaphore.signal()
             return
         }
         // Get json object from data
@@ -127,38 +129,54 @@ struct SelectMusic: View {
     var body: some View {
         ZStack {
             mainGradient
-            VStack{
-                Spacer()
-                HStack {
-                    Text("What song will you play?")
-                        .font(.largeTitle)
-                    NavigationLink(destination: SongSearchPage(rootIsActive: self.$rootIsActive, songList: allSongs)) {
-                        Text("Search songs")
-                    }
-                        .isDetailLink(false)
-                        .modifier(MenuButtonStyle())
-                    NavigationLink(destination: AddMusic()) {
-                        Text("Add music")
-                    }
-                        .modifier(MenuButtonStyle())
-                }
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 5) {
-                        ForEach(allSongs) { songMetadata in
-                            GeometryReader { geometry in
-                                NavigationLink(destination: SongInfoView(rootIsActive: self.$rootIsActive, songMetadata: songMetadata)) {
-                                    SongThumbnail(songMetadata: songMetadata)
-                                }
-                                .isDetailLink(false)
-                                .buttonStyle(PlainButtonStyle())
-                                .rotation3DEffect(Angle(degrees:
-                                    (Double(geometry.frame(in: .global).minX) - Double(UIScreen.main.bounds.width / 2) + Double(150)) / -20
-                                    ), axis: (x: 0, y: 10.0, z: 0))
-                            }
-                            .frame(width: 300, height: 185)
+            VStack {
+                if self.allSongs.count == 0 {
+                    VStack {
+                        Spacer()
+                        Text("Could not load songs. Check connection and try again")
+                            .font(.title)
+                        Spacer()
+                        Button(action: {
+                            self.allSongs = retrieveSongs(userId: self.settings.userId)
+                        }) {
+                            Text("Load Songs")
                         }
+                            .modifier(MenuButtonStyle())
+                        Spacer()
                     }
-                    .padding(30)
+                } else {
+                    Spacer()
+                    HStack {
+                        Text("What song will you play?")
+                            .font(.largeTitle)
+                        NavigationLink(destination: SongSearchPage(rootIsActive: self.$rootIsActive, songList: allSongs)) {
+                            Text("Search songs")
+                        }
+                            .isDetailLink(false)
+                            .modifier(MenuButtonStyle())
+                        NavigationLink(destination: AddMusic()) {
+                            Text("Add music")
+                        }
+                            .modifier(MenuButtonStyle())
+                    }
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 5) {
+                            ForEach(allSongs) { songMetadata in
+                                GeometryReader { geometry in
+                                    NavigationLink(destination: SongInfoView(rootIsActive: self.$rootIsActive, songMetadata: songMetadata)) {
+                                        SongThumbnail(songMetadata: songMetadata)
+                                    }
+                                    .isDetailLink(false)
+                                    .buttonStyle(PlainButtonStyle())
+                                    .rotation3DEffect(Angle(degrees:
+                                        (Double(geometry.frame(in: .global).minX) - Double(UIScreen.main.bounds.width / 2) + Double(150)) / -20
+                                        ), axis: (x: 0, y: 10.0, z: 0))
+                                }
+                                .frame(width: 300, height: 185)
+                            }
+                        }
+                        .padding(30)
+                    }
                 }
             }
             .padding()
