@@ -14,6 +14,7 @@ import SwiftUI
 
 struct LandingPage: View {
     @EnvironmentObject var settings: UserSettings
+    @State var isActive : Bool = false
     
     let note: some View = Image("note").resizable().frame(width: 75, height: 75)
     let smallNote: some View = Image("note").resizable().frame(width: 50, height: 50)
@@ -47,13 +48,14 @@ struct LandingPage: View {
                 Image("full-logo")
                 
                 HStack {
-                    NavigationLink(destination: SelectMusic()) {
+                    NavigationLink(destination: SelectMusic(rootIsActive: self.$isActive), isActive: self.$isActive) {
                         HStack {
                             Image(systemName: "play.fill")
                             Text("Play!")
                                 .fixedSize()
                         }
                     }
+                    .isDetailLink(false)
                     .modifier(MenuButtonStyle())
                     
                     NavigationLink(destination: TunerView()) {
@@ -67,13 +69,15 @@ struct LandingPage: View {
                 }
                 
                 HStack {
-                    NavigationLink(destination: ScalePicker()) {
+                    NavigationLink(destination: ScalePicker(rootIsActive: self.$isActive),
+                        isActive: self.$isActive) {
                         HStack {
                             Image(systemName: "music.note")
                             Text("Exercises")
                                 .fixedSize()
                         }
                     }
+                    .isDetailLink(false)
                     .modifier(MenuButtonStyle())
                     
                     NavigationLink(destination: SettingsView(selectedClef: settings.clefIndex, selectedKey: settings.keyIndex)) {

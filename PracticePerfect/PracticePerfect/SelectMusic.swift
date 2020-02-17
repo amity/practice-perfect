@@ -119,6 +119,7 @@ func retrieveSongs(userId: Int) -> Array<SongMetadata> {
 
 struct SelectMusic: View {
     @EnvironmentObject var settings: UserSettings
+    @Binding var rootIsActive : Bool
     
     // List of all songs
     @State var allSongs: Array<SongMetadata> = [SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "",  year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: "")]
@@ -131,9 +132,10 @@ struct SelectMusic: View {
                 HStack {
                     Text("What song will you play?")
                         .font(.largeTitle)
-                    NavigationLink(destination: SongSearchPage(songList: allSongs)) {
+                    NavigationLink(destination: SongSearchPage(rootIsActive: self.$rootIsActive, songList: allSongs)) {
                         Text("Search songs")
                     }
+                        .isDetailLink(false)
                         .modifier(MenuButtonStyle())
                     NavigationLink(destination: AddMusic()) {
                         Text("Add music")
@@ -144,9 +146,10 @@ struct SelectMusic: View {
                     HStack(spacing: 5) {
                         ForEach(allSongs) { songMetadata in
                             GeometryReader { geometry in
-                                NavigationLink(destination: SongInfoView(songMetadata: songMetadata)) {
+                                NavigationLink(destination: SongInfoView(rootIsActive: self.$rootIsActive, songMetadata: songMetadata)) {
                                     SongThumbnail(songMetadata: songMetadata)
                                 }
+                                .isDetailLink(false)
                                 .buttonStyle(PlainButtonStyle())
                                 .rotation3DEffect(Angle(degrees:
                                     (Double(geometry.frame(in: .global).minX) - Double(UIScreen.main.bounds.width / 2) + Double(150)) / -20
@@ -168,6 +171,6 @@ struct SelectMusic: View {
 
 struct SelectMusic_Previews: PreviewProvider {
     static var previews: some View {
-        SelectMusic(allSongs: [SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: "")]).previewLayout(.fixed(width: 896, height: 414))
+        SelectMusic(rootIsActive: .constant(false), allSongs: [SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: "")]).previewLayout(.fixed(width: 896, height: 414))
     }
 }

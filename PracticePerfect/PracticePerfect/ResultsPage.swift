@@ -25,6 +25,8 @@ func calculateRank(newScore: Int, topScore: Int) -> String {
 }
 
 struct ResultsPage: View {
+    @Binding var shouldPopToRootView : Bool
+    
     @State var scoreMetadata: ScoreMetadata
     @State var songMetadata: SongMetadata
     
@@ -89,21 +91,15 @@ struct ResultsPage: View {
                     }
                     Spacer()
                 }
+                .frame(maxWidth: 600)
+                
                 Spacer()
-                VStack {
-                    NavigationLink(destination: SelectMusic()) {
-                        Text("Choose another song")
-                            .frame(width: 200)
-                    }
-                    .modifier(MenuButtonStyle())
-                    .padding()
-
-                    NavigationLink(destination: LandingPage()) {
-                        Text("Menu")
-                            .frame(width: 200)
-                    }
-                    .modifier(MenuButtonStyle())
+                
+                Button (action: { self.shouldPopToRootView = false } ){
+                    Text("Menu")
                 }
+                .modifier(MenuButtonStyle())
+                
                 Spacer()
             }
         }
@@ -116,7 +112,8 @@ struct ResultsPage: View {
 struct ResultsPage_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        ResultsPage(scoreMetadata: ScoreMetadata(
+        ResultsPage(shouldPopToRootView: .constant(false),
+            scoreMetadata: ScoreMetadata(
                 newScore: 9000,
                 inTuneCount: 9560,
                 inTempoCount: 9756,
