@@ -36,9 +36,8 @@ var musicXMLToParseFromFile: String = loadXML2String(fileName: "apres", fileExte
 
 // Posts new score to API
 // Posting guidance: https://stackoverflow.com/a/58804263
-func postNewScore(songId: Int, score: Int) -> () {
-    // TO DO: Add user ID as non-hard-coded value
-    let params: [String: String] = ["song": String(songId), "user": "1", "score": String(score)]
+func postNewScore(userId: Int, songId: Int, score: Int) -> () {
+    let params: [String: String] = ["song": String(songId), "user": String(userId), "score": String(score)]
     let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores")!
     let scoreSession = URLSession.shared
     var scoreRequest = URLRequest(url: scoreUrl)
@@ -540,7 +539,7 @@ struct PlayMode: View, TunerDelegate {
                             self.tuner.stop()
                             // If highScoreId of -1, i.e. no existing score, then create; otherwise update
                             if self.songMetadata.highScoreId == -1 {
-                                postNewScore(songId: self.songMetadata.songId, score: Int(self.runningScore))
+                                postNewScore(userId: self.settings.userId, songId: self.songMetadata.songId, score: Int(self.runningScore))
                             } else {
                                 if (Int(self.runningScore) > self.songMetadata.highScore) {
                                     postScoreUpdate(scoreId: self.songMetadata.highScoreId, score: Int(self.runningScore))

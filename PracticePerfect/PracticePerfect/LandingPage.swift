@@ -47,13 +47,6 @@ struct LandingPage: View {
                 Image("full-logo")
                 
                 HStack {
-                    NavigationLink(destination: LoginPage()) {
-                        HStack {
-                            Text("Login")
-                                .fixedSize()
-                        }
-                    }
-                    .modifier(MenuButtonStyle())
                     NavigationLink(destination: SelectMusic()) {
                         HStack {
                             Image(systemName: "play.fill")
@@ -93,7 +86,7 @@ struct LandingPage: View {
                     .modifier(MenuButtonStyle())
                 }
             }
-            .navigationBarTitle(userData["username"]!)
+            .navigationBarTitle(settings.username ?? "")
             .navigationBarBackButtonHidden(true)
         }
     }

@@ -85,7 +85,6 @@ struct ResultsPage: View {
                             // Calculate new rank from the new score and top possible score
                             Text("\(calculateRank(newScore: songMetadata.highScore, topScore: songMetadata.topScore))")
                                 .font(.largeTitle)
-//                                .font(.system(size: 48))
                         }
                     }
                     Spacer()

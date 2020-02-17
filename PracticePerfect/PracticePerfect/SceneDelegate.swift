@@ -21,7 +21,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Create the SwiftUI view that provides the window contents.
         let contentView = NavigationView {
-            LandingPage()
+            // If logged in, go to landing page
+            if (UserDefaults.standard.string(forKey: "username") != "") {
+                LandingPage()
+            // Otherwise, force user to log in
+            } else {
+                LoginPage()
+            }
         }.navigationViewStyle(StackNavigationViewStyle())
 
         // Use a UIHostingController as window root view controller.
