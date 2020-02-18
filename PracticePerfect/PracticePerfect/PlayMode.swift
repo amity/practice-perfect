@@ -35,14 +35,12 @@ func postNewScore(userId: Int, songId: Int, score: Int) -> () {
     }
     task.resume()
 
-    // Wait for the songs to be retrieved before displaying all of them
     _ = semaphore.wait(wallTimeout: .distantFuture)
 }
 
 // Posts score update to API
 // Posting guidance: https://stackoverflow.com/a/58804263
 func postScoreUpdate(scoreId: Int, score: Int) -> () {
-    // TO DO: Params from results passed into function - hard-coded right now
     let params: [String: String] = ["score": String(score)]
     let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores/" + String(scoreId))!
     let scoreSession = URLSession.shared
@@ -59,7 +57,6 @@ func postScoreUpdate(scoreId: Int, score: Int) -> () {
     }
     task.resume()
 
-    // Wait for the songs to be retrieved before displaying all of them
     _ = semaphore.wait(wallTimeout: .distantFuture)
 }
 
