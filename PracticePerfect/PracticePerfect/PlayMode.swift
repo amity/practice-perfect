@@ -18,9 +18,8 @@ let offsets : [CGFloat] = [screenWidth/screenDivisions,screenWidth/screenDivisio
 
 // Posts new score to API
 // Posting guidance: https://stackoverflow.com/a/58804263
-func postNewScore(songId: Int, score: Int) -> () {
-    // TO DO: Add user ID as non-hard-coded value
-    let params: [String: String] = ["song": String(songId), "user": "1", "score": String(score)]
+func postNewScore(userId: Int, songId: Int, score: Int) -> () {
+    let params: [String: String] = ["song": String(songId), "user": String(userId), "score": String(score)]
     let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores")!
     let scoreSession = URLSession.shared
     var scoreRequest = URLRequest(url: scoreUrl)
@@ -291,6 +290,7 @@ let scrollLength = Float(screenSize.width) - Float(200)
 
 struct PlayMode: View, TunerDelegate {
     @EnvironmentObject var settings: UserSettings
+    @Binding var rootIsActive : Bool
     
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     var songMetadata: SongMetadata
@@ -480,16 +480,17 @@ struct PlayMode: View, TunerDelegate {
                         }
                         Text("Measure: " + String(Int(min(currBar, measures.count - 1))) + " / " + String(Int(measures.count) - 1))
                     }
-                                        
-                    NavigationLink(destination: ResultsPage(scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
+
+                    NavigationLink(destination: ResultsPage(shouldPopToRootView: self.$rootIsActive, scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
                         Text("Results")
                     }
+                        .isDetailLink(false)
                         .simultaneousGesture(TapGesture().onEnded {
                             // TO DO: Right now, sends new high score to server when pause button is pressed. This will need to be updated
                             self.tuner.stop()
                             // If highScoreId of -1, i.e. no existing score, then create; otherwise update
                             if self.songMetadata.highScoreId == -1 {
-                                postNewScore(songId: self.songMetadata.songId, score: Int(self.runningScore))
+                                postNewScore(userId: self.settings.userId, songId: self.songMetadata.songId, score: Int(self.runningScore))
                             } else {
                                 if (Int(self.runningScore) > self.songMetadata.highScore) {
                                     postScoreUpdate(scoreId: self.songMetadata.highScoreId, score: Int(self.runningScore))
@@ -1101,6 +1102,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4)).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4)).previewLayout(.fixed(width: 896, height: 414))
     }
 }

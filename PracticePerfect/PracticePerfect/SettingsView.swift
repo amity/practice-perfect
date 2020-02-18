@@ -11,6 +11,8 @@ import SwiftUI
 class UserSettings: ObservableObject {
     @Published var clefIndex = UserDefaults.standard.integer(forKey: "clefIndex")
     @Published var keyIndex = UserDefaults.standard.integer(forKey: "keyIndex")
+    @Published var username = UserDefaults.standard.string(forKey: "username")
+    @Published var userId = UserDefaults.standard.integer(forKey: "userId")
 }
 
 let scaleOrder: [String] = ["G♭", "D♭", "A♭", "E♭", "B♭", "F", "C", "G", "D", "A", "E", "B", "F♯"].reversed()
@@ -80,6 +82,14 @@ struct SettingsView: View {
         }
         .foregroundColor(.black)
         .navigationBarTitle("Settings")
+        .navigationBarItems(trailing:
+            NavigationLink(destination: LoginPage()) {
+                HStack {
+                    Text("Logout")
+                        .fixedSize()
+                }
+            }
+        )
     }
 }
 

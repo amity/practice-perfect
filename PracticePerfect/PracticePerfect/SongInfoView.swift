@@ -9,6 +9,8 @@
 import SwiftUI
 
 struct SongInfoView: View {
+    @Binding var rootIsActive : Bool
+    
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     @State var songMetadata: SongMetadata
     
@@ -75,11 +77,12 @@ struct SongInfoView: View {
                             .frame(maxWidth: 100, maxHeight: 70)
                             .clipped()
                     }
-                    NavigationLink(destination: PlayMode(songMetadata: songMetadata, tempo: self.tempoValues[self.selectedTempo], timeSig: timeSig)) {
+                    NavigationLink(destination: PlayMode(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: self.tempoValues[self.selectedTempo], timeSig: timeSig)) {
                         Text("Play!")
                             .font(.title)
                     }
-                        .modifier(MenuButtonStyle())
+                    .isDetailLink(false)
+                    .modifier(MenuButtonStyle())
                     Spacer()
                 }
             }
@@ -91,6 +94,6 @@ struct SongInfoView: View {
 struct SongInfoView_Previews: PreviewProvider {
     static var previews: some View {
         // Example with sample SongMetadata
-        SongInfoView(songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: "")).previewLayout(.fixed(width: 896, height: 414))
+        SongInfoView(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: "")).previewLayout(.fixed(width: 896, height: 414))
     }
 }

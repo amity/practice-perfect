@@ -41,6 +41,8 @@ struct LoginPage: View {
     @State var password: String = ""
     
     @ObservedObject private var keyboard = KeyboardResponder()
+    @EnvironmentObject var settings: UserSettings
+    
     @State private var textFieldInput: String = ""
     @State var showErrorMessage: Bool = false
     @State var loginButtonDisabled: Bool = true
@@ -90,12 +92,13 @@ struct LoginPage: View {
                             if(loginData["statusCode"] as? Int == 404){
                                 self.showErrorMessage = true
                                 self.loginButtonDisabled = true
-                                userData = ["id": "-1"]
                             } else {
                                 self.showErrorMessage = false
                                 self.loginButtonDisabled = false
-                                userData["id"] = "\(loginData["id"] as! Int)"
-                                userData["username"] = (loginData["username"] as! String)
+                                UserDefaults.standard.set(loginData["id"] as! Int, forKey: "userId")
+                                self.settings.userId = loginData["id"] as! Int
+                                UserDefaults.standard.set(loginData["username"] as? String, forKey: "username")
+                                self.settings.username = loginData["username"] as? String
                             }
                             loginSemaphore.signal()
                         }
@@ -132,6 +135,15 @@ struct LoginPage: View {
         .padding(.bottom, keyboard.currentHeight)
         .edgesIgnoringSafeArea(.bottom)
         .animation(.easeOut(duration: 0.16))
+        .navigationBarItems(leading:
+            EmptyView()
+        )
+        .onAppear() {
+            UserDefaults.standard.set(-1, forKey: "userId")
+            self.settings.userId = -1
+            UserDefaults.standard.set("", forKey: "username")
+            self.settings.username = ""
+        }
     }
 }
 

@@ -62,10 +62,10 @@ func parseScoresJson(anyObj:Any?) -> Dictionary<Int, (Int, Int)> {
 }
 
 // Retrieves data and initializes SongMetadata for each song, returned in an array
-func retrieveSongs() -> Array<SongMetadata> {
+func retrieveSongs(userId: Int) -> Array<SongMetadata> {
     // Retrieve all scores for current user - list of scores in order of song id
     // Placeholder user id 0 --> will be dynamic once we implement authentication and users
-    let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores/" + String(1))!
+    let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores/" + String(userId))!
     let scoreSession = URLSession.shared
     var scoreRequest = URLRequest(url: scoreUrl)
     scoreRequest.httpMethod = "GET"
@@ -118,8 +118,11 @@ func retrieveSongs() -> Array<SongMetadata> {
 }
 
 struct SelectMusic: View {
+    @EnvironmentObject var settings: UserSettings
+    @Binding var rootIsActive : Bool
+    
     // List of all songs
-    @State var allSongs: Array<SongMetadata> = retrieveSongs()
+    @State var allSongs: Array<SongMetadata> = [SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "",  year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: "")]
     
     var body: some View {
         ZStack {
@@ -129,9 +132,10 @@ struct SelectMusic: View {
                 HStack {
                     Text("What song will you play?")
                         .font(.largeTitle)
-                    NavigationLink(destination: SongSearchPage(songList: allSongs)) {
+                    NavigationLink(destination: SongSearchPage(rootIsActive: self.$rootIsActive, songList: allSongs)) {
                         Text("Search songs")
                     }
+                        .isDetailLink(false)
                         .modifier(MenuButtonStyle())
                     NavigationLink(destination: AddMusic()) {
                         Text("Add music")
@@ -142,9 +146,10 @@ struct SelectMusic: View {
                     HStack(spacing: 5) {
                         ForEach(allSongs) { songMetadata in
                             GeometryReader { geometry in
-                                NavigationLink(destination: SongInfoView(songMetadata: songMetadata)) {
+                                NavigationLink(destination: SongInfoView(rootIsActive: self.$rootIsActive, songMetadata: songMetadata)) {
                                     SongThumbnail(songMetadata: songMetadata)
                                 }
+                                .isDetailLink(false)
                                 .buttonStyle(PlainButtonStyle())
                                 .rotation3DEffect(Angle(degrees:
                                     (Double(geometry.frame(in: .global).minX) - Double(UIScreen.main.bounds.width / 2) + Double(150)) / -20
@@ -155,16 +160,17 @@ struct SelectMusic: View {
                     }
                     .padding(30)
                 }
-                // This could be used in the future for starting with the first song in the middle of the scrollview
-    //            .content.offset(x: (UIScreen.main.bounds.width / 2) + 150, y: 0)
             }
             .padding()
+        }
+        .onAppear() {
+            self.allSongs = retrieveSongs(userId: self.settings.userId)
         }
     }
 }
 
 struct SelectMusic_Previews: PreviewProvider {
     static var previews: some View {
-        SelectMusic(allSongs: [SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: "")]).previewLayout(.fixed(width: 896, height: 414))
+        SelectMusic(rootIsActive: .constant(false), allSongs: [SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: "")]).previewLayout(.fixed(width: 896, height: 414))
     }
 }

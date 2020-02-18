@@ -9,6 +9,8 @@
 import SwiftUI
 
 struct ScalePicker: View {
+    @Binding var rootIsActive : Bool
+    
     let tempoValues = Array(0...200)
     let scales: [ScaleMetadata] = musicData["scales"] ?? []
     let modes = ["Major", "Minor"]
@@ -56,10 +58,11 @@ struct ScalePicker: View {
                     .clipped()
                 }
                 Spacer()
-                NavigationLink(destination: PlayMode(songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode], artist: "", resourceUrl: scales[self.selectedKey].urls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4))) {
+                NavigationLink(destination: PlayMode(rootIsActive: self.$rootIsActive, songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode], artist: "", resourceUrl: scales[self.selectedKey].urls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4))) {
                     Text("Play!")
                     .font(.system(size: 32))
                 }
+                    .isDetailLink(false)
                     .modifier(MenuButtonStyle())
                 Spacer()
             }
@@ -69,6 +72,6 @@ struct ScalePicker: View {
 
 struct PracticeCategory_Previews: PreviewProvider {
     static var previews: some View {
-        ScalePicker().previewLayout(.fixed(width: 896, height: 414))
+        ScalePicker(rootIsActive: .constant(false)).previewLayout(.fixed(width: 896, height: 414))
     }
 }

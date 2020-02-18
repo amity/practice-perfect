@@ -17,6 +17,8 @@ struct SignUpPage: View {
     @State var password: String
     
     @ObservedObject var keyboard: KeyboardResponder
+    @EnvironmentObject var settings: UserSettings
+
     @State private var textFieldInput: String = ""
     @State var continueButtonDisabled: Bool = true
     @State var showErrorMessage: Bool = false
@@ -88,12 +90,13 @@ struct SignUpPage: View {
                             if(signupData["statusCode"] as? Int == 404){
                                 self.showErrorMessage = true
                                 self.continueButtonDisabled = true
-                                userData = ["id": "-1"]
                             } else {
                                 self.showErrorMessage = false
                                 self.continueButtonDisabled = false
-                                userData["id"] = "\(signupData["id"] as! Int)"
-                                userData["username"] = (signupData["username"] as! String)
+                                UserDefaults.standard.set(signupData["id"] as! Int, forKey: "userId")
+                                self.settings.userId = signupData["id"] as! Int
+                                UserDefaults.standard.set(signupData["username"] as? String, forKey: "username")
+                                self.settings.username = signupData["username"] as? String
                             }
                             signupSemaphore.signal()
                         }
