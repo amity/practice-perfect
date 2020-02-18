@@ -53,14 +53,12 @@ func postNewScore(userId: Int, songId: Int, score: Int) -> () {
     }
     task.resume()
 
-    // Wait for the songs to be retrieved before displaying all of them
     _ = semaphore.wait(wallTimeout: .distantFuture)
 }
 
 // Posts score update to API
 // Posting guidance: https://stackoverflow.com/a/58804263
 func postScoreUpdate(scoreId: Int, score: Int) -> () {
-    // TO DO: Params from results passed into function - hard-coded right now
     let params: [String: String] = ["score": String(score)]
     let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores/" + String(scoreId))!
     let scoreSession = URLSession.shared
@@ -77,7 +75,6 @@ func postScoreUpdate(scoreId: Int, score: Int) -> () {
     }
     task.resume()
 
-    // Wait for the songs to be retrieved before displaying all of them
     _ = semaphore.wait(wallTimeout: .distantFuture)
 }
 
@@ -348,41 +345,6 @@ struct PlayMode: View, TunerDelegate {
     @State var measureIndex = 0
     @State var beatIndex = 0
     
-    // File retrieval methods adapted from:
-    // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
-    private func getXML() {
-        dataTask?.cancel()
-        
-        if var urlComponents = URLComponents(string: songMetadata.resourceUrl) {
-            guard let url = urlComponents.url else {
-                return
-            }
-            
-            dataTask = downloadSession.dataTask(with: url) { (data, response, error) in
-                defer {
-                    self.dataTask = nil
-                }
-
-                if let error = error {
-                    self.errorMessage += "DataTask error: " + error.localizedDescription + "\n"
-                } else if let data = data, let response = response as? HTTPURLResponse,
-                    response.statusCode == 200 {
-                    self.XMLString = String(data: data, encoding: .utf8) ?? ""
-                    print(self.XMLString)
-                    print(self.songMetadata.resourceUrl)
-                }
-            }
-            dataTask?.resume()
-        }
-    }
-    
-    // XML Retrieval
-    @State var downloadSession = URLSession(configuration: .default)
-    @State var dataTask: URLSessionDataTask?
-    @State var errorMessage = ""
-    @State var results = ""
-    @State var XMLString = ""
-    
     var body: some View {
         ZStack {
             mainGradient
@@ -556,7 +518,6 @@ struct PlayMode: View, TunerDelegate {
         .foregroundColor(.black)
         .navigationBarTitle("You are playing: " + songMetadata.name)
         .onAppear {
-            self.getXML()
             if self.settings.keyIndex - 6 != 0 {
                 self.measures = transposeSong(originalMeasures: self.measures, halfStepOffset: self.settings.keyIndex - 6)
             }
