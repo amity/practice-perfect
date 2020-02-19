@@ -295,12 +295,10 @@ struct PlayMode: View, TunerDelegate {
     var timeSig: (Int, Int)
     
     // Tuner variables
-    @State var tuner = Tuner()
+    @State var tuner: Tuner
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
     @State var isOn = false
-    @State var backgroundMeanAmplitude: Float = 0.0
-    @State var backgroundReadingCount: Int = 0
     
     // Tempo variables
     @State var totalElapsedBeats: Float = 0
@@ -540,13 +538,6 @@ struct PlayMode: View, TunerDelegate {
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
         let newElapsedBeats: Float = Float(beatCount) * Float(tuner.pollingInterval) / Float(60) * Float(tempo)
          
-        // If still in the countdown, take readings to calculate background noise and update threshold
-        if !(Int(newElapsedBeats) > timeSig.0) {
-            backgroundReadingCount += 1
-            backgroundMeanAmplitude = (Float(backgroundReadingCount - 1) * backgroundMeanAmplitude + Float(tuner.tracker.amplitude)) / Float(backgroundReadingCount)
-            tuner.updateThreshold(newThreshold: backgroundMeanAmplitude)
-        }
-                        
         // If still on current note, add pitch reading to array
         if newElapsedBeats <= endOfCurrentNoteBeats {
             currBeatNotes.append(pitch.note)
@@ -1099,6 +1090,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4)).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4), tuner: Tuner()).previewLayout(.fixed(width: 896, height: 414))
     }
 }
