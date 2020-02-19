@@ -19,6 +19,7 @@ let scaleOrder: [String] = ["G♭", "D♭", "A♭", "E♭", "B♭", "F", "C", "G
 
 struct SettingsView: View {
     @EnvironmentObject var settings: UserSettings
+    @Environment(\.presentationMode) var presentationMode
     
     let clefs = ["Treble", "Alto", "Bass"]
     
@@ -67,15 +68,18 @@ struct SettingsView: View {
                 }
                 Spacer()
                 VStack {
-                    Button(action: {
+                    Button (action: {
                         UserDefaults.standard.set(self.selectedClef, forKey: "clefIndex")
                         self.settings.clefIndex = self.selectedClef
                         UserDefaults.standard.set(self.selectedKey, forKey: "keyIndex")
                         self.settings.keyIndex = self.selectedKey
-                    }) {
+                        
+                        self.presentationMode.wrappedValue.dismiss()
+                    } ){
                         Text("Save Preferences")
                     }
-                        .modifier(MenuButtonStyle())
+                    .modifier(MenuButtonStyle())
+                    
                 }
                 Spacer()
             }

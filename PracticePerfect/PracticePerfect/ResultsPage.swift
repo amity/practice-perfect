@@ -20,7 +20,7 @@ func calculateRank(newScore: Int, topScore: Int) -> String {
     } else if Float(newScore) >= 0 {
         return "F"
     } else {
-        return "No rank"
+        return "-"
     }
 }
 
@@ -91,7 +91,7 @@ struct ResultsPage: View {
                     }
                     Spacer()
                 }
-                .frame(maxWidth: 600)
+                .frame(maxWidth: 500)
                 
                 Spacer()
                 
