@@ -278,8 +278,6 @@ func transposeSong(originalMeasures: Array<MeasureMetadata>, halfStepOffset: Int
     return transposed
 }
 
-var testMeasures = hbdTestMeasures
-
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
 let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
 let streakIncreases: Array<Float> = [10, 25, 50]
@@ -307,7 +305,7 @@ struct PlayMode: View, TunerDelegate {
     
     // Tempo variables
     @State var totalElapsedBeats: Float = 0
-    @State var endOfCurrentNoteBeats: Float = testMeasures[0].notes[0].duration
+    @State var endOfCurrentNoteBeats: Float = hbdTestMeasures[0].notes[0].duration
     
     // Countdown variables
     @State var startedPlaying = false
@@ -323,10 +321,10 @@ struct PlayMode: View, TunerDelegate {
     @State var goodCount: Int = 0
     @State var perfectCount: Int = 0
     
-    // Note display variables
+    // Note display variables HERE
     @State var barDist = screenWidth/screenDivisions/2
     @State var currBar = 0
-    @State var measures: [MeasureMetadata] = testMeasures
+    @State var measures: [MeasureMetadata] = hbdTestMeasures
     @State var measureIndex = 0
     @State var beatIndex = 0
     
@@ -442,7 +440,8 @@ struct PlayMode: View, TunerDelegate {
                         Button(action: {
                             print("TODO")
                         }) {
-                            Text("RESTART")
+                            Image(systemName: "backward.end.alt.fill")
+                            .frame(width: 50)
                         }
                              .modifier(MenuButtonStyleRed())
                     } else if isOn {
@@ -450,15 +449,16 @@ struct PlayMode: View, TunerDelegate {
                             self.tuner.stop()
                             self.isOn = false
                         }) {
-                            Text("Pause")
+                            Image(systemName: "pause.fill")
+                            .frame(width: 50)
                         }
                              .modifier(MenuButtonStyle())
-                        .frame(width: 125)
                     } else if startedPlaying {
                         Button(action: {
                             self.startTuner()
                         }) {
-                            Text("Resume")
+                            Image(systemName: "play.fill")
+                            .frame(width: 50)
                         }
                              .modifier(MenuButtonStyle())
                     } else {
@@ -466,7 +466,8 @@ struct PlayMode: View, TunerDelegate {
                             self.startTuner()
                             self.startedPlaying = true
                         }) {
-                            Text("START")
+                            Image(systemName: "play.fill")
+                            .frame(width: 50)
                         }
                              .modifier(MenuButtonStyleRed())
                     }
@@ -480,6 +481,28 @@ struct PlayMode: View, TunerDelegate {
                         }
                         Text("Measure: " + String(Int(min(currBar, measures.count - 1))) + " / " + String(Int(measures.count) - 1))
                     }
+                    
+                    Button(action: {
+                        self.totalElapsedBeats = max(0, self.totalElapsedBeats - Float(self.beatIndex) - Float(self.timeSig.0))
+                        self.currBar = max(0, self.currBar - 1) // HERE
+                        self.measureIndex = max(0, self.measureIndex - 1)
+                        self.beatIndex = 0
+                        self.endOfCurrentNoteBeats = self.measures[self.measureIndex].notes[0].duration
+                        
+                        // HERE
+                        // Switch out totalElapsed beats for beatInBar
+//                        self.totalElapsedBeats =
+//                        @State var totalElapsedBeats: Float = 0
+                        
+//                        let currNote = self.measures[measureIndex].notes[beatIndex]
+//                        let offset = self.calcNoteOffset(note: currNote.step, octave: currNote.octave)
+//                        let fullLength: Float = (scrollLength / Float(timeSig.0)) * currNote.duration
+//                        let remainingRatio: Float = (endOfCurrentNoteBeats - totalElapsedBeats) / currNote.duration
+                    }) {
+                        Image(systemName: "gobackward")
+                        .frame(width: 50)
+                    }
+                         .modifier(MenuButtonStyle())
 
                     NavigationLink(destination: ResultsPage(shouldPopToRootView: self.$rootIsActive, scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
                         Text("Results")
