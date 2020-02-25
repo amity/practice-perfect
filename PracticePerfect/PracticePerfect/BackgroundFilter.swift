@@ -70,7 +70,7 @@ struct BackgroundFilter: View, TunerDelegate {
                        
                     Spacer()
                     
-                    NavigationLink(destination: PlayMode(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: tempo, timeSig: timeSig, showPrevious: self.showPrevious, tuner: self.tuner)) {
+                    NavigationLink(destination: PlayMode(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: tempo, showPrevious: self.showPrevious, tuner: self.tuner)) {
                         Text("Play!")
                             .font(.title)
                     }

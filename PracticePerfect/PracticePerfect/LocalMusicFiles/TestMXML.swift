@@ -26,6 +26,7 @@ let hbdNote7 = NoteMetadata(step: "G", duration: 0.5, type: "eighth", octave: 4)
 let hbdNote8 = NoteMetadata(step: "G", duration: 0.5, type: "eighth", octave: 4)
 let hbdNote9 = NoteMetadata(step: "A", duration: 1, type: "quarter", octave: 4)
 let hbdNote10 = NoteMetadata(step: "G", duration: 1, type: "quarter", octave: 4)
+let hbdNoteTest = NoteMetadata(step: "G", duration: 1, type: "quarter", octave: 4)
 
 //measure 3
 let hbdNote11 = NoteMetadata(step: "D", duration: 1, type: "quarter", octave: 5)
@@ -53,15 +54,15 @@ let hbdNote24 = NoteMetadata(step: "D", duration: 1, type: "quarter", octave: 5)
 let hbdNote25 = NoteMetadata(step: "C", duration: 2, type: "half", octave: 5)
 
 var hbdTestMeasures : Array<MeasureMetadata> = [
-    MeasureMetadata(measureNumber: 0, notes: [hbdRest1, hbdRest2, hbdRest3], clef: "G", fifths: 0, mode: "major"),
-    MeasureMetadata(measureNumber: 1, notes: [hbdNote1, hbdNote2, hbdNote3, hbdNote4], clef: "G", fifths: 0, mode: "major"),
-    MeasureMetadata(measureNumber: 2, notes: [hbdNote5, hbdNote6], clef: "G", fifths: 0, mode: "major"),
-    MeasureMetadata(measureNumber: 3, notes: [hbdNote7, hbdNote8, hbdNote9, hbdNote10], clef: "G", fifths: 0, mode: "major"),
-    MeasureMetadata(measureNumber: 4, notes: [hbdNote11, hbdNote12], clef: "G", fifths: 0, mode: "major"),
-    MeasureMetadata(measureNumber: 5, notes: [hbdNote13, hbdNote14, hbdNote15, hbdNote16], clef: "G", fifths: 0, mode: "major"),
-    MeasureMetadata(measureNumber: 6, notes: [hbdNote17, hbdNote18, hbdNote19], clef: "G", fifths: 0, mode: "major"),
-    MeasureMetadata(measureNumber: 7, notes: [hbdNote20, hbdNote21, hbdNote22, hbdNote23], clef: "G", fifths: 0, mode: "major"),
-    MeasureMetadata(measureNumber: 8, notes: [hbdNote24, hbdNote25], clef: "G", fifths: 0, mode: "major")]
+    MeasureMetadata(measureNumber: 0, notes: [hbdRest1, hbdRest2, hbdRest3], clef: "G", fifths: 0, mode: "major", timeSig: (3,4)),
+    MeasureMetadata(measureNumber: 1, notes: [hbdNote1, hbdNote2, hbdNote3, hbdNote4], clef: "G", fifths: 0, mode: "major", timeSig: (3,4)),
+    MeasureMetadata(measureNumber: 2, notes: [hbdNote5, hbdNote6], clef: "G", fifths: 0, mode: "major", timeSig: (3,4)),
+    MeasureMetadata(measureNumber: 3, notes: [hbdNote7, hbdNote8, hbdNote9, hbdNote10], clef: "G", fifths: 0, mode: "major", timeSig: (3,4)),
+    MeasureMetadata(measureNumber: 4, notes: [hbdNote11, hbdNote12], clef: "G", fifths: 0, mode: "major", timeSig: (3,4)),
+    MeasureMetadata(measureNumber: 5, notes: [hbdNote13, hbdNote14, hbdNote15, hbdNote16], clef: "G", fifths: 0, mode: "major", timeSig: (3,4)),
+    MeasureMetadata(measureNumber: 6, notes: [hbdNote17, hbdNote18, hbdNote19], clef: "G", fifths: 0, mode: "major", timeSig: (3,4)),
+    MeasureMetadata(measureNumber: 7, notes: [hbdNote20, hbdNote21, hbdNote22, hbdNote23], clef: "G", fifths: 0, mode: "major", timeSig: (3,4)),
+    MeasureMetadata(measureNumber: 8, notes: [hbdNote24, hbdNote25], clef: "G", fifths: 0, mode: "major", timeSig: (3,4))]
 
 let hbdRest1 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
 let hbdRest2 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
