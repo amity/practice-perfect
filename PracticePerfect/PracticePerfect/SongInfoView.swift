@@ -20,6 +20,45 @@ struct SongInfoView: View {
     @State private var selectedTempo = 100
     let timeSig = (3,4)
 
+    // File retrieval methods adapted from:
+    // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
+    private func getXML() {
+        trying = true
+        dataTask?.cancel()
+        
+        if var urlComponents = URLComponents(string: songMetadata.resourceUrl) {
+            guard let url = urlComponents.url else {
+                trying = false
+                return
+            }
+            
+            dataTask = downloadSession.dataTask(with: url) { (data, response, error) in
+                defer {
+                    self.dataTask = nil
+                }
+
+                if let error = error {
+                    self.errorMessage += "DataTask error: " + error.localizedDescription + "\n"
+                } else if let data = data, let response = response as? HTTPURLResponse,
+                    response.statusCode == 200 {
+                    self.XMLString = String(data: data, encoding: .utf8) ?? ""
+                    self.finishedDownloading = true
+                }
+            }
+            dataTask?.resume()
+        }
+        trying = false
+    }
+    
+    // XML Retrieval
+    @State var downloadSession = URLSession(configuration: .default)
+    @State var dataTask: URLSessionDataTask?
+    @State var errorMessage = ""
+    @State var results = ""
+    @State var XMLString = ""
+    @State var finishedDownloading = false
+    @State var trying = false
+    
     var body: some View {
         ZStack {
             mainGradient
@@ -77,17 +116,36 @@ struct SongInfoView: View {
                             .frame(maxWidth: 100, maxHeight: 70)
                             .clipped()
                     }
-                    NavigationLink(destination: PlayMode(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: self.tempoValues[self.selectedTempo], timeSig: timeSig)) {
-                        Text("Play!")
-                            .font(.title)
+                    
+                    if self.finishedDownloading {
+                        NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: self.tempoValues[self.selectedTempo], timeSig: timeSig)) {
+                            Text("Play!")
+                                .font(.title)
+                        }
+                        .isDetailLink(false)
+                        .modifier(MenuButtonStyle())
+                    } else {
+                        Button(action: {
+                            self.getXML()
+                        }) {
+                            if trying {
+                                Text("Downloading...")
+                            } else {
+                                Text("Download Song")
+                            }
+                        }
+                            .modifier(MenuButtonStyle())
+                        .disabled(trying)
                     }
-                    .isDetailLink(false)
-                    .modifier(MenuButtonStyle())
+                    
                     Spacer()
                 }
             }
         }
-            .foregroundColor(.black)
+        .foregroundColor(.black)
+        .onAppear() {
+            self.getXML()
+        }
     }
 }
 

@@ -17,7 +17,8 @@ import SwiftUI
 
 struct LandingPage: View {
     @EnvironmentObject var settings: UserSettings
-    @State var isActive : Bool = false
+    @State var isActiveSelectMusic: Bool = false
+    @State var isActiveScalePicker: Bool = false
     
     let note: some View = Image("note").resizable().frame(width: 75, height: 75)
     let smallNote: some View = Image("note").resizable().frame(width: 50, height: 50)
@@ -51,7 +52,7 @@ struct LandingPage: View {
                 Image("full-logo")
                 
                 HStack {
-                    NavigationLink(destination: SelectMusic(rootIsActive: self.$isActive), isActive: self.$isActive) {
+                    NavigationLink(destination: SelectMusic(rootIsActive: self.$isActiveSelectMusic), isActive: self.$isActiveSelectMusic) {
                         HStack {
                             Image(systemName: "play.fill")
                             Text("Play!")
@@ -72,11 +73,11 @@ struct LandingPage: View {
                 }
                 
                 HStack {
-                    NavigationLink(destination: ScalePicker(rootIsActive: self.$isActive),
-                        isActive: self.$isActive) {
+                    NavigationLink(destination: ScalePicker(rootIsActive: self.$isActiveScalePicker),
+                        isActive: self.$isActiveScalePicker) {
                         HStack {
                             Image(systemName: "music.note")
-                            Text("Exercises")
+                            Text("Scales")
                                 .fixedSize()
                         }
                     }
