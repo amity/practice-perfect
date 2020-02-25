@@ -77,6 +77,8 @@ struct BackgroundFilter: View, TunerDelegate {
                     .isDetailLink(false)
                     .modifier(MenuButtonStyle())
                     .frame(width: 200)
+                    .disabled(self.isOn)
+                    .opacity(self.isOn ? 0.5 : 1)
                 }
                 .frame(maxWidth: 450)
                 Spacer()
