@@ -47,6 +47,7 @@ struct PlayMode: View, TunerDelegate {
     
     // Tempo variables
     @State var totalElapsedBeats: Float = 0
+    @State var newTotal: Float = 0
     @State var endOfCurrentNoteBeats: Float = hbdTestMeasures[0].notes[0].duration
     
     // Countdown variables
@@ -225,8 +226,8 @@ struct PlayMode: View, TunerDelegate {
                     }
                     
                     Button(action: {
-                        self.totalElapsedBeats = max(0, self.totalElapsedBeats - Float(self.beatIndex) - Float(self.timeSig.0) - 1)
-                        self.currBar = max(0, self.currBar - 1) // HERE
+                        self.totalElapsedBeats = self.newTotal
+                        self.currBar = max(0, self.currBar - 1)
 //                        self.measureIndex = max(0, self.measureIndex - 1)
                         self.beatIndex = 0
                         self.endOfCurrentNoteBeats = self.measures[self.currBar].notes[0].duration
@@ -314,13 +315,27 @@ struct PlayMode: View, TunerDelegate {
             backgroundMeanAmplitude = (Float(backgroundReadingCount - 1) * backgroundMeanAmplitude + Float(tuner.tracker.amplitude)) / Float(backgroundReadingCount)
             tuner.updateThreshold(newThreshold: backgroundMeanAmplitude)
         }
-                        
+        
+        // Keep track of current bar
+        if Int(newElapsedBeats) > Int(self.totalElapsedBeats) && Int(newElapsedBeats) % timeSig.0 == 0 &&
+           Int(newElapsedBeats) != 0 {
+            // end song
+            if self.currBar == self.measures.count - 1 {
+                self.tuner.stop()
+                self.isOn = false
+            } else {
+                beatIndex = 0
+                self.currBar += 1
+                self.newTotal = self.totalElapsedBeats
+            }
+        }
+
         // If still on current note, add pitch reading to array
-        if newElapsedBeats <= endOfCurrentNoteBeats {
+        if newElapsedBeats < endOfCurrentNoteBeats {
             currBeatNotes.append(pitch.note)
         }
         // If new beat, calculate score and empty list for next beat
-        else {
+        else if self.isOn {
             // Frequency calculation algorithm from: https://stackoverflow.com/questions/38416347/getting-the-most-frequent-value-of-an-array
             
             // Create dictionary to map value to count and get most frequent note
@@ -333,30 +348,14 @@ struct PlayMode: View, TunerDelegate {
             // Empty current beat note values array for next beat
             currBeatNotes = []
             
-            endOfCurrentNoteBeats = endOfCurrentNoteBeats + measures[currBar].notes[beatIndex].duration
-            
             // If on last beat of current measure, don't increment
-            if beatIndex < measures[currBar].notes.count - 1 {
+            if !(Int(newElapsedBeats) % timeSig.0 == 0 && newElapsedBeats - floor(newElapsedBeats) < 0.0001) {
                 beatIndex += 1
             }
+            
+            endOfCurrentNoteBeats = endOfCurrentNoteBeats + measures[currBar].notes[beatIndex].duration
         }
-        
-        // Keep track of current bar
-        if Int(newElapsedBeats) > Int(self.totalElapsedBeats) && Int(newElapsedBeats) % timeSig.0 == 0 &&
-           Int(newElapsedBeats) != 0 {
-            // end song
-            if self.currBar == self.measures.count - 1 {
-                self.tuner.stop()
-                self.isOn = false
-            } else {
-                beatIndex = 0
-                self.currBar += 1
-            }
-        }
-        
-        print("currBar: \(currBar)")
-        print("beatIndex: \(beatIndex)")
-        
+
         if self.isOn {
             // Update tempo count
             self.totalElapsedBeats = newElapsedBeats
