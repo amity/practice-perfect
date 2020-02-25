@@ -40,6 +40,7 @@
 		BD513850236F7416004F2220 /* TunerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD51384F236F7416004F2220 /* TunerView.swift */; };
 		BD5D3EF72381BADE00CA92F0 /* Modifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5D3EF62381BADE00CA92F0 /* Modifiers.swift */; };
 		BD5D3EF92381F30100CA92F0 /* ScalePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5D3EF82381F30100CA92F0 /* ScalePicker.swift */; };
+		BD8D68DC23FF4CC6007596C0 /* PlayModeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8D68DB23FF4CC6007596C0 /* PlayModeHelper.swift */; };
 		BD92FECD2374D8E10074FD59 /* Exercises.json in Resources */ = {isa = PBXBuildFile; fileRef = BD92FECC2374D8E10074FD59 /* Exercises.json */; };
 		BD9597EF23732FD6002A9651 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9597EE23732FD6002A9651 /* Note.swift */; };
 		BD9597F123732FEB002A9651 /* Pitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9597F023732FEB002A9651 /* Pitch.swift */; };
@@ -86,6 +87,7 @@
 		BD51384F236F7416004F2220 /* TunerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunerView.swift; sourceTree = "<group>"; };
 		BD5D3EF62381BADE00CA92F0 /* Modifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Modifiers.swift; sourceTree = "<group>"; };
 		BD5D3EF82381F30100CA92F0 /* ScalePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScalePicker.swift; sourceTree = "<group>"; };
+		BD8D68DB23FF4CC6007596C0 /* PlayModeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayModeHelper.swift; sourceTree = "<group>"; };
 		BD92FECC2374D8E10074FD59 /* Exercises.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Exercises.json; sourceTree = "<group>"; };
 		BD9597EE23732FD6002A9651 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		BD9597F023732FEB002A9651 /* Pitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pitch.swift; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 				72F3276C237FF72600EF9F57 /* ParseSongsMusicXML.swift */,
 				BD9597F023732FEB002A9651 /* Pitch.swift */,
 				722A895E236F662C0030B009 /* PlayMode.swift */,
+				BD8D68DB23FF4CC6007596C0 /* PlayModeHelper.swift */,
 				728160B42380729700608307 /* PlaySongMetadata.swift */,
 				1495231F237B08AE0077BA97 /* ResultsPage.swift */,
 				BD5D3EF82381F30100CA92F0 /* ScalePicker.swift */,
@@ -344,6 +347,7 @@
 				145E432023CF80D500C8C98A /* SearchBar.swift in Sources */,
 				BD9597F323733001002A9651 /* Tuner.swift in Sources */,
 				72F3276D237FF72600EF9F57 /* ParseSongsMusicXML.swift in Sources */,
+				BD8D68DC23FF4CC6007596C0 /* PlayModeHelper.swift in Sources */,
 				72F3276F237FF74100EF9F57 /* ParseMeasuresMusicXML.swift in Sources */,
 				722A895B236F65DA0030B009 /* SelectMusic.swift in Sources */,
 				7296206C237405B400706B82 /* Song+CoreDataProperties.swift in Sources */,

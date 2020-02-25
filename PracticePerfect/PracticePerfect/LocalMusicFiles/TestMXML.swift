@@ -61,20 +61,9 @@ var hbdTestMeasures : Array<MeasureMetadata> = [
     MeasureMetadata(measureNumber: 5, notes: [hbdNote13, hbdNote14, hbdNote15, hbdNote16], clef: "G", fifths: 0, mode: "major"),
     MeasureMetadata(measureNumber: 6, notes: [hbdNote17, hbdNote18, hbdNote19], clef: "G", fifths: 0, mode: "major"),
     MeasureMetadata(measureNumber: 7, notes: [hbdNote20, hbdNote21, hbdNote22, hbdNote23], clef: "G", fifths: 0, mode: "major"),
-    MeasureMetadata(measureNumber: 8, notes: [hbdNote24, hbdNote25], clef: "G", fifths: 0, mode: "major")]
+    MeasureMetadata(measureNumber: 8, notes: [hbdNote24, hbdNote25], clef: "G", fifths: 0, mode: "major")
+]
 
 let hbdRest1 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
 let hbdRest2 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
 let hbdRest3 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
-
-struct TestMXML: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
-
-struct TestMXML_Previews: PreviewProvider {
-    static var previews: some View {
-        TestMXML()
-    }
-}
