@@ -48,6 +48,7 @@ struct ScaleMetadata: Hashable, Codable, Identifiable {
     var id: Int
     var name: String
     var urls: [String]
+    var arpeggioUrls: [String]
 }
 
 class NoteMetadata: Identifiable, Equatable {

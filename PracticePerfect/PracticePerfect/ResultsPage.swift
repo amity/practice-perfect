@@ -29,6 +29,7 @@ struct ResultsPage: View {
     
     @State var scoreMetadata: ScoreMetadata
     @State var songMetadata: SongMetadata
+    @State var showPrevious: Bool
     
     var body: some View {
         ZStack {
@@ -71,25 +72,27 @@ struct ResultsPage: View {
 
                     Spacer()
 
-                    HStack {
-                        VStack {
-                            Text("Previous Score")
-                                .font(Font.title.weight(.bold))
-                            Text("\(songMetadata.highScore)")
-                                .font(.largeTitle)
-                        }
+                    if self.showPrevious {
+                        HStack {
+                            VStack {
+                                Text("Previous Score")
+                                    .font(Font.title.weight(.bold))
+                                Text("\(songMetadata.highScore)")
+                                    .font(.largeTitle)
+                            }
 
+                            Spacer()
+
+                            VStack {
+                                Text("Grade")
+                                    .font(Font.title.weight(.bold))
+                                // Calculate new rank from the new score and top possible score
+                                Text("\(calculateRank(newScore: songMetadata.highScore, topScore: songMetadata.topScore))")
+                                    .font(.largeTitle)
+                            }
+                        }
                         Spacer()
-
-                        VStack {
-                            Text("Grade")
-                                .font(Font.title.weight(.bold))
-                            // Calculate new rank from the new score and top possible score
-                            Text("\(calculateRank(newScore: songMetadata.highScore, topScore: songMetadata.topScore))")
-                                .font(.largeTitle)
-                        }
                     }
-                    Spacer()
                 }
                 .frame(maxWidth: 500)
                 
@@ -134,7 +137,7 @@ struct ResultsPage_Previews: PreviewProvider {
                 highScoreId: -1, 
                 deleted: false,
                 rank: ""
-            )
+            ), showPrevious: true
         ).previewLayout(.fixed(width: 896, height: 414))
     }
 }

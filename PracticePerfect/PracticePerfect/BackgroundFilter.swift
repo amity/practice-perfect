@@ -15,6 +15,7 @@ struct BackgroundFilter: View, TunerDelegate {
     var songMetadata: SongMetadata
     var tempo: Int
     var timeSig: (Int, Int)
+    @State var showPrevious: Bool
         
     // Tuner variables 
     @State var tuner: Tuner = Tuner()
@@ -69,7 +70,7 @@ struct BackgroundFilter: View, TunerDelegate {
                        
                     Spacer()
                     
-                    NavigationLink(destination: PlayMode(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: tempo, timeSig: timeSig, tuner: self.tuner)) {
+                    NavigationLink(destination: PlayMode(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: tempo, timeSig: timeSig, showPrevious: self.showPrevious, tuner: self.tuner)) {
                         Text("Play!")
                             .font(.title)
                     }
@@ -102,6 +103,6 @@ struct BackgroundFilter: View, TunerDelegate {
 struct BackgroundFilter_Previews: PreviewProvider {
     static var previews: some View {
         // Example with sample SongMetadata
-        BackgroundFilter(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 100, timeSig: (4,4)).previewLayout(.fixed(width: 896, height: 414))
+        BackgroundFilter(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 100, timeSig: (4,4), showPrevious: true).previewLayout(.fixed(width: 896, height: 414))
     }
 }

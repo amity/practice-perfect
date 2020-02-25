@@ -293,6 +293,7 @@ struct PlayMode: View, TunerDelegate {
     var songMetadata: SongMetadata
     var tempo: Int
     var timeSig: (Int, Int)
+    @State var showPrevious: Bool
     
     // Tuner variables
     @State var tuner: Tuner
@@ -476,7 +477,7 @@ struct PlayMode: View, TunerDelegate {
                         Text("Measure: " + String(Int(min(currBar, measures.count - 1))) + " / " + String(Int(measures.count) - 1))
                     }
 
-                    NavigationLink(destination: ResultsPage(shouldPopToRootView: self.$rootIsActive, scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
+                    NavigationLink(destination: ResultsPage(shouldPopToRootView: self.$rootIsActive, scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata, showPrevious: self.showPrevious)) {
                         Text("Results")
                     }
                         .isDetailLink(false)
@@ -1090,6 +1091,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4), tuner: Tuner()).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4), showPrevious: true, tuner: Tuner()).previewLayout(.fixed(width: 896, height: 414))
     }
 }
