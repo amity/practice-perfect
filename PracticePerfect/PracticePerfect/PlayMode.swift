@@ -42,6 +42,7 @@ struct PlayMode: View, TunerDelegate {
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
     @State var isOn = false
+    @State var isOver = false
     @State var backgroundMeanAmplitude: Float = 0.0
     @State var backgroundReadingCount: Int = 0
     
@@ -179,7 +180,7 @@ struct PlayMode: View, TunerDelegate {
                         .font(Font.body.weight(.bold))
                         .frame(maxWidth: 125, maxHeight: 150)
                     
-                    if currBar >= measures.count {
+                    if isOver {
                         Button(action: {
                             print("TODO")
                         }) {
@@ -226,21 +227,12 @@ struct PlayMode: View, TunerDelegate {
                     }
                     
                     Button(action: {
-                        self.totalElapsedBeats = self.newTotal
-                        self.currBar = max(0, self.currBar - 1)
-//                        self.measureIndex = max(0, self.measureIndex - 1)
-                        self.beatIndex = 0
-                        self.endOfCurrentNoteBeats = self.measures[self.currBar].notes[0].duration
-                        
-                        // HERE
+                        print("TODO")
+//                        self.totalElapsedBeats = self.newTotal
+//                        self.currBar = max(0, self.currBar - 1)
+//                        self.beatIndex = 0
+//                        self.endOfCurrentNoteBeats = self.measures[self.currBar].notes[0].duration
                         // Switch out totalElapsed beats for beatInBar
-//                        self.totalElapsedBeats =
-//                        @State var totalElapsedBeats: Float = 0
-                        
-//                        let currNote = self.measures[measureIndex].notes[beatIndex]
-//                        let offset = self.calcNoteOffset(note: currNote.step, octave: currNote.octave)
-//                        let fullLength: Float = (scrollLength / Float(timeSig.0)) * currNote.duration
-//                        let remainingRatio: Float = (endOfCurrentNoteBeats - totalElapsedBeats) / currNote.duration
                     }) {
                         Image(systemName: "gobackward")
                         .frame(width: 50)
@@ -323,6 +315,7 @@ struct PlayMode: View, TunerDelegate {
             if self.currBar == self.measures.count - 1 {
                 self.tuner.stop()
                 self.isOn = false
+                self.isOver = true
             } else {
                 beatIndex = 0
                 self.currBar += 1
