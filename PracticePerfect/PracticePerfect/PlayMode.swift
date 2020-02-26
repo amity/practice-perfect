@@ -42,7 +42,6 @@ struct PlayMode: View, TunerDelegate {
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
     @State var isOn = false
-    @State var isOver = false
     @State var backgroundMeanAmplitude: Float = 0.0
     @State var backgroundReadingCount: Int = 0
     
@@ -65,17 +64,20 @@ struct PlayMode: View, TunerDelegate {
     @State var goodCount: Int = 0
     @State var perfectCount: Int = 0
     
-    // Note display variables HERE
+    // Note display variables
     @State var barDist = screenWidth/screenDivisions/2
     @State var currBar = 0
     @State var measures: [MeasureMetadata] = hbdTestMeasures
-    @State var measureIndex = 0
     @State var beatIndex = 0
+    
+    // Restart variables
+    @State var isOver = false
+    @State var repeatIndex: Float = 0
     
     var body: some View {
         ZStack {
             mainGradient
-        
+
             VStack{
                 Spacer()
 
@@ -182,7 +184,32 @@ struct PlayMode: View, TunerDelegate {
                     
                     if isOver {
                         Button(action: {
-                            print("TODO")
+                            self.repeatIndex += floor(self.totalElapsedBeats)
+                            
+                            // Tempo variables
+                            self.endOfCurrentNoteBeats = hbdTestMeasures[0].notes[0].duration
+                            self.totalElapsedBeats = 0
+                            self.newTotal = 0
+                            
+                            // Countdown variables
+                            self.startedPlaying = false
+                            
+                            //  Scoring variables
+                            self.currBeatNotes = [] // For all notes in current beat
+                            self.runningScore = 0
+                            self.streakCount = 0
+                            self.streakValuesIndex = 0
+                            self.streakIncreaseIndex = 0
+                            self.totalNotesPlayed = 0
+                            self.missCount = 0
+                            self.goodCount = 0
+                            self.perfectCount = 0
+                            
+                            // Note display variables
+                            self.currBar = 0
+                            self.beatIndex = 0
+                            
+                            self.isOver = false
                         }) {
                             Image(systemName: "backward.end.alt.fill")
                             .frame(width: 50)
@@ -228,6 +255,7 @@ struct PlayMode: View, TunerDelegate {
                     
                     Button(action: {
                         print("TODO")
+                        self.isOver = false
 //                        self.totalElapsedBeats = self.newTotal
 //                        self.currBar = max(0, self.currBar - 1)
 //                        self.beatIndex = 0
@@ -299,7 +327,7 @@ struct PlayMode: View, TunerDelegate {
     // Updates current note information from microphone
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
-        let newElapsedBeats: Float = Float(beatCount) * Float(tuner.pollingInterval) / Float(60) * Float(tempo)
+        let newElapsedBeats: Float = (Float(beatCount) * Float(tuner.pollingInterval) / Float(60) * Float(tempo)) - self.repeatIndex
          
         // If still in the countdown, take readings to calculate background noise and update threshold
         if !(Int(newElapsedBeats) > timeSig.0) {
@@ -342,10 +370,10 @@ struct PlayMode: View, TunerDelegate {
             currBeatNotes = []
             
             // If on last beat of current measure, don't increment
-            if !(Int(newElapsedBeats) % timeSig.0 == 0 && newElapsedBeats - floor(newElapsedBeats) < 0.0001) {
+            if !(Int(newElapsedBeats) % timeSig.0 == 0 && newElapsedBeats - floor(newElapsedBeats) < 0.1) {
                 beatIndex += 1
             }
-            
+
             endOfCurrentNoteBeats = endOfCurrentNoteBeats + measures[currBar].notes[beatIndex].duration
         }
 
@@ -360,7 +388,7 @@ struct PlayMode: View, TunerDelegate {
             }
         }
     }
-    
+
     func startTuner() {
         self.tuner.delegate = self
         self.tuner.start()
