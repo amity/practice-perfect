@@ -67,7 +67,6 @@ struct PlayMode: View, TunerDelegate {
     @State var barDist = screenWidth/screenDivisions/2
     @State var currBar = 0
     @State var measures: [MeasureMetadata] = hbdTestMeasures
-    @State var measureIndex = 0
     @State var beatIndex = 0
     @State var measureBeat = 0
     
@@ -222,8 +221,7 @@ struct PlayMode: View, TunerDelegate {
                                 .font(Font.largeTitle.weight(.bold))
                                 .frame(width: 150)
                         }
-//                        Text("Measure: " + String(Int(min(currBar, measures.count - 1))) + " / " + String(Int(measures.count) - 1))
-                        Text("Measure: " + String(measures[currBar].notes[beatIndex].step))
+                        Text("Measure: " + String(Int(min(currBar, measures.count - 1))) + " / " + String(Int(measures.count) - 1))
                     }
                     
                     Button(action: {
@@ -300,28 +298,9 @@ struct PlayMode: View, TunerDelegate {
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
         let newElapsedBeats: Float = Float(beatCount) * Float(tuner.pollingInterval) / Float(60) * Float(tempo)
-                 
-        // Keep track of current bar
-        if Int(newElapsedBeats) > Int(self.totalElapsedBeats) {
-            if self.measureBeat == measures[currBar].timeSig.0 - 1 &&
-                Int(newElapsedBeats) != 0 {
-                // end song
-                if self.currBar == self.measures.count - 1 {
-                    self.tuner.stop()
-                    self.isOn = false
-                    self.isOver = true
-                } else {
-                    beatIndex = 0
-                    self.currBar += 1
-                    self.measureBeat = 0
-                    self.newTotal = self.totalElapsedBeats
-                }
-            } else {
-                self.measureBeat += 1
-            }
-        }
-
-
+        
+        var updateEndOfNextNote = false
+        
         // If still on current note, add pitch reading to array
         if newElapsedBeats < endOfCurrentNoteBeats {
             currBeatNotes.append(pitch.note)
@@ -340,12 +319,41 @@ struct PlayMode: View, TunerDelegate {
             // Empty current beat note values array for next beat
             currBeatNotes = []
             
-            // If on last beat of current measure, don't increment
-            if !(measureBeat == 0 && newElapsedBeats - floor(newElapsedBeats) < 0.0001) {
-                beatIndex += 1
-            }
+            // Go to next beat
+            beatIndex += 1
             
+            // Nee to update end of next note
+            updateEndOfNextNote = true
+            
+        }
+        
+        // Keep track of current bar
+        if Int(newElapsedBeats) > Int(self.totalElapsedBeats) {
+            // If switching to new bar
+            if self.measureBeat == measures[currBar].timeSig.0 - 1 &&
+                Int(newElapsedBeats) != 0 {
+                // End song
+                if self.currBar == self.measures.count - 1 {
+                    self.tuner.stop()
+                    self.isOn = false
+                    self.isOver = true
+                    beatIndex -= 1
+                } else {
+                    beatIndex = 0
+                    self.currBar += 1
+                    self.measureBeat = 0
+                    print(self.measureBeat, self.currBar)
+                    self.newTotal = self.totalElapsedBeats
+                }
+            }
+            else {
+                self.measureBeat += 1
+            }
+        }
+
+        if updateEndOfNextNote && self.isOn {
             endOfCurrentNoteBeats = endOfCurrentNoteBeats + measures[currBar].notes[beatIndex].duration
+            updateEndOfNextNote = false
         }
 
         if self.isOn {
