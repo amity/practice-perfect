@@ -67,15 +67,3 @@ var hbdTestMeasures : Array<MeasureMetadata> = [
 let hbdRest1 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
 let hbdRest2 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
 let hbdRest3 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
-
-struct TestMXML: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
-
-struct TestMXML_Previews: PreviewProvider {
-    static var previews: some View {
-        TestMXML()
-    }
-}

@@ -16,267 +16,6 @@ let screenHeight = CGFloat(screenSize.height)
 let screenDivisions : CGFloat = 20
 let offsets : [CGFloat] = [screenWidth/screenDivisions,screenWidth/screenDivisions * 2, 0, screenWidth/(-screenDivisions), screenWidth/(-screenDivisions) * 2]
 
-// Posts new score to API
-// Posting guidance: https://stackoverflow.com/a/58804263
-func postNewScore(userId: Int, songId: Int, score: Int) -> () {
-    let params: [String: String] = ["song": String(songId), "user": String(userId), "score": String(score)]
-    let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores")!
-    let scoreSession = URLSession.shared
-    var scoreRequest = URLRequest(url: scoreUrl)
-    scoreRequest.httpMethod = "POST"
-    scoreRequest.httpBody = try? JSONSerialization.data(withJSONObject: params)
-    scoreRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    
-    let semaphore = DispatchSemaphore(value: 0)
-    let task = scoreSession.dataTask(with: scoreRequest) { data, response, error in
-        // TO DO: Error handling with response, currently just returns 200 which is what you would expect
-        print(response!)
-        semaphore.signal()
-    }
-    task.resume()
-
-    _ = semaphore.wait(wallTimeout: .distantFuture)
-}
-
-// Posts score update to API
-// Posting guidance: https://stackoverflow.com/a/58804263
-func postScoreUpdate(scoreId: Int, score: Int) -> () {
-    let params: [String: String] = ["score": String(score)]
-    let scoreUrl = URL(string: "https://practiceperfect.appspot.com/scores/" + String(scoreId))!
-    let scoreSession = URLSession.shared
-    var scoreRequest = URLRequest(url: scoreUrl)
-    scoreRequest.httpMethod = "POST"
-    scoreRequest.httpBody = try? JSONSerialization.data(withJSONObject: params)
-    scoreRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    
-    let semaphore = DispatchSemaphore(value: 0)
-    let task = scoreSession.dataTask(with: scoreRequest) { data, response, error in
-        // TO DO: Error handling with response, currently just returns 200 which is what you would expect
-        print(response!)
-        semaphore.signal()
-    }
-    task.resume()
-
-    _ = semaphore.wait(wallTimeout: .distantFuture)
-}
-
-// Used for creating tranposing correspondences and plotting key signatures
-let sharpOrder = ["F", "C", "G", "D", "A", "E", "B"]
-let flatOrder = ["B", "E", "A", "D", "G", "C", "F"]
-
-// Creates list of notes for transposition
-func createNotesList(fifth: Int) -> Array<String> {
-    let notesOrder = ["A", "B", "C", "D", "E", "F", "G"]
-    let key: String = scaleOrder[fifth + 6]
-    let index = notesOrder.firstIndex(of: String(key.prefix(1)))!
-   
-    // Get the list of notes that have accidentals in the key signature itself
-    var keySigAccidentals: [String] = []
-    if fifth < 0 {
-        keySigAccidentals = Array<String>(sharpOrder[0 ... -fifth - 1])
-    } else if fifth > 0 {
-        keySigAccidentals = Array<String>(flatOrder[0 ... fifth - 1])
-    }
-    
-    var notesList: [String] = []
-    
-    // End of list
-    for i in index ... notesOrder.count - 1 {
-        let currNote = notesOrder[i]
-        // FLAT
-        // If current note has an accidental in key signature
-        if keySigAccidentals.contains(currNote) {
-            // If already flatted, make double flat
-            if fifth < 0 {
-                notesList.append(currNote + "𝄫")
-            // If already sharp, make natural
-            } else if fifth > 0 {
-                notesList.append(currNote + "♮")
-            }
-        // If not accidental in key signature
-        } else {
-            notesList.append(currNote + "♭")
-        }
-        
-        // NOTE ITSELF
-        // If current note has accidental in key signature
-        if keySigAccidentals.contains(currNote) {
-            // If flatted
-            if fifth < 0 {
-                notesList.append(currNote + "♭")
-            } else if fifth > 0 {
-                notesList.append(currNote + "♯")
-            }
-        // If not accidental in key signature
-        } else {
-            notesList.append(currNote)
-        }
-        
-        // SHARP
-        // If current note has accidental in key signature
-        if keySigAccidentals.contains(currNote) {
-            // If already flatted, make natural
-            if fifth < 0 {
-                notesList.append(currNote + "♮")
-            // If already sharp, make double sharp
-            } else if fifth > 0 {
-                notesList.append(currNote + "𝄪")
-            }
-        // If not accidental in key signature
-        } else {
-            notesList.append(currNote + "♯")
-        }
-    }
-    // Beginning of list if not already done whole list
-    if (index - 1 >= 0) {
-        for j in 0 ... index - 1 {
-            let currNote = notesOrder[j]
-            // FLAT
-            // If current note has an accidental in key signature
-            if keySigAccidentals.contains(currNote) {
-                // If already flatted, make double flat
-                if fifth < 0 {
-                    notesList.append(currNote + "𝄫")
-                // If already sharp, make natural
-                } else if fifth > 0 {
-                    notesList.append(currNote + "♮")
-                }
-            // If not accidental in key signature
-            } else {
-                notesList.append(currNote + "♭")
-            }
-            
-            // NOTE ITSELF
-            // If current note has accidental in key signature
-            if keySigAccidentals.contains(currNote) {
-                // If flatted
-                if fifth < 0 {
-                    notesList.append(currNote + "♭")
-                } else if fifth > 0 {
-                    notesList.append(currNote + "♯")
-                }
-            // If not accidental in key signature
-            } else {
-                notesList.append(currNote)
-            }
-            
-            // SHARP
-            // If current note has accidental in key signature
-            if keySigAccidentals.contains(currNote) {
-                // If already flatted, make natural
-                if fifth < 0 {
-                    notesList.append(currNote + "♮")
-                // If already sharp, make double sharp
-                } else if fifth > 0 {
-                    notesList.append(currNote + "𝄪")
-                }
-            // If not accidental in key signature
-            } else {
-                notesList.append(currNote + "♯")
-            }
-        }
-    }
-    
-    return notesList
-}
-
-// Used to determine which notes should be moved up or down an octave when the key is changed
-let changeOctave: [Int: [String]] = [
-    6: ["C", "D", "E"],
-    5: ["B"],
-    4: ["C", "D"],
-    3: ["C", "D", "E", "F", "G"],
-    2: ["C"],
-    1: ["C", "D", "E", "F"],
-    0: [],
-    -1: ["C", "D", "E"],
-    -2: ["B"],
-    -3: ["C", "D"],
-    -4: ["C", "D", "E", "F", "G"],
-    -5: ["C"],
-    -6: ["C", "D", "E", "F"]
-]
-
-// Whether notes should be moved up an octave or not (and therefore down an octave)
-let changeUp: [Int: Bool] = [
-    6: false,
-    5: true,
-    4: false,
-    3: false,
-    2: false,
-    1: false,
-    -1: false,
-    -2: true,
-    -3: false,
-    -4: false,
-    -5: false,
-    -6: false
-]
-
-// Shifts notes depending on key
-func transposeSong(originalMeasures: Array<MeasureMetadata>, halfStepOffset: Int) -> Array<MeasureMetadata> {
-    // New list of transposed MeasureMetadata to be returned
-    var transposed: Array<MeasureMetadata> = []
-    
-    // Get list of notes that will change octave after transpotiion
-    let octChangeSet = Array<String>(changeOctave[halfStepOffset]!)
-    
-    // For each measure
-    for i in 0...originalMeasures.count - 1 {
-        let oldMeasure = originalMeasures[i]
-        
-        var transposeDict: [String: String] = [:]
-        for (index, element) in createNotesList(fifth: oldMeasure.fifths).enumerated() {
-            transposeDict[element] = createNotesList(fifth: oldMeasure.fifths - halfStepOffset)[index]
-        }
-        
-        var newNotes: [NoteMetadata] = []
-        
-        // For each note in the measure
-        for j in 0...oldMeasure.notes.count - 1 {
-            let oldNote: NoteMetadata = oldMeasure.notes[j]
-            var oldString: String = oldNote.step
-            if oldNote.accidental != "" {
-                oldString += oldNote.accidental
-            }
-            let newString: String = transposeDict[oldString]!
-            let newStep: String = String(newString.prefix(1))
-            
-            var newAccidental: String = ""
-            if newString.count > 1 {
-                newAccidental = String(newString.suffix(1))
-            }
-            
-            var octChange = false
-            if octChangeSet.contains(newStep) {
-                octChange = true
-            }
-            
-            var newOctave = oldNote.octave
-            if octChange {
-                if octChangeSet.contains(newStep) {
-                    if changeUp[halfStepOffset]! {
-                        newOctave -= 1
-                    } else {
-                        newOctave += 1
-                    }
-                }
-            }
-                        
-            let newNote: NoteMetadata = NoteMetadata(step: newStep, duration: oldNote.duration, type: oldNote.type, accidental: newAccidental,
-                dot: oldNote.dot, octave: newOctave, isRest: oldNote.isRest)
-            newNotes.append(newNote)
-        }
-        
-        let newMeasure = MeasureMetadata(measureNumber: oldMeasure.measureNumber, notes: newNotes, clef: oldMeasure.clef, fifths: oldMeasure.fifths + halfStepOffset, mode: oldMeasure.mode, timeSig: oldMeasure.timeSig)
-        transposed.append(newMeasure)
-    }
-    
-    return transposed
-}
-
-var testMeasures = hbdTestMeasures
-
 // Streak multiplier values for streaks of length 0, 10, 25, and 50 (respectively)
 let streakMultValues: Array<Float> = [1, 1.2, 1.5, 2]
 let streakIncreases: Array<Float> = [10, 25, 50]
@@ -284,6 +23,10 @@ let streakIncreases: Array<Float> = [10, 25, 50]
 // For animation
 let barLength = Float(screenSize.width) - Float(100)
 let scrollLength = Float(screenSize.width) - Float(200)
+
+// Used for creating tranposing correspondences and plotting key signatures
+let sharpOrder = ["F", "C", "G", "D", "A", "E", "B"]
+let flatOrder = ["B", "E", "A", "D", "G", "C", "F"]
 
 struct PlayMode: View, TunerDelegate {
     @EnvironmentObject var settings: UserSettings
@@ -299,10 +42,12 @@ struct PlayMode: View, TunerDelegate {
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
     @State var isOn = false
+    @State var isOver = false
     
     // Tempo variables
     @State var totalElapsedBeats: Float = 0
-    @State var endOfCurrentNoteBeats: Float = testMeasures[0].notes[0].duration
+    @State var newTotal: Float = 0
+    @State var endOfCurrentNoteBeats: Float = hbdTestMeasures[0].notes[0].duration
     
     // Countdown variables
     @State var startedPlaying = false
@@ -318,10 +63,10 @@ struct PlayMode: View, TunerDelegate {
     @State var goodCount: Int = 0
     @State var perfectCount: Int = 0
     
-    // Note display variables
+    // Note display variables HERE
     @State var barDist = screenWidth/screenDivisions/2
     @State var currBar = 0
-    @State var measures: [MeasureMetadata] = testMeasures
+    @State var measures: [MeasureMetadata] = hbdTestMeasures
     @State var measureIndex = 0
     @State var beatIndex = 0
     @State var measureBeat = 0
@@ -391,27 +136,27 @@ struct PlayMode: View, TunerDelegate {
 
                 HStack(spacing: 25) {
                     VStack(spacing: 1) {
-                        if (displayNote(note: note) == measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental) {
+                        if (displayNote(note: note) == measures[currBar].notes[beatIndex].step + measures[currBar].notes[beatIndex].accidental) {
                             Text(displayNote(note: note))
                             .foregroundColor(.green)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
-                        } else if (displayNote(note: note.halfStepUp) == measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental) {
+                        } else if (displayNote(note: note.halfStepUp) == measures[currBar].notes[beatIndex].step + measures[currBar].notes[beatIndex].accidental) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
-                        } else if (displayNote(note: note.halfStepDown) == measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental) {
+                        } else if (displayNote(note: note.halfStepDown) == measures[currBar].notes[beatIndex].step + measures[currBar].notes[beatIndex].accidental) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
-                        } else if (displayNote(note: note.wholeStepUp) == measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental) {
+                        } else if (displayNote(note: note.wholeStepUp) == measures[currBar].notes[beatIndex].step + measures[currBar].notes[beatIndex].accidental) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
-                        } else if (displayNote(note: note.wholeStepDown) == measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental) {
+                        } else if (displayNote(note: note.wholeStepDown) == measures[currBar].notes[beatIndex].step + measures[currBar].notes[beatIndex].accidental) {
                             Text(displayNote(note: note))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
@@ -434,11 +179,12 @@ struct PlayMode: View, TunerDelegate {
                         .font(Font.body.weight(.bold))
                         .frame(maxWidth: 125, maxHeight: 150)
                     
-                    if currBar >= measures.count {
+                    if isOver {
                         Button(action: {
                             print("TODO")
                         }) {
-                            Text("RESTART")
+                            Image(systemName: "backward.end.alt.fill")
+                            .frame(width: 50)
                         }
                              .modifier(MenuButtonStyleRed())
                     } else if isOn {
@@ -446,15 +192,16 @@ struct PlayMode: View, TunerDelegate {
                             self.tuner.stop()
                             self.isOn = false
                         }) {
-                            Text("Pause")
+                            Image(systemName: "pause.fill")
+                            .frame(width: 50)
                         }
                              .modifier(MenuButtonStyle())
-                        .frame(width: 125)
                     } else if startedPlaying {
                         Button(action: {
                             self.startTuner()
                         }) {
-                            Text("Resume")
+                            Image(systemName: "play.fill")
+                            .frame(width: 50)
                         }
                              .modifier(MenuButtonStyle())
                     } else {
@@ -462,7 +209,8 @@ struct PlayMode: View, TunerDelegate {
                             self.startTuner()
                             self.startedPlaying = true
                         }) {
-                            Text("START")
+                            Image(systemName: "play.fill")
+                            .frame(width: 50)
                         }
                              .modifier(MenuButtonStyleRed())
                     }
@@ -474,8 +222,22 @@ struct PlayMode: View, TunerDelegate {
                                 .font(Font.largeTitle.weight(.bold))
                                 .frame(width: 150)
                         }
-                        Text("Measure: " + String(Int(min(currBar, measures.count - 1))) + " / " + String(Int(measures.count) - 1))
+//                        Text("Measure: " + String(Int(min(currBar, measures.count - 1))) + " / " + String(Int(measures.count) - 1))
+                        Text("Measure: " + String(measures[currBar].notes[beatIndex].step))
                     }
+                    
+                    Button(action: {
+                        print("TODO")
+//                        self.totalElapsedBeats = self.newTotal
+//                        self.currBar = max(0, self.currBar - 1)
+//                        self.beatIndex = 0
+//                        self.endOfCurrentNoteBeats = self.measures[self.currBar].notes[0].duration
+                        // Switch out totalElapsed beats for beatInBar
+                    }) {
+                        Image(systemName: "gobackward")
+                        .frame(width: 50)
+                    }
+                         .modifier(MenuButtonStyle())
 
                     NavigationLink(destination: ResultsPage(shouldPopToRootView: self.$rootIsActive, scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata, showPrevious: self.showPrevious)) {
                         Text("Results")
@@ -511,7 +273,7 @@ struct PlayMode: View, TunerDelegate {
     // If correct note, then 10 points; if one half step away, then 5 points; if one whole step away, then 3 points; increase streak count for target, neutral for half step off, reset for whole note or worse
     func updateScore(value: Note) {
         totalNotesPlayed += 1
-        switch measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental {
+        switch measures[currBar].notes[beatIndex].step + measures[currBar].notes[beatIndex].accidental {
         case displayNote(note: value):
             perfectCount += 1
             streakCount += 1
@@ -538,13 +300,34 @@ struct PlayMode: View, TunerDelegate {
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
         let newElapsedBeats: Float = Float(beatCount) * Float(tuner.pollingInterval) / Float(60) * Float(tempo)
-         
+                 
+        // Keep track of current bar
+        if Int(newElapsedBeats) > Int(self.totalElapsedBeats) {
+            if self.measureBeat == measures[currBar].timeSig.0 - 1 &&
+                Int(newElapsedBeats) != 0 {
+                // end song
+                if self.currBar == self.measures.count - 1 {
+                    self.tuner.stop()
+                    self.isOn = false
+                    self.isOver = true
+                } else {
+                    beatIndex = 0
+                    self.currBar += 1
+                    self.measureBeat = 0
+                    self.newTotal = self.totalElapsedBeats
+                }
+            } else {
+                self.measureBeat += 1
+            }
+        }
+
+
         // If still on current note, add pitch reading to array
-        if newElapsedBeats <= endOfCurrentNoteBeats {
+        if newElapsedBeats < endOfCurrentNoteBeats {
             currBeatNotes.append(pitch.note)
         }
         // If new beat, calculate score and empty list for next beat
-        else {
+        else if self.isOn {
             // Frequency calculation algorithm from: https://stackoverflow.com/questions/38416347/getting-the-most-frequent-value-of-an-array
             
             // Create dictionary to map value to count and get most frequent note
@@ -557,45 +340,23 @@ struct PlayMode: View, TunerDelegate {
             // Empty current beat note values array for next beat
             currBeatNotes = []
             
-            // If on last beat of current measure, go to first beat
-            if beatIndex == measures[measureIndex].notes.count - 1 {
-                beatIndex = 0
-                // If finishing last measure, go back to first measure
-                if measureIndex == measures.count - 1 {
-                    measureIndex = 0
-                } else {
-                    measureIndex += 1
-                }
-            } else {
+            // If on last beat of current measure, don't increment
+            if !(measureBeat == 0 && newElapsedBeats - floor(newElapsedBeats) < 0.0001) {
                 beatIndex += 1
             }
-                        
-            endOfCurrentNoteBeats = endOfCurrentNoteBeats + measures[measureIndex].notes[beatIndex].duration
+            
+            endOfCurrentNoteBeats = endOfCurrentNoteBeats + measures[currBar].notes[beatIndex].duration
         }
-        
-        // Keep track of current bar
-        if Int(newElapsedBeats) > Int(self.totalElapsedBeats) {
-            if self.measureBeat == measures[currBar].timeSig.0 - 1 &&
-                Int(newElapsedBeats) != 0 {
-                self.currBar += 1
-                self.measureBeat = 0
-            } else {
-                self.measureBeat += 1
+
+        if self.isOn {
+            // Update tempo count
+            self.totalElapsedBeats = newElapsedBeats
+            
+            // If exceeded tuner threshold for new note, update the new note
+            if change {
+                self.note = pitch.note
+                self.cents = calulateCents(userFrequency: frequency, noteFrequency: pitch.frequency)
             }
-        }
-        
-        // end song
-        if self.currBar >= self.measures.count {
-            self.tuner.stop()
-        }
-        
-        // Update tempo count
-        self.totalElapsedBeats = newElapsedBeats
-        
-        // If exceeded tuner threshold for new note, update the new note
-        if change {
-            self.note = pitch.note
-            self.cents = calulateCents(userFrequency: frequency, noteFrequency: pitch.frequency)
         }
     }
     
@@ -638,7 +399,7 @@ struct PlayMode: View, TunerDelegate {
     
     func calcOpacity(scrollOffset: Float) -> Double {
         let opacityRange = Float(50)
-        let keySigOffset = Float(Double(measures[measureIndex].fifths) * 20.0)
+        let keySigOffset = Float(Double(measures[currBar].fifths) * 20.0)
         let scrollDiff = barLength - scrollLength
         var opacity: Double = 0
         if scrollOffset > scrollLength - opacityRange - keySigOffset {
@@ -795,7 +556,7 @@ struct PlayMode: View, TunerDelegate {
         }
         
         var keySigAccidentals: [String] = []
-        let fifths = self.measures[self.measureIndex].fifths
+        let fifths = self.measures[self.currBar].fifths
         if fifths > 0 {
             keySigAccidentals = Array<String>(sharpOrder[0 ... fifths - 1])
         } else if fifths < 0 {
@@ -1004,7 +765,7 @@ struct PlayMode: View, TunerDelegate {
     }
     
     func drawPlayLine() -> some View {
-        let currNote = self.measures[measureIndex].notes[beatIndex]
+        let currNote = self.measures[currBar].notes[beatIndex]
         let offset = self.calcNoteOffset(note: currNote.step, octave: currNote.octave)
         let fullLength: Float = (scrollLength / Float(4)) * currNote.duration
         let remainingRatio: Float = (endOfCurrentNoteBeats - totalElapsedBeats) / currNote.duration
@@ -1052,7 +813,7 @@ struct PlayMode: View, TunerDelegate {
     }
     
     func feedbackColor(value: Note) -> Int {
-        switch measures[measureIndex].notes[beatIndex].step + measures[measureIndex].notes[beatIndex].accidental {
+        switch measures[currBar].notes[beatIndex].step + measures[currBar].notes[beatIndex].accidental {
         case displayNote(note: value):
             return 0
         case displayNote(note: value.halfStepUp), displayNote(note: value.halfStepDown):
