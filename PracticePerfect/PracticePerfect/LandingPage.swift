@@ -77,7 +77,7 @@ struct LandingPage: View {
                         isActive: self.$isActiveScalePicker) {
                         HStack {
                             Image(systemName: "music.note")
-                            Text("Scales")
+                            Text("Exercises")
                                 .fixedSize()
                         }
                     }

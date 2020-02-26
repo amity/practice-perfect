@@ -35,15 +35,13 @@ struct PlayMode: View, TunerDelegate {
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     var songMetadata: SongMetadata
     var tempo: Int
-    var timeSig: (Int, Int)
+    @State var showPrevious: Bool
     
     // Tuner variables
     @State var tuner: Tuner
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
     @State var isOn = false
-    @State var backgroundMeanAmplitude: Float = 0.0
-    @State var backgroundReadingCount: Int = 0
     
     // Tempo variables
     @State var totalElapsedBeats: Float = 0
@@ -69,6 +67,7 @@ struct PlayMode: View, TunerDelegate {
     @State var currBar = 0
     @State var measures: [MeasureMetadata] = hbdTestMeasures
     @State var beatIndex = 0
+    @State var measureBeat = 0
     
     // Restart variables
     @State var isOver = false
@@ -208,6 +207,7 @@ struct PlayMode: View, TunerDelegate {
                             // Note display variables
                             self.currBar = 0
                             self.beatIndex = 0
+                            self.measureBeat = 0
                             
                             self.isOver = false
                         }) {
@@ -267,7 +267,7 @@ struct PlayMode: View, TunerDelegate {
                     }
                          .modifier(MenuButtonStyle())
 
-                    NavigationLink(destination: ResultsPage(shouldPopToRootView: self.$rootIsActive, scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata)) {
+                    NavigationLink(destination: ResultsPage(shouldPopToRootView: self.$rootIsActive, scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata, showPrevious: self.showPrevious)) {
                         Text("Results")
                     }
                         .isDetailLink(false)
@@ -328,29 +328,9 @@ struct PlayMode: View, TunerDelegate {
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
         let newElapsedBeats: Float = (Float(beatCount) * Float(tuner.pollingInterval) / Float(60) * Float(tempo)) - self.repeatIndex
-         
-        // If still in the countdown, take readings to calculate background noise and update threshold
-        if !(Int(newElapsedBeats) > timeSig.0) {
-            backgroundReadingCount += 1
-            backgroundMeanAmplitude = (Float(backgroundReadingCount - 1) * backgroundMeanAmplitude + Float(tuner.tracker.amplitude)) / Float(backgroundReadingCount)
-            tuner.updateThreshold(newThreshold: backgroundMeanAmplitude)
-        }
+                 
+        var updateEndOfNextNote = false
         
-        // Keep track of current bar
-        if Int(newElapsedBeats) > Int(self.totalElapsedBeats) && Int(newElapsedBeats) % timeSig.0 == 0 &&
-           Int(newElapsedBeats) != 0 {
-            // end song
-            if self.currBar == self.measures.count - 1 {
-                self.tuner.stop()
-                self.isOn = false
-                self.isOver = true
-            } else {
-                beatIndex = 0
-                self.currBar += 1
-                self.newTotal = self.totalElapsedBeats
-            }
-        }
-
         // If still on current note, add pitch reading to array
         if newElapsedBeats < endOfCurrentNoteBeats {
             currBeatNotes.append(pitch.note)
@@ -364,17 +344,47 @@ struct PlayMode: View, TunerDelegate {
             currBeatNotes.forEach { counts[$0] = (counts[$0] ?? 0) + 1 }
             let (value, _) = counts.max(by: {$0.1 < $1.1}) ?? (Note(Note.Name(rawValue: 0)!,Note.Accidental(rawValue: 0)!), 0)
             
-            updateScore(value: value)
+            if !self.measures[self.currBar].notes[self.beatIndex].isRest {
+                updateScore(value: value)
+            }
             
             // Empty current beat note values array for next beat
             currBeatNotes = []
             
-            // If on last beat of current measure, don't increment
-            if !(Int(newElapsedBeats) % timeSig.0 == 0 && newElapsedBeats - floor(newElapsedBeats) < 0.1) {
-                beatIndex += 1
+            // Go to next beat
+            beatIndex += 1
+            
+            // Nee to update end of next note
+            updateEndOfNextNote = true
+            
+        }
+        
+        // Keep track of current bar
+        if Int(newElapsedBeats) > Int(self.totalElapsedBeats) {
+            // If switching to new bar
+            if self.measureBeat == measures[currBar].timeSig.0 - 1 &&
+                Int(newElapsedBeats) != 0 {
+                // End song
+                if self.currBar == self.measures.count - 1 {
+                    self.tuner.stop()
+                    self.isOn = false
+                    self.isOver = true
+                    beatIndex -= 1
+                } else {
+                    beatIndex = 0
+                    self.currBar += 1
+                    self.measureBeat = 0
+                    self.newTotal = self.totalElapsedBeats
+                }
             }
+            else {
+                self.measureBeat += 1
+            }
+        }
 
+        if updateEndOfNextNote && self.isOn {
             endOfCurrentNoteBeats = endOfCurrentNoteBeats + measures[currBar].notes[beatIndex].duration
+            updateEndOfNextNote = false
         }
 
         if self.isOn {
@@ -483,7 +493,7 @@ struct PlayMode: View, TunerDelegate {
         return (hypotenuse, angle, tailLengthChange, otherSide)
     }
     
-    func drawNote(note: NoteMetadata, barIndex: Int, barNumber: Int) -> some View {
+    func drawNote(note: NoteMetadata, barIndex: Int, barNumber: Int, addOffset: Int) -> some View {
         let offset = self.calcNoteOffset(note: note.step, octave: note.octave)
          
         // Get offset between each pair of notes
@@ -564,8 +574,8 @@ struct PlayMode: View, TunerDelegate {
         }
 
         // Calculate x position of note
-        let barBeatDiv: Float = scrollLength / Float(self.timeSig.0)
-        let beat = Int(self.totalElapsedBeats) % self.timeSig.0 + 1
+        let barBeatDiv: Float = scrollLength / Float(4)
+        let beat = self.measureBeat + 1 + addOffset
         let beatDiff = self.totalElapsedBeats - Float(Int(self.totalElapsedBeats))
         let scrollOffset = barBeatDiv + (barBeatDiv * Float(beatOffset)) - Float(barBeatDiv * (Float(beat) + beatDiff)) + (Float(barNumber) * scrollLength)
         
@@ -738,31 +748,40 @@ struct PlayMode: View, TunerDelegate {
         return Group {
             if msr < self.measures.count {
                 ForEach(self.measures[msr].notes) { note in
-                    self.drawNote(note: note, barIndex: msr, barNumber: 0)
+                    self.drawNote(note: note, barIndex: msr, barNumber: 0, addOffset: 0)
                 }
             }
+            
             if msr + 1 < self.measures.count {
-                self.drawMeasureBar(barNumber: 0, end: false)
+                self.drawMeasureBar(barIndex: msr + 1, barNumber: 0, end: false, addOffset: 4 - self.measures[msr].timeSig.0)
                 ForEach(self.measures[msr + 1].notes) { note in
-                    self.drawNote(note: note, barIndex: msr + 1, barNumber: 1)
+                    self.drawNote(note: note, barIndex: msr + 1, barNumber: 1, addOffset: 4 - self.measures[msr].timeSig.0)
                 }
+            } else if msr < self.measures.count{
+                self.drawMeasureBar(barIndex: 0, barNumber: 0, end: true, addOffset: 4 - self.measures[msr].timeSig.0)
             } else {
-                self.drawMeasureBar(barNumber: 0, end: true)
+                self.drawMeasureBar(barIndex: 0, barNumber: 0, end: true, addOffset: 0)
             }
+            
+            
             if msr + 2 < self.measures.count {
-                self.drawMeasureBar(barNumber: 1, end: false)
+                self.drawMeasureBar(barIndex: msr + 2, barNumber: 1, end: false, addOffset: 4 - self.measures[msr].timeSig.0 - self.measures[msr + 1].timeSig.0 + 4)
                 ForEach(self.measures[msr + 2].notes) { note in
-                    self.drawNote(note: note, barIndex: msr + 2, barNumber: 2)
+                    self.drawNote(note: note, barIndex: msr + 2, barNumber: 2, addOffset: 4 - self.measures[msr].timeSig.0 - self.measures[msr + 1].timeSig.0 + 4)
                 }
+            } else if msr + 1 < self.measures.count {
+                self.drawMeasureBar(barIndex: 0, barNumber: 1, end: true, addOffset: 4 - self.measures[msr].timeSig.0 - self.measures[msr + 1].timeSig.0 + 4)
+            } else if msr < self.measures.count {
+                self.drawMeasureBar(barIndex: 0, barNumber: 1, end: true, addOffset: 4 - self.measures[msr].timeSig.0)
             } else {
-                self.drawMeasureBar(barNumber: 1, end: true)
+                self.drawMeasureBar(barIndex: 0, barNumber: 1, end: true, addOffset: 0)
             }
         }
     }
     
-    func drawMeasureBar(barNumber: Int, end: Bool) -> some View {
-        let barBeatDiv: Float = scrollLength / Float(self.timeSig.0)
-        let beat = Int(self.totalElapsedBeats) % self.timeSig.0 + 1
+    func drawMeasureBar(barIndex: Int, barNumber: Int, end: Bool, addOffset: Int) -> some View {
+        let barBeatDiv: Float = scrollLength / Float(4)
+        let beat = self.measureBeat + 1 + addOffset
         let beatDiff = self.totalElapsedBeats - Float(Int(self.totalElapsedBeats))
         let scrollOffset = scrollLength + (barBeatDiv * 0.875) - Float(barBeatDiv * (Float(beat) + beatDiff)) + (Float(barNumber) * scrollLength)
         
@@ -787,7 +806,7 @@ struct PlayMode: View, TunerDelegate {
     func drawPlayLine() -> some View {
         let currNote = self.measures[currBar].notes[beatIndex]
         let offset = self.calcNoteOffset(note: currNote.step, octave: currNote.octave)
-        let fullLength: Float = (scrollLength / Float(timeSig.0)) * currNote.duration
+        let fullLength: Float = (scrollLength / Float(4)) * currNote.duration
         let remainingRatio: Float = (endOfCurrentNoteBeats - totalElapsedBeats) / currNote.duration
         let remainingLength: Float = fullLength * remainingRatio - 25
         var opacity: Double = 1
@@ -886,6 +905,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, timeSig: (4, 4), tuner: Tuner()).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, showPrevious: true, tuner: Tuner()).previewLayout(.fixed(width: 896, height: 414))
     }
 }

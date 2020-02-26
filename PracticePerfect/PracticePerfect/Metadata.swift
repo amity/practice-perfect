@@ -48,6 +48,7 @@ struct ScaleMetadata: Hashable, Codable, Identifiable {
     var id: Int
     var name: String
     var urls: [String]
+    var arpeggioUrls: [String]
 }
 
 class NoteMetadata: Identifiable, Equatable {
@@ -92,13 +93,15 @@ class MeasureMetadata {
     var clef: String
     var fifths: Int
     var mode: String
+    var timeSig: (Int, Int)
 
-    init(measureNumber: Int = 1, notes: Array<NoteMetadata> = [], clef: String = "C", fifths: Int = 0, mode: String = "major") {
+    init(measureNumber: Int = 1, notes: Array<NoteMetadata> = [], clef: String = "C", fifths: Int = 0, mode: String = "major", timeSig: (Int, Int) = (4,4)) {
         self.measureNumber = measureNumber
         self.notes = notes
         self.clef = clef
         self.fifths = fifths
         self.mode = mode
+        self.timeSig = timeSig
     }
 }
 

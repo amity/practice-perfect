@@ -14,10 +14,12 @@ struct ScalePicker: View {
     let tempoValues = Array(0...200)
     let scales: [ScaleMetadata] = musicData["scales"] ?? []
     let modes = ["Major", "Minor"]
+    let types = ["Scale", "Arpeggio"]
     
     @State private var selectedTempo = 100
-    @State private var selectedKey = 7
+    @State private var selectedKey = 0
     @State private var selectedMode = 0
+    @State private var selectedType = 0
     
     var body: some View {
         ZStack {
@@ -57,13 +59,33 @@ struct ScalePicker: View {
                     .frame(maxWidth: 150)
                     .clipped()
                 }
-                Spacer()
-                NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode], artist: "", resourceUrl: scales[self.selectedKey].urls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4), tuner: Tuner())) {
-                    Text("Play!")
-                    .font(.system(size: 32))
+                VStack {
+                    Text("Type")
+                        .font(Font.system(size:32).weight(.bold))
+                    Picker(selection: $selectedType, label: EmptyView()) {
+                        ForEach(0 ..< types.count) {
+                            Text(self.types[$0])
+                        }
+                    }.labelsHidden()
+                    .frame(maxWidth: 150)
+                    .clipped()
                 }
-                    .isDetailLink(false)
-                    .modifier(MenuButtonStyle())
+                Spacer()
+                if self.selectedType == 0 {
+                    NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode] + " " + types[self.selectedType], artist: "", resourceUrl: scales[self.selectedKey].urls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4), showPrevious: false, tuner: Tuner())) {
+                        Text("Play!")
+                        .font(.system(size: 32))
+                    }
+                        .isDetailLink(false)
+                        .modifier(MenuButtonStyle())
+                } else {
+                    NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode] + " " + types[self.selectedType], artist: "", resourceUrl: scales[self.selectedKey].arpeggioUrls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4), showPrevious: false, tuner: Tuner())) {
+                        Text("Play!")
+                        .font(.system(size: 32))
+                    }
+                        .isDetailLink(false)
+                        .modifier(MenuButtonStyle())
+                }
                 Spacer()
             }
         }
