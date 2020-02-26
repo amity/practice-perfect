@@ -207,6 +207,7 @@ struct PlayMode: View, TunerDelegate {
                             // Note display variables
                             self.currBar = 0
                             self.beatIndex = 0
+                            self.measureBeat = 0
                             
                             self.isOver = false
                         }) {
@@ -343,7 +344,9 @@ struct PlayMode: View, TunerDelegate {
             currBeatNotes.forEach { counts[$0] = (counts[$0] ?? 0) + 1 }
             let (value, _) = counts.max(by: {$0.1 < $1.1}) ?? (Note(Note.Name(rawValue: 0)!,Note.Accidental(rawValue: 0)!), 0)
             
-            updateScore(value: value)
+            if !self.measures[self.currBar].notes[self.beatIndex].isRest {
+                updateScore(value: value)
+            }
             
             // Empty current beat note values array for next beat
             currBeatNotes = []
@@ -371,7 +374,6 @@ struct PlayMode: View, TunerDelegate {
                     beatIndex = 0
                     self.currBar += 1
                     self.measureBeat = 0
-                    print(self.measureBeat, self.currBar)
                     self.newTotal = self.totalElapsedBeats
                 }
             }
