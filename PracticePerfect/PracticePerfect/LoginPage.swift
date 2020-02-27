@@ -46,7 +46,6 @@ struct LoginPage: View {
     @State private var textFieldInput: String = ""
     @State var showErrorMessage: Bool = false
     @State var loggedIn: Bool = false
-    @State var proceed: Bool = false
 
     var body: some View {
         ZStack {
@@ -74,7 +73,9 @@ struct LoginPage: View {
                     .padding(.bottom, 5)
                     .frame(width: 500)
                 HStack {
-                    NavigationLink(destination: LandingPage(), isActive: $proceed) { EmptyView() }
+                    NavigationLink(destination: LandingPage(), isActive: $loggedIn) {
+                        EmptyView()
+                    }
                     
                     Button(action: {
                             // Retrieve login data and parse
@@ -110,10 +111,6 @@ struct LoginPage: View {
                         loginTask.resume()
                         // Wait for the login to be retrieved before displaying all of them
                         _ = loginSemaphore.wait(wallTimeout: .distantFuture)
-                        
-                        if self.loggedIn == true {
-                            self.proceed = true
-                        }
                     }) {
                         HStack {
                             Text("Login")

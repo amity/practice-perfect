@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Create the SwiftUI view that provides the window contents.
         let contentView = NavigationView {
             // If logged in, go to landing page
-            if (UserDefaults.standard.string(forKey: "username") != nil) {
+            if (UserDefaults.standard.string(forKey: "username") != nil) && (UserDefaults.standard.string(forKey: "username") != Optional("")) {
                 LandingPage()
             // Otherwise, force user to log in
             } else {
