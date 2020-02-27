@@ -45,7 +45,8 @@ struct LoginPage: View {
     
     @State private var textFieldInput: String = ""
     @State var showErrorMessage: Bool = false
-    @State var loginButtonDisabled: Bool = true
+    @State var loggedIn: Bool = false
+    @State var proceed: Bool = false
 
     var body: some View {
         ZStack {
@@ -73,6 +74,8 @@ struct LoginPage: View {
                     .padding(.bottom, 5)
                     .frame(width: 500)
                 HStack {
+                    NavigationLink(destination: LandingPage(), isActive: $proceed) { EmptyView() }
+                    
                     Button(action: {
                             // Retrieve login data and parse
                         let loginUrl = URL(string: "https://practiceperfect.appspot.com/users/" + self.username + "/" + self.password)!
@@ -91,14 +94,16 @@ struct LoginPage: View {
                             let loginData: AnyObject = try! JSONSerialization.jsonObject(with: unwrappedData, options: JSONSerialization.ReadingOptions.allowFragments) as AnyObject
                             if(loginData["statusCode"] as? Int == 404){
                                 self.showErrorMessage = true
-                                self.loginButtonDisabled = true
+                                self.loggedIn = false
                             } else {
                                 self.showErrorMessage = false
-                                self.loginButtonDisabled = false
-                                UserDefaults.standard.set(loginData["id"] as! Int, forKey: "userId")
-                                self.settings.userId = loginData["id"] as! Int
-                                UserDefaults.standard.set(loginData["username"] as? String, forKey: "username")
-                                self.settings.username = loginData["username"] as? String
+                                DispatchQueue.main.async {
+                                    UserDefaults.standard.set(loginData["id"] as! Int, forKey: "userId")
+                                    self.settings.userId = loginData["id"] as! Int
+                                    UserDefaults.standard.set(loginData["username"] as? String, forKey: "username")
+                                    self.settings.username = loginData["username"] as? String
+                                }
+                                self.loggedIn = true
                             }
                             loginSemaphore.signal()
                         }
@@ -106,21 +111,15 @@ struct LoginPage: View {
                         // Wait for the login to be retrieved before displaying all of them
                         _ = loginSemaphore.wait(wallTimeout: .distantFuture)
                         
+                        if self.loggedIn == true {
+                            self.proceed = true
+                        }
                     }) {
                         HStack {
-                            Text("Verify")
+                            Text("Login")
                         }
                     }
                     .modifier(MenuButtonStyle())
-                    
-                    if(!self.loginButtonDisabled){
-                        NavigationLink(destination: LandingPage()) {
-                            HStack {
-                                Text("Login")
-                            }
-                        }
-                        .modifier(MenuButtonStyle())
-                    }
                 }
                 Text("or").fixedSize().padding(.bottom, 5)
                 NavigationLink(destination: SignUpPage(username: username, password: password, keyboard: keyboard)) {
