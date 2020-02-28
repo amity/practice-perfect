@@ -10,7 +10,8 @@ import SwiftUI
 import AudioKit
 
 struct TunerView: View, TunerDelegate {
-    @State var tuner = Tuner()
+    @EnvironmentObject var settings: UserSettings
+    
     @State var userFrequency = 261.6255653005986
     @State var noteFrequency = 261.6255653005986
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
@@ -44,7 +45,7 @@ struct TunerView: View, TunerDelegate {
                         .modifier(ButtonStyle())
                 } else {
                     Button(action: {
-                        self.tuner.stop()
+                        self.settings.tuner.stop()
                         self.tunerOn = false
                     }) {
                         Text("Pause Tuner")
@@ -54,7 +55,7 @@ struct TunerView: View, TunerDelegate {
             }
             .onAppear(perform: startTuner)
             .navigationBarTitle("Tuner")
-            .onDisappear(perform: self.tuner.stop)
+            .onDisappear(perform: self.settings.tuner.stop)
         }
     }
     
@@ -66,8 +67,8 @@ struct TunerView: View, TunerDelegate {
     }
     
     func startTuner() {
-        self.tuner.delegate = self
-        self.tuner.start()
+        self.settings.tuner.delegate = self
+        self.settings.tuner.start()
         self.tunerOn = true
     }
 

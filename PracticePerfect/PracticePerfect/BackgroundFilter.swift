@@ -10,6 +10,7 @@ import SwiftUI
 
 struct BackgroundFilter: View, TunerDelegate {
     @Binding var rootIsActive : Bool
+    @EnvironmentObject var settings: UserSettings
     
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     var songMetadata: SongMetadata
@@ -18,7 +19,6 @@ struct BackgroundFilter: View, TunerDelegate {
     @State var showPrevious: Bool
         
     // Tuner variables 
-    @State var tuner: Tuner = Tuner()
     @State var isOn = false
     @State var startedCalibrating = false
     @State var backgroundMeanAmplitude: Float = 0.0
@@ -37,9 +37,9 @@ struct BackgroundFilter: View, TunerDelegate {
                     HStack {
                         if isOn {
                             Button(action: {
-                                self.tuner.stop()
+                                self.settings.tuner.stop()
                                 self.isOn = false
-                                self.tuner.beatCount = 0
+                                self.settings.tuner.beatCount = 0
                             }) {
                                 Text("Stop")
                                     .font(.title)
@@ -70,7 +70,7 @@ struct BackgroundFilter: View, TunerDelegate {
                        
                     Spacer()
                     
-                    NavigationLink(destination: PlayMode(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: tempo, showPrevious: self.showPrevious, tuner: self.tuner)) {
+                    NavigationLink(destination: PlayMode(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: tempo, showPrevious: self.showPrevious, tuner: self.settings.tuner)) {
                         Text("Play!")
                             .font(.title)
                     }
@@ -85,18 +85,21 @@ struct BackgroundFilter: View, TunerDelegate {
             }
         }
         .foregroundColor(.black)
+        .onAppear() {
+            self.settings.tuner.beatCount = 0
+        }
     }
     
     // Updates current note information from microphone
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
         backgroundReadingCount += 1
-        backgroundMeanAmplitude = (Float(backgroundReadingCount - 1) * backgroundMeanAmplitude + Float(tuner.tracker.amplitude)) / Float(backgroundReadingCount)
-        tuner.updateThreshold(newThreshold: backgroundMeanAmplitude)
+        backgroundMeanAmplitude = (Float(backgroundReadingCount - 1) * backgroundMeanAmplitude + Float(settings.tuner.tracker.amplitude)) / Float(backgroundReadingCount)
+        settings.tuner.updateThreshold(newThreshold: backgroundMeanAmplitude)
     }
     
     func startTuner() {
-        self.tuner.delegate = self
-        self.tuner.start()
+        self.settings.tuner.delegate = self
+        self.settings.tuner.start()
         self.isOn = true
     }
 }
