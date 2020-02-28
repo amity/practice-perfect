@@ -25,6 +25,7 @@ struct SettingsView: View {
     
     @State var selectedClef: Int
     @State var selectedKey: Int
+    @State var loggedOut: Bool = false
         
     var body: some View {
         ZStack {
@@ -82,12 +83,24 @@ struct SettingsView: View {
                     
                 }
                 Spacer()
+                
+                NavigationLink(destination: LoginPage(), isActive: $loggedOut) {
+                    EmptyView()
+                }
             }
         }
         .foregroundColor(.black)
         .navigationBarTitle("Settings")
         .navigationBarItems(trailing:
-            NavigationLink(destination: LoginPage()) {
+            Button(action: {
+                DispatchQueue.main.async {
+                    UserDefaults.standard.set(nil, forKey: "userId")
+                    self.settings.userId = -1
+                    UserDefaults.standard.set(nil, forKey: "username")
+                    self.settings.username = nil
+                }
+                self.loggedOut = true
+            }) {
                 HStack {
                     Text("Logout")
                         .fixedSize()
