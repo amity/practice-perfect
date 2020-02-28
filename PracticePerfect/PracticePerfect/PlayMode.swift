@@ -31,6 +31,7 @@ let flatOrder = ["B", "E", "A", "D", "G", "C", "F"]
 struct PlayMode: View, TunerDelegate {
     @EnvironmentObject var settings: UserSettings
     @Binding var rootIsActive : Bool
+    @State var timePassed: Double = 0
     
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     var songMetadata: SongMetadata
@@ -295,7 +296,61 @@ struct PlayMode: View, TunerDelegate {
                 self.measures = transposeSong(originalMeasures: self.measures, halfStepOffset: self.settings.keyIndex - 6)
             }
         }
-        .onDisappear(perform: self.tuner.stop)
+        .onDisappear() {
+            // Stop tuner when navigating away from page 
+            self.tuner.stop()
+            
+            // Get current date
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            let dateString = formatter.string(from: Date())
+            
+            // Get time since reference date for right now
+            let formatter2 = DateFormatter()
+            formatter2.dateFormat = "yyyy-MM-dd"
+            let currentInterval = formatter2.date(from: dateString)!.timeIntervalSinceReferenceDate
+            
+            // If there is an old date, get its time since reference date
+            var oldInterval: TimeInterval = TimeInterval(0)
+            if self.settings.mostRecentDate != nil {
+                oldInterval = formatter2.date(from: self.settings.mostRecentDate!)!.timeIntervalSinceReferenceDate
+            }
+            
+            // If last record over one day ago
+            if Float(currentInterval) - Float(oldInterval) > 86400.0 {
+                // Save date as the most recently
+                UserDefaults.standard.set(dateString, forKey: "mostRecentDate")
+                self.settings.mostRecentDate = dateString
+                
+                // Add new record for today and save
+                var newArray: [Double] = []
+                newArray.append(self.timePassed)
+                self.settings.dailyTimes = newArray
+                UserDefaults.standard.set(newArray, forKey: "dailyTimes")
+                
+            // If record yesterday
+            } else if Float(currentInterval) - Float(oldInterval) > 0.0 {
+                // Save date as the most recently
+                UserDefaults.standard.set(dateString, forKey: "mostRecentDate")
+                self.settings.mostRecentDate = dateString
+                
+                // Add new record for today and save
+                var oldArray: [Double] = self.settings.dailyTimes as! [Double]
+                oldArray.append(self.timePassed)
+                self.settings.dailyTimes = oldArray
+                UserDefaults.standard.set(oldArray, forKey: "dailyTimes")
+                
+            // If record today already
+            } else {
+                // Add new time for today and save
+                var oldArray: [Double] = self.settings.dailyTimes as! [Double]
+                var lastValue: Double = oldArray.popLast()!
+                lastValue += self.timePassed
+                oldArray.append(lastValue)
+                self.settings.dailyTimes = oldArray
+                UserDefaults.standard.set(oldArray, forKey: "dailyTimes")
+            }
+        }
     }
     
     // If correct note, then 10 points; if one half step away, then 5 points; if one whole step away, then 3 points; increase streak count for target, neutral for half step off, reset for whole note or worse
@@ -326,6 +381,8 @@ struct PlayMode: View, TunerDelegate {
 
     // Updates current note information from microphone
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
+        timePassed += tuner.pollingInterval
+        
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
         let newElapsedBeats: Float = (Float(beatCount) * Float(tuner.pollingInterval) / Float(60) * Float(tempo)) - self.repeatIndex
                  
