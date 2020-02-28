@@ -20,8 +20,8 @@ struct SignUpPage: View {
     @EnvironmentObject var settings: UserSettings
 
     @State private var textFieldInput: String = ""
-    @State var continueButtonDisabled: Bool = true
     @State var showErrorMessage: Bool = false
+    @State var signedIn: Bool = false
 
     var body: some View {
         ZStack {
@@ -68,6 +68,10 @@ struct SignUpPage: View {
                         .frame(width: 300)
                 }
                 HStack {
+                    NavigationLink(destination: LandingPage(), isActive: $signedIn) {
+                        EmptyView()
+                    }
+                    
                     Button(action: {
                         // Retrieve signup data and parse
                         let signupUrl = URL(string: "https://practiceperfect.appspot.com/users")!
@@ -89,14 +93,16 @@ struct SignUpPage: View {
                             let signupData: AnyObject = try! JSONSerialization.jsonObject(with: unwrappedData, options: JSONSerialization.ReadingOptions.allowFragments) as AnyObject
                             if(signupData["statusCode"] as? Int == 404){
                                 self.showErrorMessage = true
-                                self.continueButtonDisabled = true
+                                self.signedIn = false
                             } else {
                                 self.showErrorMessage = false
-                                self.continueButtonDisabled = false
-                                UserDefaults.standard.set(signupData["id"] as! Int, forKey: "userId")
-                                self.settings.userId = signupData["id"] as! Int
-                                UserDefaults.standard.set(signupData["username"] as? String, forKey: "username")
-                                self.settings.username = signupData["username"] as? String
+                                DispatchQueue.main.async {
+                                    UserDefaults.standard.set(signupData["id"] as! Int, forKey: "userId")
+                                    self.settings.userId = signupData["id"] as! Int
+                                    UserDefaults.standard.set(signupData["username"] as? String, forKey: "username")
+                                    self.settings.username = signupData["username"] as? String
+                                }
+                                self.signedIn = true
                             }
                             signupSemaphore.signal()
                         }
@@ -106,20 +112,10 @@ struct SignUpPage: View {
                         
                     }) {
                         HStack {
-
-                            Text("Verify")
+                            Text("Sign In")
                         }
                     }
                     .modifier(MenuButtonStyle())
-                    if(!self.continueButtonDisabled){
-                        NavigationLink(destination: LandingPage()) {
-                            HStack {
-                                Text("Sign Up")
-                                    .fixedSize()
-                            }
-                        }
-                        .modifier(MenuButtonStyle())
-                    }
                 }
             }
         }
