@@ -15,6 +15,7 @@ class UserSettings: ObservableObject {
     @Published var userId = UserDefaults.standard.integer(forKey: "userId")
     @Published var mostRecentDate = UserDefaults.standard.string(forKey: "mostRecentDate")
     @Published var dailyTimes = UserDefaults.standard.array(forKey: "dailyTimes")
+    @Published var tuner = Tuner()
 }
 
 let scaleOrder: [String] = ["G♭", "D♭", "A♭", "E♭", "B♭", "F", "C", "G", "D", "A", "E", "B", "F♯"].reversed()
