@@ -70,6 +70,15 @@ struct LandingPage: View {
                         }
                     }
                     .modifier(MenuButtonStyle())
+                    
+                    NavigationLink(destination: TimeVisualization()) {
+                        HStack {
+//                            Image(systemName: "tuningfork")
+                            Text("History")
+                                .fixedSize()
+                        }
+                    }
+                    .modifier(MenuButtonStyle())
                 }
                 
                 HStack {
