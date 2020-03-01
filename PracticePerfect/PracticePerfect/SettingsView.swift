@@ -13,6 +13,7 @@ class UserSettings: ObservableObject {
     @Published var keyIndex = UserDefaults.standard.integer(forKey: "keyIndex")
     @Published var username = UserDefaults.standard.string(forKey: "username")
     @Published var userId = UserDefaults.standard.integer(forKey: "userId")
+    @Published var firstDate = UserDefaults.standard.string(forKey: "firstDate")
     @Published var mostRecentDate = UserDefaults.standard.string(forKey: "mostRecentDate")
     @Published var dailyTimes = UserDefaults.standard.array(forKey: "dailyTimes")
     @Published var tuner = Tuner()

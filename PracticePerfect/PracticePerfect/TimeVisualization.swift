@@ -22,15 +22,19 @@ struct ColorRGB {
 }
 
 struct CapsuleBar: View {
-    var value: Int
-    var maxValue: Int
+    var value: Double
+    var maxValue: Double
     var width: CGFloat
     var valueName: String
     var capsuleColor: ColorRGB
+    var showValue: Bool
+    
     var body: some View {
         VStack {
             
-            Text("\(value)")
+            if showValue {
+                Text("\(Int(ceil(value)))")
+            }
             ZStack(alignment: .bottom) {
                 Capsule()
                     .fill(Color.gray)
@@ -41,7 +45,7 @@ struct CapsuleBar: View {
                         Color(.sRGB, red: capsuleColor.red, green: capsuleColor.green, blue: capsuleColor.blue)
                     )
                     .frame(width: width, height: CGFloat(value) / CGFloat(maxValue) * CGFloat(graphHeight))
-                    .animation(.easeOut(duration: 0.5))
+//                    .animation(.easeOut(duration: 0.5))
             }
             
             Text("\(valueName)")
@@ -49,58 +53,31 @@ struct CapsuleBar: View {
     }
 }
 
+func createCapsule(value: Double, maxValueInData: Double, width: CGFloat, valueName: String, capsuleColor: ColorRGB, showValue: Bool) -> some View {
+    return Group {
+        CapsuleBar(value: value, maxValue: maxValueInData, width: width, valueName: valueName, capsuleColor: capsuleColor, showValue: showValue)
+    }
+}
+
 struct CapsuleGraphView: View {
-    var data: [Int]
-    var maxValueInData: Int
+    var data: [Double]
+    var maxValueInData: Double
     var spacing: CGFloat
     var capsuleColor: ColorRGB
+    var showValue: Bool
     
     var body: some View {
         GeometryReader { geometry in
             HStack {
-                CapsuleBar(value: self.data[0],
-                           maxValue: self.maxValueInData,
-                           width: (CGFloat(geometry.size.width) - 8 * self.spacing) / CGFloat(self.data.count),
-                           valueName: "val1",
-                           capsuleColor: self.capsuleColor
-                )
-                CapsuleBar(value: self.data[1],
-                           maxValue: self.maxValueInData,
-                           width: (CGFloat(geometry.size.width) - 8 * self.spacing) / CGFloat(self.data.count),
-                           valueName: "val2",
-                           capsuleColor: self.capsuleColor
-                )
-                CapsuleBar(value: self.data[2],
-                           maxValue: self.maxValueInData,
-                           width: (CGFloat(geometry.size.width) - 8 * self.spacing) / CGFloat(self.data.count),
-                           valueName: "val3",
-                           capsuleColor: self.capsuleColor
-                )
-                CapsuleBar(value: self.data[3],
-                           maxValue: self.maxValueInData,
-                           width: (CGFloat(geometry.size.width) - 8 * self.spacing) / CGFloat(self.data.count),
-                           valueName: "val4",
-                           capsuleColor: self.capsuleColor
-                )
-                CapsuleBar(value: self.data[4],
-                           maxValue: self.maxValueInData,
-                           width: (CGFloat(geometry.size.width) - 8 * self.spacing) / CGFloat(self.data.count),
-                           valueName: "val5",
-                           capsuleColor: self.capsuleColor
-                )
-                CapsuleBar(value: self.data[5],
-                          maxValue: self.maxValueInData,
-                          width: (CGFloat(geometry.size.width) - 8 * self.spacing) / CGFloat(self.data.count),
-                          valueName: "val6",
-                          capsuleColor: self.capsuleColor
-                )
-                CapsuleBar(value: self.data[6],
-                          maxValue: self.maxValueInData,
-                          width: (CGFloat(geometry.size.width) - 8 * self.spacing) / CGFloat(self.data.count),
-                          valueName: "val7",
-                          capsuleColor: self.capsuleColor
-                )
-
+                if self.data.count > 7 {
+                    ForEach(0 ..< self.data.count, id: \.self) { index in
+                        createCapsule(value: self.data[index], maxValueInData: self.maxValueInData, width: (CGFloat(geometry.size.width) - 8 * self.spacing) / CGFloat(self.data.count), valueName: "", capsuleColor: self.capsuleColor, showValue: self.showValue)
+                    }
+                } else {
+                    ForEach(0 ..< self.data.count, id: \.self) { index in
+                        createCapsule(value: self.data[index], maxValueInData: self.maxValueInData, width: (CGFloat(geometry.size.width) - 8 * self.spacing) / CGFloat(self.data.count), valueName: "val" + String(index), capsuleColor: self.capsuleColor, showValue: self.showValue)
+                    }
+                }
             }
         }.frame(height: CGFloat(graphHeight))
     }
@@ -108,21 +85,17 @@ struct CapsuleGraphView: View {
 
 struct TimeVisualization: View {
     @EnvironmentObject var settings: UserSettings
-
-    private var data: [String: [Int]] = [
-         "1 week": [28, 25, 30, 29, 23, 28, 21],
-         "2 weeks": [3, 1, 2, 4, 3, 5, 4],
-         "1 month": [2, 6, 8, 3, 4, 1, 3]
-    ]
+  
+    var data: [String: [Double]]
     
     @State private var dataPicker: String = "1 week"
     
-    private var dataBackgroundColor: [String: ColorRGB] = [
+    var dataBackgroundColor: [String: ColorRGB] = [
         "1 week": ColorRGB(red: 44 / 255, green: 54 / 255, blue: 79 / 255),
         "2 weeks": ColorRGB(red: 76 / 255, green: 61 / 255, blue: 89 / 255),
         "1 month": ColorRGB(red: 56 / 255, green: 24 / 255, blue: 47 / 255)
     ]
-    private var dataBarColor: [String: ColorRGB] = [
+    var dataBarColor: [String: ColorRGB] = [
         "1 week": ColorRGB(red: 222 / 255, green: 44 / 255, blue: 41 / 255),
         "2 weeks": ColorRGB(red: 42 / 255, green: 74 / 255, blue: 150 / 255),
         "1 month": ColorRGB(red: 47 / 255, green: 57 / 255, blue: 77 / 255)
@@ -135,7 +108,7 @@ struct TimeVisualization: View {
             HStack {
                 VStack {
                     Spacer()
-                    Text("Let's Graph!")
+                    Text("Your Practice History")
                         .font(.title)
                         .fontWeight(.bold)
                     Spacer()
@@ -151,8 +124,16 @@ struct TimeVisualization: View {
                 }
                 .frame(width: screenWidth * CGFloat(0.33))
 
-                CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 24, capsuleColor: dataBarColor[dataPicker]!)
+                if data[dataPicker]!.count > 14 {
+                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 50, capsuleColor: dataBarColor[dataPicker]!, showValue: false)
+                        .frame(width: screenWidth * CGFloat(0.67))
+                } else if data[dataPicker]!.count > 7 {
+                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 37.5, capsuleColor: dataBarColor[dataPicker]!, showValue: false)
+                        .frame(width: screenWidth * CGFloat(0.67))
+                } else {
+                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 25, capsuleColor: dataBarColor[dataPicker]!, showValue: true)
                     .frame(width: screenWidth * CGFloat(0.67))
+                }
             }
         }
     }
@@ -160,6 +141,6 @@ struct TimeVisualization: View {
 
 struct TimeVisualization_Previews: PreviewProvider {
     static var previews: some View {
-        TimeVisualization().previewLayout(.fixed(width: 896, height: 414))
+        TimeVisualization(data: ["test" : [10]]).previewLayout(.fixed(width: 896, height: 414))
     }
 }

@@ -20,6 +20,12 @@ struct LandingPage: View {
     @State var isActiveSelectMusic: Bool = false
     @State var isActiveScalePicker: Bool = false
     
+    @State var data: [String: [Double]] = [
+        "1 week": [],
+        "2 weeks": [],
+        "1 month": []
+    ]
+    
     let note: some View = Image("note").resizable().frame(width: 75, height: 75)
     let smallNote: some View = Image("note").resizable().frame(width: 50, height: 50)
     
@@ -71,7 +77,7 @@ struct LandingPage: View {
                     }
                     .modifier(MenuButtonStyle())
                     
-                    NavigationLink(destination: TimeVisualization()) {
+                    NavigationLink(destination: TimeVisualization(data: self.data)) {
                         HStack {
 //                            Image(systemName: "tuningfork")
                             Text("History")
@@ -105,6 +111,28 @@ struct LandingPage: View {
             }
             .navigationBarTitle(settings.username ?? "")
             .navigationBarBackButtonHidden(true)
+        }
+        .onAppear() {
+            // Get data to pass to visualization
+            if self.settings.dailyTimes != nil {
+                if self.settings.dailyTimes!.count > 28 {
+                    self.data.updateValue(Array<Double>((self.settings.dailyTimes! as? [Double])![self.settings.dailyTimes!.count - 7 ... self.settings.dailyTimes!.count - 1]), forKey: "1 week")
+                    self.data.updateValue(Array<Double>((self.settings.dailyTimes! as? [Double])![self.settings.dailyTimes!.count - 14 ... self.settings.dailyTimes!.count - 1]), forKey: "2 weeks")
+                    self.data.updateValue(Array<Double>((self.settings.dailyTimes! as? [Double])![self.settings.dailyTimes!.count - 28 ... self.settings.dailyTimes!.count - 1]), forKey: "1 month")
+                } else if self.settings.dailyTimes!.count > 14 {
+                    self.data.updateValue(Array<Double>((self.settings.dailyTimes! as? [Double])![self.settings.dailyTimes!.count - 7 ... self.settings.dailyTimes!.count - 1]), forKey: "1 week")
+                    self.data.updateValue(Array<Double>((self.settings.dailyTimes! as? [Double])![self.settings.dailyTimes!.count - 14 ... self.settings.dailyTimes!.count - 1]), forKey: "2 weeks")
+                    self.data.updateValue((Array<Double>(Array(repeating: 0, count: 28 - self.settings.dailyTimes!.count)) + self.settings.dailyTimes! as? [Double])!, forKey: "1 month")
+                } else if self.settings.dailyTimes!.count > 7 {
+                    self.data.updateValue(Array<Double>((self.settings.dailyTimes! as? [Double])![self.settings.dailyTimes!.count - 7 ... self.settings.dailyTimes!.count - 1]), forKey: "1 week")
+                    self.data.updateValue((Array<Double>(Array(repeating: 0, count: 14 - self.settings.dailyTimes!.count)) + self.settings.dailyTimes! as? [Double])!, forKey: "2 weeks")
+                    self.data.updateValue((Array<Double>(Array(repeating: 0, count: 28 - self.settings.dailyTimes!.count)) + self.settings.dailyTimes! as? [Double])!, forKey: "1 month")
+                } else {
+                    self.data.updateValue((Array<Double>(Array(repeating: 0, count: 7 - self.settings.dailyTimes!.count)) + self.settings.dailyTimes! as? [Double])!, forKey: "1 week")
+                    self.data.updateValue((Array<Double>(Array(repeating: 0, count: 14 - self.settings.dailyTimes!.count)) + self.settings.dailyTimes! as? [Double])!, forKey: "2 weeks")
+                    self.data.updateValue((Array<Double>(Array(repeating: 0, count: 28 - self.settings.dailyTimes!.count)) + self.settings.dailyTimes! as? [Double])!, forKey: "1 month")
+                }
+            }
         }
     }
 }

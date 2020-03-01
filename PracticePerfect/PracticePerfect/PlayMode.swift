@@ -316,9 +316,11 @@ struct PlayMode: View, TunerDelegate {
                 oldInterval = formatter2.date(from: self.settings.mostRecentDate!)!.timeIntervalSinceReferenceDate
             }
             
-            // If last record over one day ago
-            if Float(currentInterval) - Float(oldInterval) > 86400.0 {
-                // Save date as the most recently
+            // If no first date, need to make list and put value in (set firstDate, mostRecentDate, and dailyTimes)
+            if self.settings.firstDate == nil {
+                // Save current date as firstDate and mostRecentDate
+                UserDefaults.standard.set(dateString, forKey: "firstDate")
+                self.settings.firstDate = dateString
                 UserDefaults.standard.set(dateString, forKey: "mostRecentDate")
                 self.settings.mostRecentDate = dateString
                 
@@ -327,28 +329,37 @@ struct PlayMode: View, TunerDelegate {
                 newArray.append(self.timePassed)
                 self.settings.dailyTimes = newArray
                 UserDefaults.standard.set(newArray, forKey: "dailyTimes")
-                
-            // If record yesterday
-            } else if Float(currentInterval) - Float(oldInterval) > 0.0 {
-                // Save date as the most recently
-                UserDefaults.standard.set(dateString, forKey: "mostRecentDate")
-                self.settings.mostRecentDate = dateString
-                
-                // Add new record for today and save
-                var oldArray: [Double] = self.settings.dailyTimes as! [Double]
-                oldArray.append(self.timePassed)
-                self.settings.dailyTimes = oldArray
-                UserDefaults.standard.set(oldArray, forKey: "dailyTimes")
-                
-            // If record today already
+        
+            // If there is a first date
             } else {
-                // Add new time for today and save
-                var oldArray: [Double] = self.settings.dailyTimes as! [Double]
-                var lastValue: Double = oldArray.popLast()!
-                lastValue += self.timePassed
-                oldArray.append(lastValue)
-                self.settings.dailyTimes = oldArray
-                UserDefaults.standard.set(oldArray, forKey: "dailyTimes")
+                // If there is no record for today, add it (update mostRecentDate and dailyTimes)
+                if currentInterval != oldInterval {
+                    // Save date as the most recently
+                    UserDefaults.standard.set(dateString, forKey: "mostRecentDate")
+                    self.settings.mostRecentDate = dateString
+                    
+                    // Get existing list of values
+                    var oldArray: [Double] = self.settings.dailyTimes as! [Double]
+                    // Calculate amount of days passed and add a 0 for each
+                    let numDaysBetween = ((Float(currentInterval) - Float(oldInterval)) / 86400.0) - 1
+                    for _ in 1...Int(numDaysBetween) {
+                        oldArray.append(0)
+                    }
+                    // Add new time
+                    oldArray.append(self.timePassed)
+                    self.settings.dailyTimes = oldArray
+                    UserDefaults.standard.set(oldArray, forKey: "dailyTimes")
+                    
+                // If there is already a record for today, increase it (update dailyTimes)
+                } else {
+                    // Add new time for today and save
+                    var oldArray: [Double] = self.settings.dailyTimes as! [Double]
+                    var lastValue: Double = oldArray.popLast()!
+                    lastValue += self.timePassed
+                    oldArray.append(lastValue)
+                    self.settings.dailyTimes = oldArray
+                    UserDefaults.standard.set(oldArray, forKey: "dailyTimes")
+                }
             }
         }
     }
