@@ -45,7 +45,6 @@ struct PlayMode: View, TunerDelegate {
     
     // Tempo variables
     @State var totalElapsedBeats: Float = 0
-    @State var newTotal: Float = 0
     @State var endOfCurrentNoteBeats: Float = hbdTestMeasures[0].notes[0].duration
     
     // Countdown variables
@@ -69,10 +68,9 @@ struct PlayMode: View, TunerDelegate {
     @State var beatIndex = 0
     @State var measureBeat = 0
     
-    // Restart variables
+    // Restart and rewind variables
     @State var isOver = false
-    @State var repeatIndex: Float = 0
-    @State var rewindIndex: Float = 0
+    @State var rewound = false
     
     var body: some View {
         ZStack {
@@ -184,12 +182,8 @@ struct PlayMode: View, TunerDelegate {
                     
                     if isOver {
                         Button(action: {
-                            self.repeatIndex += floor(self.totalElapsedBeats)
-                            
                             // Tempo variables
-                            self.endOfCurrentNoteBeats = hbdTestMeasures[0].notes[0].duration
-                            self.totalElapsedBeats = 0
-                            self.newTotal = 0
+                            self.endOfCurrentNoteBeats += hbdTestMeasures[0].notes[0].duration - 1
                             
                             // Countdown variables
                             self.startedPlaying = false
@@ -255,17 +249,19 @@ struct PlayMode: View, TunerDelegate {
                     }
                     
                     Button(action: {
-                        print("************HEY************")
-                        self.rewindIndex += self.totalElapsedBeats - self.newTotal
                         self.isOver = false
                         self.currBar = max(0, self.currBar - 1)
                         self.beatIndex = 0
-                        self.endOfCurrentNoteBeats = self.newTotal + self.measures[self.currBar].notes[0].duration // HERE
+                        self.measureBeat = 0
+                        self.endOfCurrentNoteBeats = ceil(self.endOfCurrentNoteBeats) + self.measures[self.currBar].notes[0].duration - 1
+                        self.rewound = true
                     }) {
                         Image(systemName: "gobackward")
                         .frame(width: 50)
                     }
                          .modifier(MenuButtonStyle())
+                        .disabled(self.rewound)
+                        .opacity(self.rewound ? 0.5 : 1)
 
                     NavigationLink(destination: ResultsPage(shouldPopToRootView: self.$rootIsActive, scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata, showPrevious: self.showPrevious)) {
                         Text("Results")
@@ -327,12 +323,8 @@ struct PlayMode: View, TunerDelegate {
     // Updates current note information from microphone
     func tunerDidTick(pitch: Pitch, frequency: Double, beatCount: Int, change: Bool) {
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
-        let newElapsedBeats: Float = (Float(beatCount) * Float(tuner.pollingInterval) / Float(60) * Float(tempo)) - self.repeatIndex - self.rewindIndex
-                 
+        let newElapsedBeats: Float = (Float(beatCount) * Float(tuner.pollingInterval) / Float(60) * Float(tempo))
         var updateEndOfNextNote = false
-        
-        print(newElapsedBeats)
-        print(endOfCurrentNoteBeats)
         
         // If still on current note, add pitch reading to array
         if newElapsedBeats < endOfCurrentNoteBeats {
@@ -377,16 +369,13 @@ struct PlayMode: View, TunerDelegate {
                     beatIndex = 0
                     self.currBar += 1
                     self.measureBeat = 0
-                    self.newTotal = newElapsedBeats
+                    self.rewound = false
                 }
             }
             else {
                 self.measureBeat += 1
             }
         }
-        
-        print("currBar: \(currBar)")
-        print("beatIndex: \(beatIndex)")
 
         if updateEndOfNextNote && self.isOn {
             endOfCurrentNoteBeats = endOfCurrentNoteBeats + measures[currBar].notes[beatIndex].duration
