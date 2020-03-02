@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1453738D23FDC01300A53D72 /* BackgroundFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1453738C23FDC01300A53D72 /* BackgroundFilter.swift */; };
+		145D71CA240C244E008AD81C /* TimeVisualization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145D71C9240C244E008AD81C /* TimeVisualization.swift */; };
 		145E432023CF80D500C8C98A /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145E431F23CF80D500C8C98A /* SearchBar.swift */; };
 		145E432223CF837700C8C98A /* SongSearchPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145E432123CF837700C8C98A /* SongSearchPage.swift */; };
 		149053EF236F8CEF00D36A10 /* Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149053EE236F8CEF00D36A10 /* Metadata.swift */; };
@@ -50,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		1453738C23FDC01300A53D72 /* BackgroundFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundFilter.swift; sourceTree = "<group>"; };
+		145D71C9240C244E008AD81C /* TimeVisualization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeVisualization.swift; sourceTree = "<group>"; };
 		145E431F23CF80D500C8C98A /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		145E432123CF837700C8C98A /* SongSearchPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongSearchPage.swift; sourceTree = "<group>"; };
 		149053EE236F8CEF00D36A10 /* Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Metadata.swift; path = PracticePerfect/Metadata.swift; sourceTree = SOURCE_ROOT; };
@@ -171,6 +173,7 @@
 				1494C8F92371D37800F0C68E /* SongInfoView.swift */,
 				145E432123CF837700C8C98A /* SongSearchPage.swift */,
 				149053F0236F8FA800D36A10 /* SongThumbnail.swift */,
+				145D71C9240C244E008AD81C /* TimeVisualization.swift */,
 				BD9597F223733001002A9651 /* Tuner.swift */,
 				BD51384F236F7416004F2220 /* TunerView.swift */,
 				722A894A236F643E0030B009 /* Assets.xcassets */,
@@ -368,6 +371,7 @@
 				BD5D3EF92381F30100CA92F0 /* ScalePicker.swift in Sources */,
 				BD9597F123732FEB002A9651 /* Pitch.swift in Sources */,
 				BD9597EF23732FD6002A9651 /* Note.swift in Sources */,
+				145D71CA240C244E008AD81C /* TimeVisualization.swift in Sources */,
 				149053F1236F8FA800D36A10 /* SongThumbnail.swift in Sources */,
 				722A8959236F65CC0030B009 /* AddMusic.swift in Sources */,
 			);
