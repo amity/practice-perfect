@@ -108,8 +108,6 @@ func parseMeasureMusicXML(measureNumber : Int) -> MeasureMetadata {
             numSelectNotes += 1
         }
         else if Int(xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][index]["staff"].element!.text)! == 1 { //handles 2-handed pieces
-        //if (Int(xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][index]["staff"].element!.text)! == 1) {
-        //if ( ( (Int(xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][index]["staff"].element!.text)! == 1) || ( xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][index]["staff"].element == nil ) ) {
             if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][index].element!.attribute(by: "default-y") == nil {
                 numSelectNotes += 1 //note is a rest
             }

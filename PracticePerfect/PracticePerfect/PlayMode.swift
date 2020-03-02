@@ -67,10 +67,6 @@ struct PlayMode: View, TunerDelegate {
     @State var currBar = 0
     
     //sets a first measure of rests; this is currently 3 quarter notes for 3:4 time
-//    var firstRest1 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
-//    var firstRest2 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
-//    var firstRest3 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
-    //@State var measures: [MeasureMetadata] = parseMusicXML().measures
     @State var measures: [MeasureMetadata] = [MeasureMetadata(measureNumber: 0, notes: [NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true)], clef: "G", fifths: 0, mode: "major")] + parseMusicXML().measures
     
     
