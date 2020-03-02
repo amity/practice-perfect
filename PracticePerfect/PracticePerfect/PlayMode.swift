@@ -65,7 +65,17 @@ struct PlayMode: View, TunerDelegate {
     // Note display variables
     @State var barDist = screenWidth/screenDivisions/2
     @State var currBar = 0
-    @State var measures: [MeasureMetadata] = hbdTestMeasures
+    
+    //sets a first measure of rests; this is currently 3 quarter notes for 3:4 time
+//    var firstRest1 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
+//    var firstRest2 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
+//    var firstRest3 = NoteMetadata(duration: 1, type: "quarter", isRest: true)
+    //@State var measures: [MeasureMetadata] = parseMusicXML().measures
+    @State var measures: [MeasureMetadata] = [MeasureMetadata(measureNumber: 0, notes: [NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true)], clef: "G", fifths: 0, mode: "major")] + parseMusicXML().measures
+    
+    
+    //original hard-coded HBD test measures
+    //@State var measures: [MeasureMetadata] = hbdTestMeasures
     @State var beatIndex = 0
     @State var measureBeat = 0
     
