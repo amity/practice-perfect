@@ -12,6 +12,15 @@
 
 import SwiftUI
 
+let days = ["Su", "M", "Tu", "W", "Th", "F", "Sa"]
+
+// Inspired by: https://stackoverflow.com/a/25533357
+func getDayOfWeek() -> String {
+    let myCalendar = Calendar(identifier: .gregorian)
+    let weekDay = myCalendar.component(.weekday, from: Date())
+    return days[weekDay - 1]
+}
+
 //let graphHeight: Float = 100.0
 let graphHeight: CGFloat = screenHeight * 0.50
 
@@ -65,6 +74,7 @@ struct CapsuleGraphView: View {
     var spacing: CGFloat
     var capsuleColor: ColorRGB
     var showValue: Bool
+    var weekday: String
     
     var body: some View {
         GeometryReader { geometry in
@@ -87,6 +97,8 @@ struct TimeVisualization: View {
     @EnvironmentObject var settings: UserSettings
   
     var data: [String: [Double]]
+    
+    var weekday = getDayOfWeek()
     
     @State private var dataPicker: String = "1 week"
     
@@ -125,13 +137,13 @@ struct TimeVisualization: View {
                 .frame(width: screenWidth * CGFloat(0.33))
 
                 if data[dataPicker]!.count > 14 {
-                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 50, capsuleColor: dataBarColor[dataPicker]!, showValue: false)
+                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 50, capsuleColor: dataBarColor[dataPicker]!, showValue: false, weekday: weekday)
                         .frame(width: screenWidth * CGFloat(0.67))
                 } else if data[dataPicker]!.count > 7 {
-                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 37.5, capsuleColor: dataBarColor[dataPicker]!, showValue: false)
+                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 37.5, capsuleColor: dataBarColor[dataPicker]!, showValue: false, weekday: weekday)
                         .frame(width: screenWidth * CGFloat(0.67))
                 } else {
-                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 25, capsuleColor: dataBarColor[dataPicker]!, showValue: true)
+                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 25, capsuleColor: dataBarColor[dataPicker]!, showValue: true, weekday: weekday)
                     .frame(width: screenWidth * CGFloat(0.67))
                 }
             }
