@@ -70,6 +70,8 @@ class NoteMetadata: Identifiable, Equatable {
     var accidental: String // sharp, flat, natural
     var dot: Bool //If the note is dotted or note
     
+    var position: Int = 0 //if same position as last note, it's a chord
+    
     init(step: String = "C", duration: Float = 1.0, type: String = "quarter", accidental: String = "",
          dot: Bool = false, octave: Int = 4, isRest: Bool = false) {
         self.step = step
@@ -94,14 +96,33 @@ class MeasureMetadata {
     var fifths: Int
     var mode: String
     var timeSig: (Int, Int)
+    
+    var numNotes : Int
 
-    init(measureNumber: Int = 1, notes: Array<NoteMetadata> = [], clef: String = "C", fifths: Int = 0, mode: String = "major", timeSig: (Int, Int) = (4,4)) {
+    init(measureNumber: Int = 1, notes: Array<NoteMetadata> = [], clef: String = "C", fifths: Int = 0, mode: String = "major", timeSig: (Int, Int) = (4,4), numNotes: Int = 0) {
         self.measureNumber = measureNumber
         self.notes = notes
         self.clef = clef
         self.fifths = fifths
         self.mode = mode
         self.timeSig = timeSig
+        self.numNotes = numNotes
     }
+}
+
+class PlaySongMetadata {
+    
+    var songNumber: Int = 0 //Related to database
+    var title: String = "untitled"
+    var composer: String = "unlisted"
+    var parts: [String:String] = [:] //ex: "P1" : Voice; needs to only display 1 part at a time, and different parts should become different songs to play
+
+    var divisions: Int = 0 //Determines duration of notes, like 24
+    var key: [Int:String] = [:] //ex: -3 <fifths>, minor <mode> corresponds to 3 flats, C minor
+    var timeSignature: [Int:Int]=[:] //ex: 3 <beats>, 4 <beat-type>
+    var clef: [String:Int] = [:] //ex: G <sign>, 2 <line>
+
+    var numMeasures: Int = 0
+    var measures: Array<MeasureMetadata> = []
 }
 
