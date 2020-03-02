@@ -25,6 +25,7 @@
 		722A895B236F65DA0030B009 /* SelectMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A895A236F65DA0030B009 /* SelectMusic.swift */; };
 		722A895D236F65F80030B009 /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A895C236F65F80030B009 /* LandingPage.swift */; };
 		722A895F236F662C0030B009 /* PlayMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A895E236F662C0030B009 /* PlayMode.swift */; };
+		72624E95240D88CC0035B281 /* Happy_Birthday.mxl in Resources */ = {isa = PBXBuildFile; fileRef = 72624E94240D88CB0035B281 /* Happy_Birthday.mxl */; };
 		728160B52380729700608307 /* PlaySongMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728160B42380729700608307 /* PlaySongMetadata.swift */; };
 		728160BB2380919500608307 /* apres.musicxml in Resources */ = {isa = PBXBuildFile; fileRef = 728160BA2380919500608307 /* apres.musicxml */; };
 		728160BE238091D000608307 /* test.musicxml in Resources */ = {isa = PBXBuildFile; fileRef = 728160BD238091D000608307 /* test.musicxml */; };
@@ -71,6 +72,7 @@
 		722A895A236F65DA0030B009 /* SelectMusic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectMusic.swift; sourceTree = "<group>"; };
 		722A895C236F65F80030B009 /* LandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingPage.swift; sourceTree = "<group>"; };
 		722A895E236F662C0030B009 /* PlayMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMode.swift; sourceTree = "<group>"; };
+		72624E94240D88CB0035B281 /* Happy_Birthday.mxl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Happy_Birthday.mxl; sourceTree = "<group>"; };
 		728160B42380729700608307 /* PlaySongMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaySongMetadata.swift; sourceTree = "<group>"; };
 		728160BA2380919500608307 /* apres.musicxml */ = {isa = PBXFileReference; lastKnownFileType = text; path = apres.musicxml; sourceTree = "<group>"; };
 		728160BD238091D000608307 /* test.musicxml */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.musicxml; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 		728160BC2380919F00608307 /* LocalMusicFiles */ = {
 			isa = PBXGroup;
 			children = (
+				72624E94240D88CB0035B281 /* Happy_Birthday.mxl */,
 				728160BA2380919500608307 /* apres.musicxml */,
 				728160BD238091D000608307 /* test.musicxml */,
 				72C6698B23F0E675000D33A5 /* TestMXML.swift */,
@@ -285,6 +288,7 @@
 				722A894E236F643E0030B009 /* Preview Assets.xcassets in Resources */,
 				728160BE238091D000608307 /* test.musicxml in Resources */,
 				728160BB2380919500608307 /* apres.musicxml in Resources */,
+				72624E95240D88CC0035B281 /* Happy_Birthday.mxl in Resources */,
 				722A894B236F643E0030B009 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
