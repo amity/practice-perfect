@@ -25,6 +25,7 @@ struct LandingPage: View {
         "2 weeks": [],
         "1 month": []
     ]
+    @State var streakLength: Int = 0
     
     let note: some View = Image("note").resizable().frame(width: 75, height: 75)
     let smallNote: some View = Image("note").resizable().frame(width: 50, height: 50)
@@ -55,7 +56,16 @@ struct LandingPage: View {
                 }
             }
             VStack {
-                Image("full-logo")
+                ZStack {
+                    Image("full-logo")
+                    if self.streakLength > 0 {
+                        VStack {
+                            Text("\(self.streakLength) day streak!")
+                                .font(.title)
+                                .offset(x: screenWidth * 0.044 , y: screenWidth * 0.044)
+                        }
+                    }
+                }
                 
                 HStack {
                     NavigationLink(destination: SelectMusic(rootIsActive: self.$isActiveSelectMusic), isActive: self.$isActiveSelectMusic) {
@@ -79,7 +89,7 @@ struct LandingPage: View {
                     
                     NavigationLink(destination: TimeVisualization(data: self.data)) {
                         HStack {
-//                            Image(systemName: "tuningfork")
+                            Image(systemName: "gobackward")
                             Text("History")
                                 .fixedSize()
                         }
@@ -115,6 +125,13 @@ struct LandingPage: View {
         .onAppear() {
             // Get data to pass to visualization
             if self.settings.dailyTimes != nil {
+                if (self.settings.dailyTimes! as? [Double])!.contains(0) {
+                    let lastZero: Int = Array<Double>((self.settings.dailyTimes! as? [Double])!).lastIndex(of: 0)! + 1
+                    self.streakLength = Array<Double>((self.settings.dailyTimes! as? [Double])![lastZero ... self.settings.dailyTimes!.count - 1]).count
+                } else {
+                    self.streakLength = self.settings.dailyTimes!.count
+                }
+                
                 if self.settings.dailyTimes!.count > 28 {
                     self.data.updateValue(Array<Double>((self.settings.dailyTimes! as? [Double])![self.settings.dailyTimes!.count - 7 ... self.settings.dailyTimes!.count - 1]), forKey: "1 week")
                     self.data.updateValue(Array<Double>((self.settings.dailyTimes! as? [Double])![self.settings.dailyTimes!.count - 14 ... self.settings.dailyTimes!.count - 1]), forKey: "2 weeks")

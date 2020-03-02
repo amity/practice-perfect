@@ -43,7 +43,11 @@ struct CapsuleBar: View {
         VStack {
             
             if showValue {
-                Text("\(Int(ceil(value)))")
+                if value < 1 {
+                    Text("1")
+                } else {
+                    Text("\(Int(ceil(value)))")
+                }
             }
             ZStack(alignment: .bottom) {
                 Capsule()
@@ -106,6 +110,7 @@ struct CapsuleGraphView: View {
         }.frame(height: CGFloat(graphHeight))
         .onAppear() {
             self.weekdayIndex = days.firstIndex(of: self.weekday)!
+            print(self.data)
         }
     }
 }
@@ -139,7 +144,7 @@ struct TimeVisualization: View {
                 
                 VStack {
                     Spacer()
-                    Text("Your Practice\nHistory")
+                    Text("Minutes Practiced\nPer Day")
                         .font(.title)
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
