@@ -37,6 +37,7 @@ struct CapsuleBar: View {
     var valueName: String
     var capsuleColor: ColorRGB
     var showValue: Bool
+    var showWeekday: Bool
     
     var body: some View {
         VStack {
@@ -66,14 +67,16 @@ struct CapsuleBar: View {
                 }
             }
             
-            Text("\(valueName)")
+            if self.showWeekday {
+                Text("\(valueName)")
+            }
         }
     }
 }
 
-func createCapsule(value: Double, maxValueInData: Double, width: CGFloat, valueName: String, capsuleColor: ColorRGB, showValue: Bool) -> some View {
+func createCapsule(value: Double, maxValueInData: Double, width: CGFloat, valueName: String, capsuleColor: ColorRGB, showValue: Bool, showWeekday: Bool) -> some View {
     return Group {
-        CapsuleBar(value: value, maxValue: maxValueInData, width: width, valueName: valueName, capsuleColor: capsuleColor, showValue: showValue)
+        CapsuleBar(value: value, maxValue: maxValueInData, width: width, valueName: valueName, capsuleColor: capsuleColor, showValue: showValue, showWeekday: showWeekday)
     }
 }
 
@@ -83,22 +86,27 @@ struct CapsuleGraphView: View {
     var spacing: CGFloat
     var capsuleColor: ColorRGB
     var showValue: Bool
+    var showWeekday: Bool
     var weekday: String
+    @State var weekdayIndex: Int = 0
     
     var body: some View {
         GeometryReader { geometry in
             HStack {
                 if self.data.count > 7 {
                     ForEach(0 ..< self.data.count, id: \.self) { index in
-                        createCapsule(value: self.data[index], maxValueInData: self.maxValueInData, width: (CGFloat(geometry.size.width) - 8 * self.spacing) / CGFloat(self.data.count), valueName: "", capsuleColor: self.capsuleColor, showValue: self.showValue)
+                        createCapsule(value: self.data[index], maxValueInData: self.maxValueInData, width: (CGFloat(geometry.size.width) - 8 * self.spacing) / CGFloat(self.data.count), valueName: days[(self.weekdayIndex + index + 1) % 7], capsuleColor: self.capsuleColor, showValue: self.showValue, showWeekday: self.showWeekday)
                     }
                 } else {
                     ForEach(0 ..< self.data.count, id: \.self) { index in
-                        createCapsule(value: self.data[index], maxValueInData: self.maxValueInData, width: (CGFloat(geometry.size.width) - 8 * self.spacing) / CGFloat(self.data.count), valueName: "val" + String(index), capsuleColor: self.capsuleColor, showValue: self.showValue)
+                        createCapsule(value: self.data[index], maxValueInData: self.maxValueInData, width: (CGFloat(geometry.size.width) - 8 * self.spacing) / CGFloat(self.data.count), valueName: days[(self.weekdayIndex + index + 1) % 7], capsuleColor: self.capsuleColor, showValue: self.showValue, showWeekday: self.showWeekday)
                     }
                 }
             }
         }.frame(height: CGFloat(graphHeight))
+        .onAppear() {
+            self.weekdayIndex = days.firstIndex(of: self.weekday)!
+        }
     }
 }
 
@@ -127,11 +135,14 @@ struct TimeVisualization: View {
             mainGradient
             
             HStack {
+                Spacer()
+                
                 VStack {
                     Spacer()
-                    Text("Your Practice History")
+                    Text("Your Practice\nHistory")
                         .font(.title)
                         .fontWeight(.bold)
+                        .multilineTextAlignment(.center)
                     Spacer()
                     Picker("", selection: $dataPicker) {
                         Text("1 week").tag("1 week")
@@ -139,22 +150,24 @@ struct TimeVisualization: View {
                         Text("1 month").tag("1 month")
                     }
                     .labelsHidden()
-                    .frame(maxWidth: 150)
+                    .frame(maxWidth: 150, maxHeight: 150)
                     .clipped()
                     Spacer()
                 }
                 .frame(width: screenWidth * CGFloat(0.33))
 
                 if data[dataPicker]!.count > 14 {
-                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 50, capsuleColor: dataBarColor[dataPicker]!, showValue: false, weekday: weekday)
+                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 50, capsuleColor: dataBarColor[dataPicker]!, showValue: false, showWeekday: false, weekday: weekday)
                         .frame(width: screenWidth * CGFloat(0.67))
                 } else if data[dataPicker]!.count > 7 {
-                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 37.5, capsuleColor: dataBarColor[dataPicker]!, showValue: false, weekday: weekday)
+                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 37.5, capsuleColor: dataBarColor[dataPicker]!, showValue: false, showWeekday: true, weekday: weekday)
                         .frame(width: screenWidth * CGFloat(0.67))
                 } else {
-                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 25, capsuleColor: dataBarColor[dataPicker]!, showValue: true, weekday: weekday)
+                    CapsuleGraphView(data: data[dataPicker]!, maxValueInData: data[dataPicker]!.max()!, spacing: 25, capsuleColor: dataBarColor[dataPicker]!, showValue: true, showWeekday: true, weekday: weekday)
                     .frame(width: screenWidth * CGFloat(0.67))
                 }
+                
+                Spacer()
             }
         }
     }
