@@ -18,7 +18,7 @@ func loadXML2String(fileName : String, fileExtension: String) -> String {
     if let filepath = Bundle.main.path(forResource: fileName, ofType: fileExtension) {
         do {
             let contents = try String(contentsOfFile: filepath)
-            print(contents)
+//            print(contents)
             return(contents)
         } catch {
             return "file contents could not be loaded"
@@ -37,7 +37,7 @@ var musicXMLToParseFromFile: String = loadXML2String(fileName: "Happy_Birthday",
 
 //initialize SWXMLHash object
 //temporarily hotcoded to apres test file
-let xml = SWXMLHash.config {
+var xml = SWXMLHash.config {
             config in
             config.shouldProcessLazily = false
 }.parse(musicXMLToParseFromFile)
@@ -137,7 +137,16 @@ func parseMeasureMusicXML(measureNumber : Int) -> MeasureMetadata {
 
 //parsing to create SongMetadata object that contains MeasureMetadata objects that contain NoteMetadata objects
 //CURRENTLY HOTCODED FOR PART 1 ONLY
-func parseMusicXML() -> PlaySongMetadata {
+func parseMusicXML(isSong: Bool, xmlString: String) -> PlaySongMetadata {
+        
+    // TO DO: don't have this
+    if !isSong {
+        xml = SWXMLHash.config {
+                    config in
+                    config.shouldProcessLazily = false
+        }.parse(xmlString)        
+    }
+    
     //create metadata object
     let songToParse : PlaySongMetadata = PlaySongMetadata()
     

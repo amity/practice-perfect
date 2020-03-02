@@ -118,7 +118,7 @@ struct SongInfoView: View {
                     }
                     
                     if self.finishedDownloading {
-                        NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: self.tempoValues[self.selectedTempo], timeSig: timeSig, showPrevious: true)) {
+                        NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: self.tempoValues[self.selectedTempo], timeSig: timeSig, showPrevious: true, xmlString: self.XMLString)) {
                             Text("Play!")
                                 .font(.title)
                         }

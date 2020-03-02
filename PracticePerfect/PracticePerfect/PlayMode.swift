@@ -67,8 +67,8 @@ struct PlayMode: View, TunerDelegate {
     @State var currBar = 0
     
     //sets a first measure of rests; this is currently 3 quarter notes for 3:4 time
-    @State var measures: [MeasureMetadata] = [MeasureMetadata(measureNumber: 0, notes: [NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true)], clef: "G", fifths: 0, mode: "major")] + parseMusicXML().measures
-    
+    @State var measures: [MeasureMetadata] = [MeasureMetadata(measureNumber: 0, notes: [NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true)], clef: "G", fifths: 0, mode: "major")] + parseMusicXML(isSong: true, xmlString: "").measures
+    @State var xmlString: String
     
     //original hard-coded HBD test measures
     //@State var measures: [MeasureMetadata] = hbdTestMeasures
@@ -296,6 +296,14 @@ struct PlayMode: View, TunerDelegate {
         .onAppear {
             if self.settings.keyIndex - 6 != 0 {
                 self.measures = transposeSong(originalMeasures: self.measures, halfStepOffset: self.settings.keyIndex - 6)
+            }
+            
+            // If is a song
+            if self.showPrevious {
+                self.measures = [MeasureMetadata(measureNumber: 0, notes: [NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true)], clef: "G", fifths: 0, mode: "major")] + parseMusicXML(isSong: true, xmlString: self.xmlString).measures
+            // If is a scale/arpeggio
+            } else {
+                self.measures = [MeasureMetadata(measureNumber: 0, notes: [NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true)], clef: "G", fifths: 0, mode: "major", timeSig: (4,4))] + parseMusicXML(isSong: false, xmlString: self.xmlString).measures
             }
         }
         .onDisappear() {
@@ -976,6 +984,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, showPrevious: true, tuner: Tuner()).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, showPrevious: true, tuner: Tuner(), xmlString: "").previewLayout(.fixed(width: 896, height: 414))
     }
 }
