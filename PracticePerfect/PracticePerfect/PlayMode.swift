@@ -342,8 +342,10 @@ struct PlayMode: View, TunerDelegate {
                     var oldArray: [Double] = self.settings.dailyTimes as! [Double]
                     // Calculate amount of days passed and add a 0 for each
                     let numDaysBetween = ((Float(currentInterval) - Float(oldInterval)) / 86400.0) - 1
-                    for _ in 1...Int(numDaysBetween) {
-                        oldArray.append(0)
+                    if Int(numDaysBetween) >= 1 {
+                        for _ in 1...Int(numDaysBetween) {
+                            oldArray.append(0)
+                        }
                     }
                     // Add new time
                     oldArray.append(self.timePassed)

@@ -132,6 +132,10 @@ struct LandingPage: View {
                     self.data.updateValue((Array<Double>(Array(repeating: 0, count: 14 - self.settings.dailyTimes!.count)) + self.settings.dailyTimes! as? [Double])!, forKey: "2 weeks")
                     self.data.updateValue((Array<Double>(Array(repeating: 0, count: 28 - self.settings.dailyTimes!.count)) + self.settings.dailyTimes! as? [Double])!, forKey: "1 month")
                 }
+            } else {
+                self.data.updateValue(Array<Double>(Array(repeating: 0, count: 7)), forKey: "1 week")
+                self.data.updateValue(Array<Double>(Array(repeating: 0, count: 14)), forKey: "2 weeks")
+                self.data.updateValue(Array<Double>(Array(repeating: 0, count: 28)), forKey: "1 month")
             }
         }
     }

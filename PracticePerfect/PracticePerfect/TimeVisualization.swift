@@ -49,12 +49,21 @@ struct CapsuleBar: View {
                     .fill(Color.gray)
                     .opacity(0.1)
                     .frame(width: width, height: CGFloat(graphHeight))
-                Capsule()
-                    .fill(
-                        Color(.sRGB, red: capsuleColor.red, green: capsuleColor.green, blue: capsuleColor.blue)
-                    )
-                    .frame(width: width, height: CGFloat(value) / CGFloat(maxValue) * CGFloat(graphHeight))
-//                    .animation(.easeOut(duration: 0.5))
+                if maxValue > 0 {
+                    Capsule()
+                        .fill(
+                            Color(.sRGB, red: capsuleColor.red, green: capsuleColor.green, blue: capsuleColor.blue)
+                        )
+                        .frame(width: width, height: CGFloat(value) / CGFloat(maxValue) * CGFloat(graphHeight))
+//                        .animation(.easeOut(duration: 0.5))
+                } else {
+                    Capsule()
+                        .fill(
+                            Color(.sRGB, red: capsuleColor.red, green: capsuleColor.green, blue: capsuleColor.blue)
+                        )
+                        .frame(width: width, height: CGFloat(value) / CGFloat(graphHeight))
+//                        .animation(.easeOut(duration: 0.5))
+                }
             }
             
             Text("\(valueName)")
