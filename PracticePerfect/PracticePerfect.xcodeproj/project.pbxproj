@@ -28,6 +28,7 @@
 		722A895F236F662C0030B009 /* PlayMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A895E236F662C0030B009 /* PlayMode.swift */; };
 		72624E95240D88CC0035B281 /* Happy_Birthday.mxl in Resources */ = {isa = PBXBuildFile; fileRef = 72624E94240D88CB0035B281 /* Happy_Birthday.mxl */; };
 		72624E97240D8A7A0035B281 /* ParseMusicXML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72624E96240D8A7A0035B281 /* ParseMusicXML.swift */; };
+		72624E99240DAE490035B281 /* C_Major_Scale.musicxml in Resources */ = {isa = PBXBuildFile; fileRef = 72624E98240DAE490035B281 /* C_Major_Scale.musicxml */; };
 		728160BB2380919500608307 /* apres.musicxml in Resources */ = {isa = PBXBuildFile; fileRef = 728160BA2380919500608307 /* apres.musicxml */; };
 		728160BE238091D000608307 /* test.musicxml in Resources */ = {isa = PBXBuildFile; fileRef = 728160BD238091D000608307 /* test.musicxml */; };
 		729620432373F6ED00706B82 /* PracticePerfect.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 729620412373F6ED00706B82 /* PracticePerfect.xcdatamodeld */; };
@@ -73,6 +74,7 @@
 		722A895E236F662C0030B009 /* PlayMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMode.swift; sourceTree = "<group>"; };
 		72624E94240D88CB0035B281 /* Happy_Birthday.mxl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Happy_Birthday.mxl; sourceTree = "<group>"; };
 		72624E96240D8A7A0035B281 /* ParseMusicXML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseMusicXML.swift; sourceTree = "<group>"; };
+		72624E98240DAE490035B281 /* C_Major_Scale.musicxml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = C_Major_Scale.musicxml; sourceTree = "<group>"; };
 		728160BA2380919500608307 /* apres.musicxml */ = {isa = PBXFileReference; lastKnownFileType = text; path = apres.musicxml; sourceTree = "<group>"; };
 		728160BD238091D000608307 /* test.musicxml */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.musicxml; sourceTree = "<group>"; };
 		729620422373F6ED00706B82 /* PracticePerfect.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PracticePerfect.xcdatamodel; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 		728160BC2380919F00608307 /* LocalMusicFiles */ = {
 			isa = PBXGroup;
 			children = (
+				72624E98240DAE490035B281 /* C_Major_Scale.musicxml */,
 				72624E94240D88CB0035B281 /* Happy_Birthday.mxl */,
 				728160BA2380919500608307 /* apres.musicxml */,
 				728160BD238091D000608307 /* test.musicxml */,
@@ -277,6 +280,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72624E99240DAE490035B281 /* C_Major_Scale.musicxml in Resources */,
 				BD92FECD2374D8E10074FD59 /* Exercises.json in Resources */,
 				722A8951236F643E0030B009 /* LaunchScreen.storyboard in Resources */,
 				722A894E236F643E0030B009 /* Preview Assets.xcassets in Resources */,
