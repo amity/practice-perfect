@@ -126,6 +126,8 @@ struct SelectMusic: View {
     // List of all songs
     @State var allSongs: Array<SongMetadata> = [SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "",  year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: "")]
     
+    let ratio: CGFloat = screenWidth / 3.0
+    
     var body: some View {
         ZStack {
             mainGradient
@@ -145,7 +147,6 @@ struct SelectMusic: View {
                         Spacer()
                     }
                 } else {
-                    Spacer()
                     HStack {
                         Text("What song will you play?")
                             .font(.largeTitle)
@@ -159,6 +160,7 @@ struct SelectMusic: View {
                         }
                             .modifier(MenuButtonStyle())
                     }
+                    Spacer()
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 5) {
                             ForEach(allSongs) { songMetadata in
@@ -169,20 +171,23 @@ struct SelectMusic: View {
                                     .isDetailLink(false)
                                     .buttonStyle(PlainButtonStyle())
                                     .rotation3DEffect(Angle(degrees:
-                                        (Double(geometry.frame(in: .global).minX) - Double(UIScreen.main.bounds.width / 2) + Double(150)) / -20
+                                        (Double(geometry.frame(in: .global).minX) - Double(screenWidth / 2) + Double(self.ratio / 2)) / -20
                                         ), axis: (x: 0, y: 10.0, z: 0))
                                 }
-                                .frame(width: 300, height: 185)
+                                .frame(width: self.ratio, height: self.ratio * 0.66)
                             }
                         }
                         .padding(30)
                     }
+                    .frame(width: screenWidth, height: self.ratio * 0.66)
+                    Spacer()
                 }
             }
             .padding()
         }
         .onAppear() {
             self.allSongs = retrieveSongs(userId: self.settings.userId)
+            print(screenWidth)
         }
     }
 }

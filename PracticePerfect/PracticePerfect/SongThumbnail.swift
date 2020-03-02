@@ -9,7 +9,7 @@
 import SwiftUI
 
 // When I put this variable in .padding() I get an error in line 30, but not sure why that would happen... 
-var PADDING_WIDTH = 20
+var PADDING_WIDTH: CGFloat = screenWidth * 0.02
 
 struct SongThumbnail: View {
     var songMetadata: SongMetadata
@@ -18,28 +18,30 @@ struct SongThumbnail: View {
         ZStack{
             VStack {
                 Text(songMetadata.name)
-                    .font(Font.system(size: 34).weight(.bold))
-                    .padding(.top, 20)
-                    .padding(.horizontal, 20)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .font(.largeTitle)
+                    .padding(.top, PADDING_WIDTH)
+                    .padding(.horizontal, PADDING_WIDTH)
                 Spacer()
                 Text(songMetadata.artist)
-                    .padding(.bottom, 20)
-                    .padding(.horizontal, 20)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .font(.title)
+                    .padding(.bottom, PADDING_WIDTH)
+                    .padding(.horizontal, PADDING_WIDTH)
                 Spacer()
                 HStack {
                     Text(songMetadata.rank)
-                        .font(Font.system(size: 44))
-                        .padding(.leading, 20)
-                        .padding(.bottom, 20)
+                        .font(.largeTitle)
+                        .padding(.leading, PADDING_WIDTH)
+                        .padding(.bottom, PADDING_WIDTH)
                     Spacer()
                     Text("\(songMetadata.highScore)")
-                        .font(Font.system(size: 44))
-                        .padding(.trailing, 20)
-                        .padding(.bottom, 20)
+                        .font(.largeTitle)
+                        .padding(.trailing, PADDING_WIDTH)
+                        .padding(.bottom, PADDING_WIDTH)
                 }
             }
-                .font(.system(size: 30))
-                .padding(10)
+            .padding(PADDING_WIDTH)
         }
         .foregroundColor(.white)
         .background(LinearGradient(gradient: Gradient(colors: [darkGreen, lightGreen]), startPoint: .leading, endPoint: .trailing).padding(10))
