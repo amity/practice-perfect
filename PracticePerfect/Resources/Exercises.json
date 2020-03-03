@@ -5,7 +5,7 @@
             "name": "C",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/C_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/C_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/C_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/C_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/CmajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/CminorArpeggio.musx"
             ]
         },
         {
@@ -13,7 +13,7 @@
             "name": "C♯",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/DF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/CS_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/DF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/CS_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/DflatMajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/CsharpMinorArpeggio.musx"
             ]
         },
         {
@@ -21,7 +21,7 @@
             "name": "D♭",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/DF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/CS_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/DF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/CS_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/DflatMajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/CsharpMinorArpeggio.musx"
             ]
         },
         {
@@ -29,7 +29,7 @@
             "name": "D",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/D_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/D_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/D_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/D_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/DmajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/DminorArpeggio.musx"
             ]
         },
         {
@@ -37,7 +37,7 @@
             "name": "D♯",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/EF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/DS_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/EF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/DS_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/EflatMajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/DsharpMinorArpeggio.musx"
             ]
         },
         {
@@ -45,7 +45,7 @@
             "name": "E♭",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/EF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/EF_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/EF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/EF_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/EflatMajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/EflatArpeggio.musx"
             ]
         },
         {
@@ -53,7 +53,7 @@
             "name": "E",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/E_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/E_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/E_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/E_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/EmajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/EminorArpeggio.musx"
             ]
         },
         {
@@ -61,7 +61,7 @@
             "name": "F",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/F_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/F_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/F_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/F_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/FmajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/FminorArpeggio.musx"
             ]
         },
         {
@@ -69,7 +69,7 @@
             "name": "F♯",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/FS_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/FS_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/FS_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/FS_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/FsharpMajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/FsharpMinorArpeggio.musx"
             ]
         },
         {
@@ -77,7 +77,7 @@
             "name": "G♭",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/GF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/FS_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/GF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/FS_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/GflatMajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/FsharpMinorArpeggio.musx"
             ]
         },
         {
@@ -85,7 +85,7 @@
             "name": "G",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/G_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/G_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/G_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/G_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/GmajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/GminorArpeggio.musx"
             ]
         },
         {
@@ -93,7 +93,7 @@
             "name": "G♯",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/AF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/GS_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/AF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/GS_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/AflatMajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/GsharpMinorArpeggio.musx"
             ]
         },
         {
@@ -101,7 +101,7 @@
             "name": "A♭",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/AF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/GS_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/AF_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/GS_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/AflatMajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/GsharpMinorArpeggio.musx"
             ]
         },
         {
@@ -109,7 +109,7 @@
             "name": "A",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/A_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/A_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/A_Major_Scale.musicxml", "https://storage.googleapis.com/practiceperfect-songs/A_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/AmajorArpeggio.musx", "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/AminorArpeggio.musx"
             ]
         },
         {
@@ -117,7 +117,7 @@
             "name": "A♯",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/BF_Major_Scale.musicxml",  "https://storage.googleapis.com/practiceperfect-songs/BF_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/BF_Major_Scale.musicxml",  "https://storage.googleapis.com/practiceperfect-songs/BF_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/BflatArpeggio.musx",  "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/BflatArpeggio.musx"
             ]
         },
         {
@@ -125,7 +125,7 @@
             "name": "B♭",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/BF_Major_Scale.musicxml",  "https://storage.googleapis.com/practiceperfect-songs/BF_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/BF_Major_Scale.musicxml",  "https://storage.googleapis.com/practiceperfect-songs/BF_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/BflatArpeggio.musx",  "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/BflatArpeggio.musx"
             ]
         },
         {
@@ -133,7 +133,7 @@
             "name": "B",
             "urls": [ "https://storage.googleapis.com/practiceperfect-songs/B_Major_Scale.musicxml",  "https://storage.googleapis.com/practiceperfect-songs/B_Minor_Scale.musicxml"
             ],
-            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/B_Major_Scale.musicxml",  "https://storage.googleapis.com/practiceperfect-songs/B_Minor_Scale.musicxml"
+            "arpeggioUrls": [ "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/BmajorArpeggio.musx",  "https://storage.googleapis.com/practiceperfect-songs/Arpeggios/BminorArpeggio.musx"
             ]
         }
     ]
