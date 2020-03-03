@@ -69,8 +69,6 @@ struct PlayMode: View, TunerDelegate {
     @State var measures: [MeasureMetadata] = parseMusicXML(isSong: true, xmlString: "").measures
     @State var xmlString: String
     
-    //original hard-coded HBD test measures
-    //@State var measures: [MeasureMetadata] = hbdTestMeasures
     @State var beatIndex = 0
     @State var measureBeat = 0
     
@@ -189,7 +187,7 @@ struct PlayMode: View, TunerDelegate {
                     if isOver {
                         Button(action: {
                             // Tempo variables
-                            self.endOfCurrentNoteBeats += hbdTestMeasures[0].notes[0].duration - 1
+                            self.endOfCurrentNoteBeats += self.measures[0].notes[0].duration - 1
                             
                             // Countdown variables
                             self.startedPlaying = false
