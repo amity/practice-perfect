@@ -22,7 +22,7 @@ struct ScalePicker: View {
     @State private var selectedType = 0
     
     // XML Retrieval
-    @State var XMLString = ""
+    @State var measures: [MeasureMetadata] = []
     @State var trying = false
     @State var canProceed: Bool = false
     
@@ -77,7 +77,7 @@ struct ScalePicker: View {
                 }
                 Spacer()
                 if self.selectedType == 0 {
-                    NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode] + " " + types[self.selectedType], artist: "", resourceUrl: scales[self.selectedKey].urls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4), showPrevious: false, xmlString: self.XMLString), isActive: $canProceed) {
+                    NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode] + " " + types[self.selectedType], artist: "", resourceUrl: scales[self.selectedKey].urls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4), showPrevious: false, measures: self.measures), isActive: $canProceed) {
 
                         EmptyView()
                     }
@@ -86,9 +86,10 @@ struct ScalePicker: View {
                     Button(action: {
                         // Get MXML
                         self.trying = true
-                        self.XMLString = getXML(url: self.scales[self.selectedKey].urls[self.selectedMode])
+                        let XMLString = getXML(url: self.scales[self.selectedKey].urls[self.selectedMode])
+                        self.measures = parseMusicXML(isSong: false, xmlString: XMLString).measures
                         self.trying = false
-                        if self.XMLString != "" {
+                        if self.measures.count > 0 {
                             self.canProceed = true
                         }
                     }) {
@@ -98,7 +99,7 @@ struct ScalePicker: View {
                     }
                     .modifier(MenuButtonStyle())
                 } else {
-                    NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode] + " " + types[self.selectedType], artist: "", resourceUrl: scales[self.selectedKey].arpeggioUrls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4), showPrevious: false, xmlString: self.XMLString), isActive: $canProceed) {
+                    NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode] + " " + types[self.selectedType], artist: "", resourceUrl: scales[self.selectedKey].arpeggioUrls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4), showPrevious: false, measures: self.measures), isActive: $canProceed) {
 
                         EmptyView()
                     }
@@ -107,9 +108,10 @@ struct ScalePicker: View {
                     Button(action: {
                         // Get MXML
                         self.trying = true
-                        self.XMLString = getXML(url: self.scales[self.selectedKey].arpeggioUrls[self.selectedMode])
+                        let XMLString = getXML(url: self.scales[self.selectedKey].arpeggioUrls[self.selectedMode])
+                        self.measures = parseMusicXML(isSong: false, xmlString: XMLString).measures
                         self.trying = false
-                        if self.XMLString != "" {
+                        if self.measures.count > 0 {
                             self.canProceed = true
                         }
                     }) {

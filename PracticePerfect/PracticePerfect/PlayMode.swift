@@ -66,8 +66,8 @@ struct PlayMode: View, TunerDelegate {
     @State var barDist = screenWidth/screenDivisions/2
     @State var currBar = 0
     
-    @State var measures: [MeasureMetadata] = parseMusicXML(isSong: true, xmlString: "").measures
-    @State var xmlString: String
+    // Start with placeholder measure
+    @State var measures: [MeasureMetadata]
     
     //original hard-coded HBD test measures
     //@State var measures: [MeasureMetadata] = hbdTestMeasures
@@ -293,14 +293,6 @@ struct PlayMode: View, TunerDelegate {
         .foregroundColor(.black)
         .navigationBarTitle("You are playing: " + songMetadata.name)
         .onAppear {
-            // If is a song
-            if self.isSong {
-                self.measures = parseMusicXML(isSong: true, xmlString: self.xmlString).measures
-            // If is a scale/arpeggio
-            } else {
-                self.measures = parseMusicXML(isSong: false, xmlString: self.xmlString).measures
-            }
-            
             // Adjust for key of instrument if not an exercise
             if self.isSong && self.settings.keyIndex - 6 != 0 {
                 self.measures = transposeSong(originalMeasures: self.measures, halfStepOffset: self.settings.keyIndex - 6)
@@ -984,6 +976,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, isSong: true, tuner: Tuner(), xmlString: "").previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, isSong: true, tuner: Tuner(), measures: [MeasureMetadata()]).previewLayout(.fixed(width: 896, height: 414))
     }
 }
