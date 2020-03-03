@@ -18,7 +18,7 @@ func loadXML2String(fileName : String, fileExtension: String) -> String {
     if let filepath = Bundle.main.path(forResource: fileName, ofType: fileExtension) {
         do {
             let contents = try String(contentsOfFile: filepath)
-            print(contents)
+//            print(contents)
             return(contents)
         } catch {
             return "file contents could not be loaded"
@@ -37,7 +37,7 @@ var musicXMLToParseFromFile: String = loadXML2String(fileName: "Happy_Birthday",
 
 //initialize SWXMLHash object
 //temporarily hotcoded to apres test file
-let xml = SWXMLHash.config {
+var xml = SWXMLHash.config {
             config in
             config.shouldProcessLazily = false
 }.parse(musicXMLToParseFromFile)
@@ -94,6 +94,10 @@ func parseMeasureMusicXML(measureNumber : Int) -> MeasureMetadata {
     
     measureToParse.measureNumber = measureNumber
     
+    measureToParse.fifths = parseKeySignatureFifths()
+    
+    measureToParse.timeSig = (parseTimeSignatureBeats(), parseTimeSignatureBeatType() )
+    
     //only counts right hand notes, assumes no rests in left hand part
     let numAllNotes = xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"].all.count
    
@@ -137,7 +141,16 @@ func parseMeasureMusicXML(measureNumber : Int) -> MeasureMetadata {
 
 //parsing to create SongMetadata object that contains MeasureMetadata objects that contain NoteMetadata objects
 //CURRENTLY HOTCODED FOR PART 1 ONLY
-func parseMusicXML() -> PlaySongMetadata {
+func parseMusicXML(isSong: Bool, xmlString: String) -> PlaySongMetadata {
+        
+    // TO DO: don't have this
+    if !isSong {
+        xml = SWXMLHash.config {
+                    config in
+                    config.shouldProcessLazily = false
+        }.parse(xmlString)        
+    }
+    
     //create metadata object
     let songToParse : PlaySongMetadata = PlaySongMetadata()
     
@@ -161,10 +174,10 @@ func parseMusicXML() -> PlaySongMetadata {
     
     songToParse.divisions = (xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["divisions"].element != nil) ? Int(xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["divisions"].element!.text)! : 24 //24 default value hotcoded because it's the most common note divisions number in files I've seen, probably because it's divisible by 2, 3, 4, 6, 8, and 12 for durations
       
-    songToParse.key = [Int(xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["key"]["fifths"].element!.text) ?? 4 : xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["key"]["mode"].element!.text ]
+    songToParse.key = [ parseKeySignatureFifths() : parseKeySignatureMode() ]
     //0 and "major" are default values which is C major, no sharps or flats
       
-    songToParse.timeSignature = [ Int( xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["time"]["beats"].element!.text ) ?? 4 : Int( xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["time"]["beat-type"].element!.text ) ?? 4 ]
+    songToParse.timeSignature = [ parseTimeSignatureBeats() : parseTimeSignatureBeatType() ]
     
     //currently handles first clef (usually right hand melody)
     songToParse.clef = [ xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["clef"][0]["sign"].element!.text : Int(xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["clef"][0]["line"].element!.text) ?? 2]
@@ -177,9 +190,37 @@ func parseMusicXML() -> PlaySongMetadata {
         songToParse.measures.append( parseMeasureMusicXML(measureNumber: index) )
     }
     
+    songToParse.measures = [createStartingRests()] + songToParse.measures
+    
     return songToParse
 }
     
+func parseTimeSignatureBeats() -> Int {
+    return Int (xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["time"]["beats"].element!.text ) ?? 4
+}
+
+func parseTimeSignatureBeatType() -> Int {
+    return Int( xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["time"]["beat-type"].element!.text ) ?? 4
+}
+
+func parseKeySignatureFifths() -> Int {
+    return Int(xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["key"]["fifths"].element!.text) ?? 0
+    //0 and "major" are default values which is C major, no sharps or flats
+}
+
+func parseKeySignatureMode() -> String {
+    return xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["key"]["mode"].element!.text
+}
+
+func createStartingRests() -> MeasureMetadata {
+    let restMeasure = MeasureMetadata(measureNumber: 0, notes: [], clef: "G", fifths: parseKeySignatureFifths(), mode: "major", timeSig: (parseTimeSignatureBeats(), parseTimeSignatureBeatType()))
+    
+    for _ in 0..<parseTimeSignatureBeats() {
+        restMeasure.notes.append( NoteMetadata(duration: 1, type: "quarter", isRest: true) )
+    }
+    
+    return restMeasure
+}
 
 
 
