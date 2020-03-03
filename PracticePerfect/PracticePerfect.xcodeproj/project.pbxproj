@@ -22,7 +22,6 @@
 		722A894B236F643E0030B009 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 722A894A236F643E0030B009 /* Assets.xcassets */; };
 		722A894E236F643E0030B009 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 722A894D236F643E0030B009 /* Preview Assets.xcassets */; };
 		722A8951236F643E0030B009 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 722A894F236F643E0030B009 /* LaunchScreen.storyboard */; };
-		722A8959236F65CC0030B009 /* AddMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A8958236F65CC0030B009 /* AddMusic.swift */; };
 		722A895B236F65DA0030B009 /* SelectMusic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A895A236F65DA0030B009 /* SelectMusic.swift */; };
 		722A895D236F65F80030B009 /* LandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A895C236F65F80030B009 /* LandingPage.swift */; };
 		722A895F236F662C0030B009 /* PlayMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722A895E236F662C0030B009 /* PlayMode.swift */; };
@@ -67,7 +66,6 @@
 		722A894D236F643E0030B009 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		722A8950236F643E0030B009 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		722A8952236F643E0030B009 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		722A8958236F65CC0030B009 /* AddMusic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMusic.swift; sourceTree = "<group>"; };
 		722A895A236F65DA0030B009 /* SelectMusic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectMusic.swift; sourceTree = "<group>"; };
 		722A895C236F65F80030B009 /* LandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingPage.swift; sourceTree = "<group>"; };
 		722A895E236F662C0030B009 /* PlayMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayMode.swift; sourceTree = "<group>"; };
@@ -143,7 +141,6 @@
 			isa = PBXGroup;
 			children = (
 				722A8952236F643E0030B009 /* Info.plist */,
-				722A8958236F65CC0030B009 /* AddMusic.swift */,
 				722A8944236F643C0030B009 /* AppDelegate.swift */,
 				1453738C23FDC01300A53D72 /* BackgroundFilter.swift */,
 				BD3E0B64237A2645003F04A8 /* Data.swift */,
@@ -365,7 +362,6 @@
 				BD9597EF23732FD6002A9651 /* Note.swift in Sources */,
 				145D71CA240C244E008AD81C /* TimeVisualization.swift in Sources */,
 				149053F1236F8FA800D36A10 /* SongThumbnail.swift in Sources */,
-				722A8959236F65CC0030B009 /* AddMusic.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
