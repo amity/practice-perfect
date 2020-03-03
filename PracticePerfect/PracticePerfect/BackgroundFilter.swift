@@ -17,7 +17,7 @@ struct BackgroundFilter: View, TunerDelegate {
     var tempo: Int
     var timeSig: (Int, Int)
     @State var showPrevious: Bool
-    @State var xmlString: String
+    var measures: [MeasureMetadata]
         
     // Tuner variables 
     @State var isOn = false
@@ -71,7 +71,7 @@ struct BackgroundFilter: View, TunerDelegate {
                        
                     Spacer()
                     
-                    NavigationLink(destination: PlayMode(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: tempo, showPrevious: self.showPrevious, tuner: self.settings.tuner, xmlString: xmlString)) {
+                    NavigationLink(destination: PlayMode(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: tempo, isSong: self.showPrevious, tuner: self.settings.tuner, measures: self.measures)) {
                         Text("Play!")
                             .font(.title)
                     }
@@ -109,6 +109,6 @@ struct BackgroundFilter: View, TunerDelegate {
 struct BackgroundFilter_Previews: PreviewProvider {
     static var previews: some View {
         // Example with sample SongMetadata
-        BackgroundFilter(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 100, timeSig: (4,4), showPrevious: true, xmlString: "").previewLayout(.fixed(width: 896, height: 414))
+        BackgroundFilter(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 100, timeSig: (4,4), showPrevious: true, measures: [MeasureMetadata()]).previewLayout(.fixed(width: 896, height: 414))
     }
 }

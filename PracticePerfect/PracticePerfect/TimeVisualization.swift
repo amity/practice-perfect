@@ -41,28 +41,29 @@ struct CapsuleBar: View {
     
     var body: some View {
         VStack {
-            
             if showValue {
-                if value < 1 {
+                if value == 0.0 {
+                    Text("0")
+                } else if value < 1 {
                     Text("1")
                 } else {
                     Text("\(Int(ceil(value)))")
                 }
             }
             ZStack(alignment: .bottom) {
-                Capsule()
+                Rectangle()
                     .fill(Color.gray)
                     .opacity(0.1)
                     .frame(width: width, height: CGFloat(graphHeight))
                 if maxValue > 0 {
-                    Capsule()
+                    Rectangle()
                         .fill(
                             Color(.sRGB, red: capsuleColor.red, green: capsuleColor.green, blue: capsuleColor.blue)
                         )
                         .frame(width: width, height: CGFloat(value) / CGFloat(maxValue) * CGFloat(graphHeight))
 //                        .animation(.easeOut(duration: 0.5))
                 } else {
-                    Capsule()
+                    Rectangle()
                         .fill(
                             Color(.sRGB, red: capsuleColor.red, green: capsuleColor.green, blue: capsuleColor.blue)
                         )
@@ -79,8 +80,21 @@ struct CapsuleBar: View {
 }
 
 func createCapsule(value: Double, maxValueInData: Double, width: CGFloat, valueName: String, capsuleColor: ColorRGB, showValue: Bool, showWeekday: Bool) -> some View {
+        
+    // Convert from seconds to minutes, ensure that nothing is below 1
+    var newValue = value / 60.0
+    var newMaxValue = maxValueInData / 60.0
+    if newValue < 1 && newValue != 0 {
+        newValue = 1
+    }
+    if newMaxValue < 1 && newMaxValue != 0 {
+        newMaxValue = 1
+    }
+    newValue = Double(Int(newValue))
+    newMaxValue = Double(Int(newMaxValue))
+    
     return Group {
-        CapsuleBar(value: value, maxValue: maxValueInData, width: width, valueName: valueName, capsuleColor: capsuleColor, showValue: showValue, showWeekday: showWeekday)
+        CapsuleBar(value: newValue, maxValue: newMaxValue, width: width, valueName: valueName, capsuleColor: capsuleColor, showValue: showValue, showWeekday: showWeekday)
     }
 }
 
@@ -110,7 +124,6 @@ struct CapsuleGraphView: View {
         }.frame(height: CGFloat(graphHeight))
         .onAppear() {
             self.weekdayIndex = days.firstIndex(of: self.weekday)!
-            print(self.data)
         }
     }
 }

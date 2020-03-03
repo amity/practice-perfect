@@ -21,44 +21,8 @@ struct ScalePicker: View {
     @State private var selectedMode = 0
     @State private var selectedType = 0
     
-    // File retrieval methods adapted from:
-    // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
-    private func getXML(url: String) {
-        trying = true
-        dataTask?.cancel()
-        
-        if var urlComponents = URLComponents(string: url) {
-            guard let url = urlComponents.url else {
-                trying = false
-                return
-            }
-            
-            dataTask = downloadSession.dataTask(with: url) { (data, response, error) in
-                defer {
-                    self.dataTask = nil
-                }
-
-                if let error = error {
-                    self.errorMessage += "DataTask error: " + error.localizedDescription + "\n"
-                } else if let data = data, let response = response as? HTTPURLResponse,
-                    response.statusCode == 200 {
-                    self.XMLString = String(data: data, encoding: .utf8) ?? ""
-                    self.finishedDownloading = true
-                    self.canProceed = true
-                }
-            }
-            dataTask?.resume()
-        }
-        trying = false
-    }
-    
     // XML Retrieval
-    @State var downloadSession = URLSession(configuration: .default)
-    @State var dataTask: URLSessionDataTask?
-    @State var errorMessage = ""
-    @State var results = ""
-    @State var XMLString = ""
-    @State var finishedDownloading = false
+    @State var measures: [MeasureMetadata] = []
     @State var trying = false
     @State var canProceed: Bool = false
     
@@ -113,14 +77,21 @@ struct ScalePicker: View {
                 }
                 Spacer()
                 if self.selectedType == 0 {
-                    NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode] + " " + types[self.selectedType], artist: "", resourceUrl: scales[self.selectedKey].urls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4), showPrevious: false, xmlString: self.XMLString), isActive: $canProceed) {
+                    NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode] + " " + types[self.selectedType], artist: "", resourceUrl: scales[self.selectedKey].urls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4), showPrevious: false, measures: self.measures), isActive: $canProceed) {
 
                         EmptyView()
                     }
                         .isDetailLink(false)
                     
                     Button(action: {
-                        self.getXML(url: self.scales[self.selectedKey].urls[self.selectedMode])
+                        // Get MXML
+                        self.trying = true
+                        let XMLString = getXML(url: self.scales[self.selectedKey].urls[self.selectedMode])
+                        self.measures = parseMusicXML(isSong: false, xmlString: XMLString).measures
+                        self.trying = false
+                        if self.measures.count > 0 {
+                            self.canProceed = true
+                        }
                     }) {
                         HStack {
                             Text("Play")
@@ -128,14 +99,21 @@ struct ScalePicker: View {
                     }
                     .modifier(MenuButtonStyle())
                 } else {
-                    NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode] + " " + types[self.selectedType], artist: "", resourceUrl: scales[self.selectedKey].arpeggioUrls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4), showPrevious: false, xmlString: self.XMLString), isActive: $canProceed) {
+                    NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode] + " " + types[self.selectedType], artist: "", resourceUrl: scales[self.selectedKey].arpeggioUrls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4), showPrevious: false, measures: self.measures), isActive: $canProceed) {
 
                         EmptyView()
                     }
                         .isDetailLink(false)
                     
                     Button(action: {
-                        self.getXML(url: self.scales[self.selectedKey].arpeggioUrls[self.selectedMode])
+                        // Get MXML
+                        self.trying = true
+                        let XMLString = getXML(url: self.scales[self.selectedKey].arpeggioUrls[self.selectedMode])
+                        self.measures = parseMusicXML(isSong: false, xmlString: XMLString).measures
+                        self.trying = false
+                        if self.measures.count > 0 {
+                            self.canProceed = true
+                        }
                     }) {
                         HStack {
                             Text("Play")
