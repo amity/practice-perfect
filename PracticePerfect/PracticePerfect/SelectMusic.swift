@@ -155,10 +155,6 @@ struct SelectMusic: View {
                         }
                             .isDetailLink(false)
                             .modifier(MenuButtonStyle())
-                        NavigationLink(destination: AddMusic()) {
-                            Text("Add music")
-                        }
-                            .modifier(MenuButtonStyle())
                     }
                     Spacer()
                     ScrollView(.horizontal, showsIndicators: false) {
