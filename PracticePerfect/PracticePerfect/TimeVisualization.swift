@@ -90,6 +90,8 @@ func createCapsule(value: Double, maxValueInData: Double, width: CGFloat, valueN
     if newMaxValue < 1 && newMaxValue != 0 {
         newMaxValue = 1
     }
+    newValue = Double(Int(newValue))
+    newMaxValue = Double(Int(newMaxValue))
     
     return Group {
         CapsuleBar(value: newValue, maxValue: newMaxValue, width: width, valueName: valueName, capsuleColor: capsuleColor, showValue: showValue, showWeekday: showWeekday)
