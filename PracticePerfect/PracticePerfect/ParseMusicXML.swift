@@ -228,6 +228,24 @@ func createStartingRests() -> MeasureMetadata {
     return restMeasure
 }
 
+//used for displaying songs
+func getNumNotesWithRests(songToParse: PlaySongMetadata) -> Int {
+    var numNotesWithRests = 0
+    for measure in songToParse.measures {
+        numNotesWithRests += measure.numNotes
+    }
+    return numNotesWithRests
+}
+
+//used for score calculation
+func getNumNotesWithoutRests(songToParse: PlaySongMetadata) -> Int {
+    var numNotesWithoutRests = 0
+    for measure in songToParse.measures {
+        numNotesWithoutRests += measure.numNotesNoRests
+    }
+    return numNotesWithoutRests
+}
+
 
 struct ParseMusicXML: View {
     var body: some View {
