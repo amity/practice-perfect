@@ -21,44 +21,8 @@ struct ScalePicker: View {
     @State private var selectedMode = 0
     @State private var selectedType = 0
     
-    // File retrieval methods adapted from:
-    // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
-    private func getXML(url: String) {
-        trying = true
-        dataTask?.cancel()
-        
-        if var urlComponents = URLComponents(string: url) {
-            guard let url = urlComponents.url else {
-                trying = false
-                return
-            }
-            
-            dataTask = downloadSession.dataTask(with: url) { (data, response, error) in
-                defer {
-                    self.dataTask = nil
-                }
-
-                if let error = error {
-                    self.errorMessage += "DataTask error: " + error.localizedDescription + "\n"
-                } else if let data = data, let response = response as? HTTPURLResponse,
-                    response.statusCode == 200 {
-                    self.XMLString = String(data: data, encoding: .utf8) ?? ""
-                    self.finishedDownloading = true
-                    self.canProceed = true
-                }
-            }
-            dataTask?.resume()
-        }
-        trying = false
-    }
-    
     // XML Retrieval
-    @State var downloadSession = URLSession(configuration: .default)
-    @State var dataTask: URLSessionDataTask?
-    @State var errorMessage = ""
-    @State var results = ""
     @State var XMLString = ""
-    @State var finishedDownloading = false
     @State var trying = false
     @State var canProceed: Bool = false
     
@@ -120,7 +84,13 @@ struct ScalePicker: View {
                         .isDetailLink(false)
                     
                     Button(action: {
-                        self.getXML(url: self.scales[self.selectedKey].urls[self.selectedMode])
+                        // Get MXML
+                        self.trying = true
+                        self.XMLString = getXML(url: self.scales[self.selectedKey].urls[self.selectedMode])
+                        self.trying = false
+                        if self.XMLString != "" {
+                            self.canProceed = true
+                        }
                     }) {
                         HStack {
                             Text("Play")
@@ -135,7 +105,13 @@ struct ScalePicker: View {
                         .isDetailLink(false)
                     
                     Button(action: {
-                        self.getXML(url: self.scales[self.selectedKey].arpeggioUrls[self.selectedMode])
+                        // Get MXML
+                        self.trying = true
+                        self.XMLString = getXML(url: self.scales[self.selectedKey].arpeggioUrls[self.selectedMode])
+                        self.trying = false
+                        if self.XMLString != "" {
+                            self.canProceed = true
+                        }
                     }) {
                         HStack {
                             Text("Play")
