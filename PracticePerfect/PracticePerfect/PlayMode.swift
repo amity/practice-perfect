@@ -66,18 +66,16 @@ struct PlayMode: View, TunerDelegate {
     @State var barDist = screenWidth/screenDivisions/2
     @State var currBar = 0
     
-    // Start with placeholder measure
+    // Start with measure data
     @State var measures: [MeasureMetadata]
-    
-    //original hard-coded HBD test measures
-    //@State var measures: [MeasureMetadata] = hbdTestMeasures
     @State var beatIndex = 0
     @State var measureBeat = 0
     
     // Restart and rewind variables
     @State var isOver = false
     @State var rewound = false
-    
+    @State var restarted = false
+
     var body: some View {
         ZStack {
             mainGradient
@@ -189,10 +187,7 @@ struct PlayMode: View, TunerDelegate {
                     if isOver {
                         Button(action: {
                             // Tempo variables
-                            self.endOfCurrentNoteBeats += hbdTestMeasures[0].notes[0].duration - 1
-                            
-                            // Countdown variables
-                            self.startedPlaying = false
+                            self.endOfCurrentNoteBeats += self.measures[0].notes[0].duration
                             
                             //  Scoring variables
                             self.currBeatNotes = [] // For all notes in current beat
@@ -211,6 +206,8 @@ struct PlayMode: View, TunerDelegate {
                             self.measureBeat = 0
                             
                             self.isOver = false
+                            self.restarted = true
+                            self.startTuner()
                         }) {
                             Image(systemName: "backward.end.alt.fill")
                             .frame(width: 50)
@@ -255,6 +252,9 @@ struct PlayMode: View, TunerDelegate {
                     }
                     
                     Button(action: {
+                        if self.isOver {
+                            self.startTuner()
+                        }
                         self.isOver = false
                         self.currBar = max(0, self.currBar - 1)
                         self.beatIndex = 0
@@ -401,7 +401,7 @@ struct PlayMode: View, TunerDelegate {
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
         let newElapsedBeats: Float = (Float(beatCount) * Float(tuner.pollingInterval) / Float(60) * Float(tempo))
         var updateEndOfNextNote = false
-        
+
         // If still on current note, add pitch reading to array
         if newElapsedBeats < endOfCurrentNoteBeats {
             currBeatNotes.append(pitch.note)
@@ -424,12 +424,13 @@ struct PlayMode: View, TunerDelegate {
             
             // Go to next beat
             beatIndex += 1
+            self.restarted = false
             
             // Nee to update end of next note
             updateEndOfNextNote = true
             
         }
-        
+
         // Keep track of current bar
         if Int(newElapsedBeats) > Int(self.totalElapsedBeats) {
             // If switching to new bar
@@ -448,7 +449,7 @@ struct PlayMode: View, TunerDelegate {
                     self.rewound = false
                 }
             }
-            else {
+            else if !self.restarted {
                 self.measureBeat += 1
             }
         }
