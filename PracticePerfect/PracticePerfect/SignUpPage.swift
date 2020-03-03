@@ -24,6 +24,7 @@ struct SignUpPage: View {
     @State private var textFieldInput: String = ""
     @State var showErrorMessage: Bool = false
     @State var showUnfilledMessage: Bool = false
+    @State var showTakenInfoMessage: Bool = false
 
     var body: some View {
         ZStack {
@@ -48,6 +49,13 @@ struct SignUpPage: View {
                         .font(.system(size: 14))
                         .frame(width: 500)
                 }
+                if (self.showTakenInfoMessage) {
+                    Text("Username or email already taken!")
+                        .background(Color.red)
+                        .foregroundColor(Color.white)
+                        .font(.system(size: 14))
+                        .frame(width: 500)
+                }
                 HStack {
                     TextField("Name", text: $name)
                         .padding()
@@ -64,6 +72,7 @@ struct SignUpPage: View {
                 }
                 HStack {
                     TextField("Username (optional)", text: $username)
+                        .autocapitalization(UITextAutocapitalizationType.none)
                         .padding()
                         .background(Color.white)
                         .cornerRadius(5.0)
@@ -99,8 +108,10 @@ struct SignUpPage: View {
                                 }
                                 // Get json object from data
                                 let signupData: AnyObject = try! JSONSerialization.jsonObject(with: unwrappedData, options: JSONSerialization.ReadingOptions.allowFragments) as AnyObject
-                                if(signupData["statusCode"] as? Int == 404){
+                                if (signupData["statusCode"] as? Int == 404) {
                                     self.showErrorMessage = true
+                                } else if signupData["statusCode"] as? Int == 400 {
+                                    self.showTakenInfoMessage = true
                                 } else {
                                     self.showErrorMessage = false
                                     DispatchQueue.main.async {
@@ -126,7 +137,7 @@ struct SignUpPage: View {
                         }
                     }) {
                         HStack {
-                            Text("Sign In")
+                            Text("Create Account")
                         }
                     }
                     .modifier(MenuButtonStyle())
