@@ -42,11 +42,13 @@ struct LoginPage: View {
     
     @ObservedObject private var keyboard = KeyboardResponder()
     @EnvironmentObject var settings: UserSettings
+    @Environment(\.presentationMode) var presentationMode
     
     @State private var textFieldInput: String = ""
     @State var showErrorMessage: Bool = false
-    @State var loggedIn: Bool = false
 
+    @State var close: Bool = false
+    
     var body: some View {
         ZStack {
             mainGradient
@@ -73,17 +75,15 @@ struct LoginPage: View {
                     .padding(.bottom, 5)
                     .frame(width: 500)
                 HStack {
-                    NavigationLink(destination: LandingPage(), isActive: $loggedIn) {
-                        EmptyView()
-                    }
-                    
                     Button(action: {
-                            // Retrieve login data and parse
+                        // Retrieve login data and parse
                         let loginUrl = URL(string: "https://practiceperfect.appspot.com/users/" + self.username + "/" + self.password)!
                         let loginSession = URLSession.shared
                         var loginRequest = URLRequest(url: loginUrl)
                         loginRequest.httpMethod = "GET"
 
+                        var successful: Bool = false
+                        
                         let loginSemaphore = DispatchSemaphore(value: 0)
                         let loginTask = loginSession.dataTask(with: loginRequest) { data, response, error in
                             // Unwrap data
@@ -95,7 +95,6 @@ struct LoginPage: View {
                             let loginData: AnyObject = try! JSONSerialization.jsonObject(with: unwrappedData, options: JSONSerialization.ReadingOptions.allowFragments) as AnyObject
                             if(loginData["statusCode"] as? Int == 404){
                                 self.showErrorMessage = true
-                                self.loggedIn = false
                             } else {
                                 self.showErrorMessage = false
                                 DispatchQueue.main.async {
@@ -104,13 +103,17 @@ struct LoginPage: View {
                                     UserDefaults.standard.set(loginData["username"] as? String, forKey: "username")
                                     self.settings.username = loginData["username"] as? String
                                 }
-                                self.loggedIn = true
+                                successful = true
                             }
                             loginSemaphore.signal()
                         }
                         loginTask.resume()
                         // Wait for the login to be retrieved before displaying all of them
                         _ = loginSemaphore.wait(wallTimeout: .distantFuture)
+                        
+                        if successful {
+                            self.presentationMode.wrappedValue.dismiss()
+                        }
                     }) {
                         HStack {
                             Text("Login")
@@ -119,7 +122,7 @@ struct LoginPage: View {
                     .modifier(MenuButtonStyle())
                 }
                 Text("or").fixedSize().padding(.bottom, 5)
-                NavigationLink(destination: SignUpPage(username: username, password: password, keyboard: keyboard)) {
+                NavigationLink(destination: SignUpPage(username: username, password: password, keyboard: keyboard, close: self.$close)) {
                     HStack {
                         Text("Sign Up")
                     }
@@ -135,10 +138,9 @@ struct LoginPage: View {
             EmptyView()
         )
         .onAppear() {
-            UserDefaults.standard.set(-1, forKey: "userId")
-            self.settings.userId = -1
-            UserDefaults.standard.set("", forKey: "username")
-            self.settings.username = ""
+            if self.close {
+                self.presentationMode.wrappedValue.dismiss()
+            }
         }
     }
 }

@@ -30,6 +30,8 @@ struct LandingPage: View {
     let note: some View = Image("note").resizable().frame(width: 75, height: 75)
     let smallNote: some View = Image("note").resizable().frame(width: 50, height: 50)
     
+    @State var loggedOut: Bool
+    
     var body: some View {
         ZStack {
             mainGradient
@@ -109,7 +111,7 @@ struct LandingPage: View {
                     .isDetailLink(false)
                     .modifier(MenuButtonStyle())
                     
-                    NavigationLink(destination: SettingsView(selectedClef: settings.clefIndex, selectedKey: settings.keyIndex)) {
+                    NavigationLink(destination: SettingsView(loggedOut: self.$loggedOut, selectedClef: settings.clefIndex, selectedKey: settings.keyIndex)) {
                         HStack {
                             Image(systemName: "gear")
                             Text("Settings")
@@ -117,6 +119,10 @@ struct LandingPage: View {
                         }
                     }
                     .modifier(MenuButtonStyle())
+                }
+                
+                NavigationLink(destination: LoginPage(), isActive: $loggedOut) {
+                    EmptyView()
                 }
             }
             .navigationBarTitle(settings.username ?? "")
@@ -160,6 +166,6 @@ struct LandingPage: View {
 
 struct LandingPage_Previews: PreviewProvider {
     static var previews: some View {
-        LandingPage().previewLayout(.fixed(width: 896, height: 414))
+        LandingPage(loggedOut: false).previewLayout(.fixed(width: 896, height: 414))
     }
 }
