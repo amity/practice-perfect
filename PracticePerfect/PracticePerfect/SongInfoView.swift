@@ -21,7 +21,7 @@ struct SongInfoView: View {
     let timeSig = (3,4)
     
     // XML Retrieval
-    @State var XMLString = ""
+    @State var measures: [MeasureMetadata] = []
     @State var finishedDownloading = false
     @State var trying = false
     
@@ -84,7 +84,7 @@ struct SongInfoView: View {
                     }
                     
                     if self.finishedDownloading {
-                        NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: self.tempoValues[self.selectedTempo], timeSig: timeSig, showPrevious: true, xmlString: self.XMLString)) {
+                        NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: songMetadata, tempo: self.tempoValues[self.selectedTempo], timeSig: timeSig, showPrevious: true, measures: self.measures)) {
                             Text("Play!")
                                 .font(.title)
                         }
@@ -94,9 +94,10 @@ struct SongInfoView: View {
                         Button(action: {
                             // Get MXML
                             self.trying = true
-                            self.XMLString = getXML(url: self.songMetadata.resourceUrl)
+                            let XMLString = getXML(url: self.songMetadata.resourceUrl)
+                            self.measures = parseMusicXML(isSong: true, xmlString: XMLString).measures
                             self.trying = false
-                            if self.XMLString != "" {
+                            if self.measures.count > 0 {
                                 self.finishedDownloading = true
                             }
                         }) {
@@ -118,9 +119,10 @@ struct SongInfoView: View {
         .onAppear() {
             // Get MXML
             self.trying = true
-            self.XMLString = getXML(url: self.songMetadata.resourceUrl)
+            let XMLString = getXML(url: self.songMetadata.resourceUrl)
+            self.measures = parseMusicXML(isSong: true, xmlString: XMLString).measures
             self.trying = false
-            if self.XMLString != "" {
+            if self.measures.count > 0 {
                 self.finishedDownloading = true
             }
         }
