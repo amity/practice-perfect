@@ -196,6 +196,18 @@ func parseMusicXML(isSong: Bool, xmlString: String) -> PlaySongMetadata {
     
     songToParse.measures = [createStartingRests()] + songToParse.measures
     
+    var numNotesWithRests = 0
+    for measure in songToParse.measures {
+        numNotesWithRests += measure.numNotes
+    }
+    songToParse.numNotesWithRests = numNotesWithRests
+    
+    var numNotesWithoutRests = 0
+    for measure in songToParse.measures {
+        numNotesWithoutRests += measure.numNotesNoRests
+    }
+    songToParse.numNotesWithoutRests = numNotesWithoutRests
+    
     return songToParse
 }
     

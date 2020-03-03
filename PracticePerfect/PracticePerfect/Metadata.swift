@@ -125,5 +125,8 @@ class PlaySongMetadata {
 
     var numMeasures: Int = 0
     var measures: Array<MeasureMetadata> = []
+    
+    var numNotesWithRests : Int = 0
+    var numNotesWithoutRests : Int = 0
 }
 
