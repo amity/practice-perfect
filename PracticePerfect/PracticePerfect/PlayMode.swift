@@ -66,7 +66,8 @@ struct PlayMode: View, TunerDelegate {
     @State var barDist = screenWidth/screenDivisions/2
     @State var currBar = 0
     
-    @State var measures: [MeasureMetadata] = parseMusicXML(isSong: true, xmlString: "").measures
+    // Start with placeholder measure
+    @State var measures: [MeasureMetadata] = [MeasureMetadata(measureNumber: 1, notes: [NoteMetadata(step: "C")])]
     @State var xmlString: String
     
     //original hard-coded HBD test measures

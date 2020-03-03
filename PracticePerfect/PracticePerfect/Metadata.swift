@@ -72,8 +72,7 @@ class NoteMetadata: Identifiable, Equatable {
     
     var position: Int = 0 //if same position as last note, it's a chord
     
-    init(step: String = "C", duration: Float = 1.0, type: String = "quarter", accidental: String = "",
-         dot: Bool = false, octave: Int = 4, isRest: Bool = false) {
+    init(step: String = "C", duration: Float = 1.0, type: String = "quarter", accidental: String = "", dot: Bool = false, octave: Int = 4, isRest: Bool = false) {
         self.step = step
         self.duration = duration
         self.type = type
