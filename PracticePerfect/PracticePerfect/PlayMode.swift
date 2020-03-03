@@ -36,7 +36,7 @@ struct PlayMode: View, TunerDelegate {
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     var songMetadata: SongMetadata
     var tempo: Int
-    @State var showPrevious: Bool
+    @State var isSong: Bool
     
     // Tuner variables
     @State var tuner: Tuner
@@ -269,7 +269,7 @@ struct PlayMode: View, TunerDelegate {
                         .disabled(self.rewound)
                         .opacity(self.rewound ? 0.5 : 1)
 
-                    NavigationLink(destination: ResultsPage(shouldPopToRootView: self.$rootIsActive, scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata, showPrevious: self.showPrevious)) {
+                    NavigationLink(destination: ResultsPage(shouldPopToRootView: self.$rootIsActive, scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata, showPrevious: self.isSong)) {
                         Text("Results")
                     }
                         .isDetailLink(false)
@@ -293,16 +293,17 @@ struct PlayMode: View, TunerDelegate {
         .foregroundColor(.black)
         .navigationBarTitle("You are playing: " + songMetadata.name)
         .onAppear {
-            if self.settings.keyIndex - 6 != 0 {
-                self.measures = transposeSong(originalMeasures: self.measures, halfStepOffset: self.settings.keyIndex - 6)
-            }
-            
             // If is a song
-            if self.showPrevious {
+            if self.isSong {
                 self.measures = parseMusicXML(isSong: true, xmlString: self.xmlString).measures
             // If is a scale/arpeggio
             } else {
                 self.measures = parseMusicXML(isSong: false, xmlString: self.xmlString).measures
+            }
+            
+            // Adjust for key of instrument if not an exercise
+            if self.isSong && self.settings.keyIndex - 6 != 0 {
+                self.measures = transposeSong(originalMeasures: self.measures, halfStepOffset: self.settings.keyIndex - 6)
             }
         }
         .onDisappear() {
@@ -983,6 +984,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, showPrevious: true, tuner: Tuner(), xmlString: "").previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, isSong: true, tuner: Tuner(), xmlString: "").previewLayout(.fixed(width: 896, height: 414))
     }
 }

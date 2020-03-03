@@ -6,6 +6,13 @@
 //  Created by Anna Matusewicz on 2/20/20.
 //  Copyright © 2020 CS98PracticePerfect. All rights reserved.
 //
+//  API functions inspired by these comments on StackOverflow:
+//  https://stackoverflow.com/a/24321320
+//  https://stackoverflow.com/a/26365148
+//  https://stackoverflow.com/a/25622593
+//
+//  This link contains info on semaphores, which are necessary for loading the songs from the API:
+//  https://medium.com/@michaellong/how-to-chain-api-calls-using-swift-5s-new-result-type-and-gcd-56025b51033c
 
 import Foundation
 
@@ -24,6 +31,36 @@ let changeUp: [Int: Bool] = [
     -5: false,
     -6: false
 ]
+
+// Get MXML from API for chosen song/exercise
+func getXML(url: String) -> String {
+    // Retrieve song data and parse (passing score data to parseSongJson)
+    let url = URL(string: url)!
+    let session = URLSession.shared
+    var request = URLRequest(url: url)
+    request.httpMethod = "GET"
+
+    var XMLString: String = ""
+    let semaphore = DispatchSemaphore(value: 0)
+    let task = session.dataTask(with: request) { data, response, error in
+        // Unwrap data
+        guard let unwrappedData = data else {
+            print(error!)
+            semaphore.signal()
+            return
+        }
+        XMLString = String(data: unwrappedData, encoding: .utf8) ?? ""
+        
+        semaphore.signal()
+    }
+    task.resume()
+
+    // Wait for the songs to be retrieved before displaying all of them
+    _ = semaphore.wait(wallTimeout: .distantFuture)
+    
+    return XMLString
+}
+
 
 // Posts new score to API
 // Posting guidance: https://stackoverflow.com/a/58804263

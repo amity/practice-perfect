@@ -146,6 +146,7 @@ struct LedgerStyle: ViewModifier {
             .frame(width: 50.0, height: 1.0)
             .offset(x: CGFloat(scrollOffset), y: CGFloat(-75 + offset))
             .opacity(opacity)
+            .frame(width: 1)
     }
 }
 

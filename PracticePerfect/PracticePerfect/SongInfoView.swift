@@ -19,42 +19,8 @@ struct SongInfoView: View {
     // These need to be in the API eventually - time signature and default tempo
     @State private var selectedTempo = 100
     let timeSig = (3,4)
-
-    // File retrieval methods adapted from:
-    // https://www.raywenderlich.com/3244963-urlsession-tutorial-getting-started
-    private func getXML() {
-        trying = true
-        dataTask?.cancel()
-        
-        if var urlComponents = URLComponents(string: songMetadata.resourceUrl) {
-            guard let url = urlComponents.url else {
-                trying = false
-                return
-            }
-            
-            dataTask = downloadSession.dataTask(with: url) { (data, response, error) in
-                defer {
-                    self.dataTask = nil
-                }
-
-                if let error = error {
-                    self.errorMessage += "DataTask error: " + error.localizedDescription + "\n"
-                } else if let data = data, let response = response as? HTTPURLResponse,
-                    response.statusCode == 200 {
-                    self.XMLString = String(data: data, encoding: .utf8) ?? ""
-                    self.finishedDownloading = true
-                }
-            }
-            dataTask?.resume()
-        }
-        trying = false
-    }
     
     // XML Retrieval
-    @State var downloadSession = URLSession(configuration: .default)
-    @State var dataTask: URLSessionDataTask?
-    @State var errorMessage = ""
-    @State var results = ""
     @State var XMLString = ""
     @State var finishedDownloading = false
     @State var trying = false
@@ -126,7 +92,13 @@ struct SongInfoView: View {
                         .modifier(MenuButtonStyle())
                     } else {
                         Button(action: {
-                            self.getXML()
+                            // Get MXML
+                            self.trying = true
+                            self.XMLString = getXML(url: self.songMetadata.resourceUrl)
+                            self.trying = false
+                            if self.XMLString != "" {
+                                self.finishedDownloading = true
+                            }
                         }) {
                             if trying {
                                 Text("Downloading...")
@@ -144,7 +116,13 @@ struct SongInfoView: View {
         }
         .foregroundColor(.black)
         .onAppear() {
-            self.getXML()
+            // Get MXML
+            self.trying = true
+            self.XMLString = getXML(url: self.songMetadata.resourceUrl)
+            self.trying = false
+            if self.XMLString != "" {
+                self.finishedDownloading = true
+            }
         }
     }
 }
