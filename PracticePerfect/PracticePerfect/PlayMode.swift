@@ -68,6 +68,7 @@ struct PlayMode: View, TunerDelegate {
     
     // Start with measure data
     @State var measures: [MeasureMetadata]
+
     @State var beatIndex = 0
     @State var measureBeat = 0
     

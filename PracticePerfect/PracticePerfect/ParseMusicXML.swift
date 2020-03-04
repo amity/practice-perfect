@@ -101,23 +101,26 @@ func parseMeasureMusicXML(measureNumber : Int) -> MeasureMetadata {
     //only counts right hand notes, assumes no rests in left hand part
     let numAllNotes = xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"].all.count
    
-    var numSelectNotes = 0
+    var numNotesWithRests = 0 //total number of right hand notes including rests for display
+    var numNotesNoRests = 0 //total number of right hand notes and no rests for score calculation
     
     //write a version for plain parsing
     
     //handles cases with 2 hands that has default-y
     //checks if staff = 1
-    for index in 0..<numAllNotes {
+    for index in 0..<numAllNotes { //handles case if 2 hands
         if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][index]["staff"].element == nil { //handles non 2-handed pieces
-            numSelectNotes += 1
+            numNotesWithRests += 1
+            numNotesNoRests += 1
         }
         else if Int(xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][index]["staff"].element!.text)! == 1 { //handles 2-handed pieces
             if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][index].element!.attribute(by: "default-y") == nil {
-                numSelectNotes += 1 //note is a rest
+                numNotesWithRests += 1 //note is a rest
             }
             else { //note is not a rest
                 if Int(Double(xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][index].element!.attribute(by: "default-y")!.text)!) > Int(-90) {
-                    numSelectNotes += 1 //note is right hand
+                    numNotesWithRests += 1 //note is right hand
+                    numNotesNoRests += 1
                 }
             }
         }
@@ -126,7 +129,8 @@ func parseMeasureMusicXML(measureNumber : Int) -> MeasureMetadata {
         }
     }
     
-    measureToParse.numNotes = numSelectNotes
+    measureToParse.numNotes = numNotesWithRests
+    measureToParse.numNotesNoRests = numNotesNoRests
     
     //create array of NoteMetadatas by noteNumber
     //currently doesn't handle multiple parts
@@ -192,9 +196,23 @@ func parseMusicXML(isSong: Bool, xmlString: String) -> PlaySongMetadata {
     
     songToParse.measures = [createStartingRests()] + songToParse.measures
     
+    var numNotesWithRests = 0
+    for measure in songToParse.measures {
+        numNotesWithRests += measure.numNotes
+    }
+    songToParse.numNotesWithRests = numNotesWithRests
+    
+    var numNotesWithoutRests = 0
+    for measure in songToParse.measures {
+        numNotesWithoutRests += measure.numNotesNoRests
+    }
+    songToParse.numNotesWithoutRests = numNotesWithoutRests
+    
     return songToParse
 }
     
+
+
 func parseTimeSignatureBeats() -> Int {
     return Int (xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["time"]["beats"].element!.text ) ?? 4
 }
@@ -222,6 +240,23 @@ func createStartingRests() -> MeasureMetadata {
     return restMeasure
 }
 
+//used for displaying songs
+func getNumNotesWithRests(songToParse: PlaySongMetadata) -> Int {
+    var numNotesWithRests = 0
+    for measure in songToParse.measures {
+        numNotesWithRests += measure.numNotes
+    }
+    return numNotesWithRests
+}
+
+//used for score calculation
+func getNumNotesWithoutRests(songToParse: PlaySongMetadata) -> Int {
+    var numNotesWithoutRests = 0
+    for measure in songToParse.measures {
+        numNotesWithoutRests += measure.numNotesNoRests
+    }
+    return numNotesWithoutRests
+}
 
 
 struct ParseMusicXML: View {

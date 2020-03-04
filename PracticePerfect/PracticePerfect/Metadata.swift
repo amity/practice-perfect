@@ -97,8 +97,9 @@ class MeasureMetadata {
     var timeSig: (Int, Int)
     
     var numNotes : Int
+    var numNotesNoRests : Int
 
-    init(measureNumber: Int = 1, notes: Array<NoteMetadata> = [], clef: String = "C", fifths: Int = 0, mode: String = "major", timeSig: (Int, Int) = (4,4), numNotes: Int = 0) {
+    init(measureNumber: Int = 1, notes: Array<NoteMetadata> = [], clef: String = "C", fifths: Int = 0, mode: String = "major", timeSig: (Int, Int) = (4,4), numNotes: Int = 0, numNotesNoRests : Int = 0) {
         self.measureNumber = measureNumber
         self.notes = notes
         self.clef = clef
@@ -106,6 +107,7 @@ class MeasureMetadata {
         self.mode = mode
         self.timeSig = timeSig
         self.numNotes = numNotes
+        self.numNotesNoRests = numNotesNoRests
     }
 }
 
@@ -123,5 +125,8 @@ class PlaySongMetadata {
 
     var numMeasures: Int = 0
     var measures: Array<MeasureMetadata> = []
+    
+    var numNotesWithRests : Int = 0
+    var numNotesWithoutRests : Int = 0
 }
 
