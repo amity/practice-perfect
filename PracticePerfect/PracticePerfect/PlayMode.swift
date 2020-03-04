@@ -36,7 +36,7 @@ struct PlayMode: View, TunerDelegate {
     // Song metadata passed from song selection - used to retrieve music data from backed through API
     var songMetadata: SongMetadata
     var tempo: Int
-    @State var showPrevious: Bool
+    @State var isSong: Bool
     
     // Tuner variables
     @State var tuner: Tuner
@@ -46,7 +46,7 @@ struct PlayMode: View, TunerDelegate {
     
     // Tempo variables
     @State var totalElapsedBeats: Float = 0
-    @State var endOfCurrentNoteBeats: Float = hbdTestMeasures[0].notes[0].duration
+    @State var endOfCurrentNoteBeats: Float = 1
     
     // Countdown variables
     @State var startedPlaying = false
@@ -66,19 +66,17 @@ struct PlayMode: View, TunerDelegate {
     @State var barDist = screenWidth/screenDivisions/2
     @State var currBar = 0
     
-    //sets a first measure of rests; this is currently 3 quarter notes for 3:4 time
-    @State var measures: [MeasureMetadata] = [MeasureMetadata(measureNumber: 0, notes: [NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true), NoteMetadata(duration: 1, type: "quarter", isRest: true)], clef: "G", fifths: 0, mode: "major")] + parseMusicXML().measures
-    
-    
-    //original hard-coded HBD test measures
-    //@State var measures: [MeasureMetadata] = hbdTestMeasures
+    // Start with measure data
+    @State var measures: [MeasureMetadata]
+
     @State var beatIndex = 0
     @State var measureBeat = 0
     
     // Restart and rewind variables
     @State var isOver = false
     @State var rewound = false
-    
+    @State var restarted = false
+
     var body: some View {
         ZStack {
             mainGradient
@@ -190,10 +188,7 @@ struct PlayMode: View, TunerDelegate {
                     if isOver {
                         Button(action: {
                             // Tempo variables
-                            self.endOfCurrentNoteBeats += hbdTestMeasures[0].notes[0].duration - 1
-                            
-                            // Countdown variables
-                            self.startedPlaying = false
+                            self.endOfCurrentNoteBeats += self.measures[0].notes[0].duration
                             
                             //  Scoring variables
                             self.currBeatNotes = [] // For all notes in current beat
@@ -212,6 +207,8 @@ struct PlayMode: View, TunerDelegate {
                             self.measureBeat = 0
                             
                             self.isOver = false
+                            self.restarted = true
+                            self.startTuner()
                         }) {
                             Image(systemName: "backward.end.alt.fill")
                             .frame(width: 50)
@@ -256,6 +253,9 @@ struct PlayMode: View, TunerDelegate {
                     }
                     
                     Button(action: {
+                        if self.isOver {
+                            self.startTuner()
+                        }
                         self.isOver = false
                         self.currBar = max(0, self.currBar - 1)
                         self.beatIndex = 0
@@ -270,7 +270,7 @@ struct PlayMode: View, TunerDelegate {
                         .disabled(self.rewound)
                         .opacity(self.rewound ? 0.5 : 1)
 
-                    NavigationLink(destination: ResultsPage(shouldPopToRootView: self.$rootIsActive, scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata, showPrevious: self.showPrevious)) {
+                    NavigationLink(destination: ResultsPage(shouldPopToRootView: self.$rootIsActive, scoreMetadata: ScoreMetadata(newScore: Int(self.runningScore), inTuneCount: 0, inTempoCount: 0, perfectCount: self.perfectCount, goodCount: self.goodCount, missCount: self.missCount, totalCount: self.totalNotesPlayed), songMetadata: songMetadata, showPrevious: self.isSong)) {
                         Text("Results")
                     }
                         .isDetailLink(false)
@@ -294,7 +294,8 @@ struct PlayMode: View, TunerDelegate {
         .foregroundColor(.black)
         .navigationBarTitle("You are playing: " + songMetadata.name)
         .onAppear {
-            if self.settings.keyIndex - 6 != 0 {
+            // Adjust for key of instrument if not an exercise
+            if self.isSong && self.settings.keyIndex - 6 != 0 {
                 self.measures = transposeSong(originalMeasures: self.measures, halfStepOffset: self.settings.keyIndex - 6)
             }
         }
@@ -401,7 +402,7 @@ struct PlayMode: View, TunerDelegate {
         // Convert beatCount to seconds by multiplying by sampling rate, then to minutes by dividing by 60. Then multiply by tempo (bpm) to get tempo count
         let newElapsedBeats: Float = (Float(beatCount) * Float(tuner.pollingInterval) / Float(60) * Float(tempo))
         var updateEndOfNextNote = false
-        
+
         // If still on current note, add pitch reading to array
         if newElapsedBeats < endOfCurrentNoteBeats {
             currBeatNotes.append(pitch.note)
@@ -424,12 +425,13 @@ struct PlayMode: View, TunerDelegate {
             
             // Go to next beat
             beatIndex += 1
+            self.restarted = false
             
             // Nee to update end of next note
             updateEndOfNextNote = true
             
         }
-        
+
         // Keep track of current bar
         if Int(newElapsedBeats) > Int(self.totalElapsedBeats) {
             // If switching to new bar
@@ -448,7 +450,7 @@ struct PlayMode: View, TunerDelegate {
                     self.rewound = false
                 }
             }
-            else {
+            else if !self.restarted {
                 self.measureBeat += 1
             }
         }
@@ -976,6 +978,6 @@ struct PlayMode: View, TunerDelegate {
 struct PlayMode_Previews: PreviewProvider {
     static var previews: some View {
         // Preview with example song metadata
-        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, showPrevious: true, tuner: Tuner()).previewLayout(.fixed(width: 896, height: 414))
+        PlayMode(rootIsActive: .constant(false), songMetadata: SongMetadata(songId: -1, name: "", artist: "", resourceUrl: "", year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: 120, isSong: true, tuner: Tuner(), measures: [MeasureMetadata()]).previewLayout(.fixed(width: 896, height: 414))
     }
 }

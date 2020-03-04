@@ -7,14 +7,6 @@
 //
 //  Used this video tutorial for the scrolling animations:
 //  https://www.youtube.com/watch?v=EBbhIbI2Hg8
-//
-//  API functions inspired by these comments on StackOverflow:
-//  https://stackoverflow.com/a/24321320
-//  https://stackoverflow.com/a/26365148
-//  https://stackoverflow.com/a/25622593
-//
-//  This link contains info on semaphores, which are necessary for loading the songs from the API:
-//  https://medium.com/@michaellong/how-to-chain-api-calls-using-swift-5s-new-result-type-and-gcd-56025b51033c
 
 import SwiftUI
 
@@ -155,10 +147,6 @@ struct SelectMusic: View {
                         }
                             .isDetailLink(false)
                             .modifier(MenuButtonStyle())
-                        NavigationLink(destination: AddMusic()) {
-                            Text("Add music")
-                        }
-                            .modifier(MenuButtonStyle())
                     }
                     Spacer()
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -187,7 +175,6 @@ struct SelectMusic: View {
         }
         .onAppear() {
             self.allSongs = retrieveSongs(userId: self.settings.userId)
-            print(screenWidth)
         }
     }
 }

@@ -25,11 +25,12 @@ struct SettingsView: View {
     @EnvironmentObject var settings: UserSettings
     @Environment(\.presentationMode) var presentationMode
     
+    @Binding var loggedOut : Bool
+    
     let clefs = ["Treble", "Alto", "Bass"]
     
     @State var selectedClef: Int
     @State var selectedKey: Int
-    @State var loggedOut: Bool = false
         
     var body: some View {
         ZStack {
@@ -84,13 +85,8 @@ struct SettingsView: View {
                         Text("Save Preferences")
                     }
                     .modifier(MenuButtonStyle())
-                    
                 }
                 Spacer()
-                
-                NavigationLink(destination: LoginPage(), isActive: $loggedOut) {
-                    EmptyView()
-                }
             }
         }
         .foregroundColor(.black)
@@ -104,6 +100,7 @@ struct SettingsView: View {
                     self.settings.username = nil
                 }
                 self.loggedOut = true
+                self.presentationMode.wrappedValue.dismiss()
             }) {
                 HStack {
                     Text("Logout")
@@ -116,6 +113,6 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(selectedClef: 0, selectedKey: 0)
+        SettingsView(loggedOut: .constant(false), selectedClef: 0, selectedKey: 0)
     }
 }
