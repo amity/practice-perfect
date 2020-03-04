@@ -175,7 +175,6 @@ struct SelectMusic: View {
         }
         .onAppear() {
             self.allSongs = retrieveSongs(userId: self.settings.userId)
-            print(screenWidth)
         }
     }
 }
