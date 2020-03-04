@@ -23,10 +23,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let contentView = NavigationView {
             // If logged in, go to landing page
             if (UserDefaults.standard.string(forKey: "username") != nil) && (UserDefaults.standard.string(forKey: "username") != Optional("")) {
-                LandingPage()
+                LandingPage(loggedOut: false)
             // Otherwise, force user to log in
             } else {
-                LoginPage()
+                LandingPage(loggedOut: true)
             }
         }.navigationViewStyle(StackNavigationViewStyle())
 

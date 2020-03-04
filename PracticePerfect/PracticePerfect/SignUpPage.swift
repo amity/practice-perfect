@@ -18,10 +18,12 @@ struct SignUpPage: View {
     
     @ObservedObject var keyboard: KeyboardResponder
     @EnvironmentObject var settings: UserSettings
+    @Environment(\.presentationMode) var presentationMode
 
     @State private var textFieldInput: String = ""
     @State var showErrorMessage: Bool = false
-    @State var signedIn: Bool = false
+    @State var showUnfilledMessage: Bool = false
+    @State var showTakenInfoMessage: Bool = false
 
     var body: some View {
         ZStack {
@@ -32,8 +34,22 @@ struct SignUpPage: View {
                     .padding(.bottom, 15)
                     .font(.largeTitle)
                     .frame(width: 500)
-                if(self.showErrorMessage){
+                if (self.showErrorMessage) {
                     Text("Error creating account. Please try again later.")
+                        .background(Color.red)
+                        .foregroundColor(Color.white)
+                        .font(.system(size: 14))
+                        .frame(width: 500)
+                }
+                if (self.showUnfilledMessage) {
+                    Text("Please fill out all fields!")
+                        .background(Color.red)
+                        .foregroundColor(Color.white)
+                        .font(.system(size: 14))
+                        .frame(width: 500)
+                }
+                if (self.showTakenInfoMessage) {
+                    Text("Username or email already taken!")
                         .background(Color.red)
                         .foregroundColor(Color.white)
                         .font(.system(size: 14))
@@ -55,6 +71,7 @@ struct SignUpPage: View {
                 }
                 HStack {
                     TextField("Username (optional)", text: $username)
+                        .autocapitalization(UITextAutocapitalizationType.none)
                         .padding()
                         .background(Color.white)
                         .cornerRadius(5.0)
@@ -67,52 +84,58 @@ struct SignUpPage: View {
                         .padding(.bottom, 20)
                         .frame(width: 300)
                 }
-                HStack {
-                    NavigationLink(destination: LandingPage(), isActive: $signedIn) {
-                        EmptyView()
-                    }
-                    
+                HStack {                    
                     Button(action: {
-                        // Retrieve signup data and parse
-                        let signupUrl = URL(string: "https://practiceperfect.appspot.com/users")!
-                        let signupSession = URLSession.shared
-                        var signupRequest = URLRequest(url: signupUrl)
-                        signupRequest.httpMethod = "POST"
-                        let params: [String: String] = ["email": self.email, "username": self.username, "password": self.password, "name": self.name, "level": "1"]
-                        signupRequest.httpBody = try? JSONSerialization.data(withJSONObject: params)
-                        signupRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                        if self.name != "" && self.password != "" && self.email != "" && self.username != "" && self.email.contains("@") {
+                            // Retrieve signup data and parse
+                            let signupUrl = URL(string: "https://practiceperfect.appspot.com/users")!
+                            let signupSession = URLSession.shared
+                            var signupRequest = URLRequest(url: signupUrl)
+                            signupRequest.httpMethod = "POST"
+                            let params: [String: String] = ["email": self.email, "username": self.username, "password": self.password, "name": self.name, "level": "1"]
+                            signupRequest.httpBody = try? JSONSerialization.data(withJSONObject: params)
+                            signupRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-                        let signupSemaphore = DispatchSemaphore(value: 0)
-                        let signupTask = signupSession.dataTask(with: signupRequest) { data, response, error in
-                            // Unwrap data
-                            guard let unwrappedData = data else {
-                                print(error!)
-                                return
-                            }
-                            // Get json object from data
-                            let signupData: AnyObject = try! JSONSerialization.jsonObject(with: unwrappedData, options: JSONSerialization.ReadingOptions.allowFragments) as AnyObject
-                            if(signupData["statusCode"] as? Int == 404){
-                                self.showErrorMessage = true
-                                self.signedIn = false
-                            } else {
-                                self.showErrorMessage = false
-                                DispatchQueue.main.async {
-                                    UserDefaults.standard.set(signupData["id"] as! Int, forKey: "userId")
-                                    self.settings.userId = signupData["id"] as! Int
-                                    UserDefaults.standard.set(signupData["username"] as? String, forKey: "username")
-                                    self.settings.username = signupData["username"] as? String
+                            var successful: Bool = false
+                            
+                            let signupSemaphore = DispatchSemaphore(value: 0)
+                            let signupTask = signupSession.dataTask(with: signupRequest) { data, response, error in
+                                // Unwrap data
+                                guard let unwrappedData = data else {
+                                    print(error!)
+                                    return
                                 }
-                                self.signedIn = true
+                                // Get json object from data
+                                let signupData: AnyObject = try! JSONSerialization.jsonObject(with: unwrappedData, options: JSONSerialization.ReadingOptions.allowFragments) as AnyObject
+                                if (signupData["statusCode"] as? Int == 404) {
+                                    self.showErrorMessage = true
+                                } else if signupData["statusCode"] as? Int == 400 {
+                                    self.showTakenInfoMessage = true
+                                } else {
+                                    self.showErrorMessage = false
+                                    DispatchQueue.main.async {
+                                        UserDefaults.standard.set(signupData["id"] as! Int, forKey: "userId")
+                                        self.settings.userId = signupData["id"] as! Int
+                                        UserDefaults.standard.set(signupData["username"] as? String, forKey: "username")
+                                        self.settings.username = signupData["username"] as? String
+                                    }
+                                    successful = true
+                                }
+                                signupSemaphore.signal()
                             }
-                            signupSemaphore.signal()
+                            signupTask.resume()
+                            // Wait for the signup to be retrieved before displaying all of them
+                            _ = signupSemaphore.wait(wallTimeout: .distantFuture)
+                            
+                            if successful {
+                                self.presentationMode.wrappedValue.dismiss()
+                            }
+                        } else {
+                            self.showUnfilledMessage = true
                         }
-                        signupTask.resume()
-                        // Wait for the signup to be retrieved before displaying all of them
-                        _ = signupSemaphore.wait(wallTimeout: .distantFuture)
-                        
                     }) {
                         HStack {
-                            Text("Sign In")
+                            Text("Create Account")
                         }
                     }
                     .modifier(MenuButtonStyle())
