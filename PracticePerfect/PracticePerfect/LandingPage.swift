@@ -121,7 +121,7 @@ struct LandingPage: View {
                     .modifier(MenuButtonStyle())
                 }
                 
-                NavigationLink(destination: LoginPage(), isActive: $loggedOut) {
+                NavigationLink(destination: LoginPage(), isActive: self.$loggedOut) {
                     EmptyView()
                 }
             }

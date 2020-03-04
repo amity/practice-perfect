@@ -46,8 +46,6 @@ struct LoginPage: View {
     
     @State private var textFieldInput: String = ""
     @State var showErrorMessage: Bool = false
-
-    @State var close: Bool = false
     
     var body: some View {
         ZStack {
@@ -122,7 +120,7 @@ struct LoginPage: View {
                     .modifier(MenuButtonStyle())
                 }
                 Text("or").fixedSize().padding(.bottom, 5)
-                NavigationLink(destination: SignUpPage(username: username, password: password, keyboard: keyboard, close: self.$close)) {
+                NavigationLink(destination: SignUpPage(username: username, password: password, keyboard: keyboard)) {
                     HStack {
                         Text("Sign Up")
                     }
@@ -137,11 +135,6 @@ struct LoginPage: View {
         .navigationBarItems(leading:
             EmptyView()
         )
-        .onAppear() {
-            if self.close {
-                self.presentationMode.wrappedValue.dismiss()
-            }
-        }
     }
 }
 

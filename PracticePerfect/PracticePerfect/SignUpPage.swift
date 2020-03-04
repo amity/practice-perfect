@@ -19,7 +19,6 @@ struct SignUpPage: View {
     @ObservedObject var keyboard: KeyboardResponder
     @EnvironmentObject var settings: UserSettings
     @Environment(\.presentationMode) var presentationMode
-    @Binding var close: Bool
 
     @State private var textFieldInput: String = ""
     @State var showErrorMessage: Bool = false
@@ -129,7 +128,6 @@ struct SignUpPage: View {
                             _ = signupSemaphore.wait(wallTimeout: .distantFuture)
                             
                             if successful {
-                                self.close = true
                                 self.presentationMode.wrappedValue.dismiss()
                             }
                         } else {
@@ -153,6 +151,6 @@ struct SignUpPage: View {
 
 struct SignUpPage_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpPage(username: "username", password: "password", keyboard: KeyboardResponder(), close: .constant(false)).previewLayout(.fixed(width: 896, height: 414))
+        SignUpPage(username: "username", password: "password", keyboard: KeyboardResponder()).previewLayout(.fixed(width: 896, height: 414))
     }
 }
