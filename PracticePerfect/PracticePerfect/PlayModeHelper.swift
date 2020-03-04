@@ -131,10 +131,10 @@ func createNotesList(fifth: Int) -> Array<String> {
         // If current note has an accidental in key signature
         if keySigAccidentals.contains(currNote) {
             // If already flatted, make double flat
-            if fifth < 0 {
+            if fifth > 0 {
                 notesList.append(currNote + "𝄫")
             // If already sharp, make natural
-            } else if fifth > 0 {
+            } else if fifth < 0 {
                 notesList.append(currNote + "♮")
             }
         // If not accidental in key signature
@@ -146,9 +146,9 @@ func createNotesList(fifth: Int) -> Array<String> {
         // If current note has accidental in key signature
         if keySigAccidentals.contains(currNote) {
             // If flatted
-            if fifth < 0 {
+            if fifth > 0 {
                 notesList.append(currNote + "♭")
-            } else if fifth > 0 {
+            } else if fifth < 0 {
                 notesList.append(currNote + "♯")
             }
         // If not accidental in key signature
@@ -160,10 +160,10 @@ func createNotesList(fifth: Int) -> Array<String> {
         // If current note has accidental in key signature
         if keySigAccidentals.contains(currNote) {
             // If already flatted, make natural
-            if fifth < 0 {
+            if fifth > 0 {
                 notesList.append(currNote + "♮")
             // If already sharp, make double sharp
-            } else if fifth > 0 {
+            } else if fifth < 0 {
                 notesList.append(currNote + "𝄪")
             }
         // If not accidental in key signature
@@ -179,10 +179,10 @@ func createNotesList(fifth: Int) -> Array<String> {
             // If current note has an accidental in key signature
             if keySigAccidentals.contains(currNote) {
                 // If already flatted, make double flat
-                if fifth < 0 {
+                if fifth > 0 {
                     notesList.append(currNote + "𝄫")
                 // If already sharp, make natural
-                } else if fifth > 0 {
+                } else if fifth < 0 {
                     notesList.append(currNote + "♮")
                 }
             // If not accidental in key signature
@@ -194,9 +194,9 @@ func createNotesList(fifth: Int) -> Array<String> {
             // If current note has accidental in key signature
             if keySigAccidentals.contains(currNote) {
                 // If flatted
-                if fifth < 0 {
+                if fifth > 0 {
                     notesList.append(currNote + "♭")
-                } else if fifth > 0 {
+                } else if fifth < 0 {
                     notesList.append(currNote + "♯")
                 }
             // If not accidental in key signature
@@ -208,10 +208,10 @@ func createNotesList(fifth: Int) -> Array<String> {
             // If current note has accidental in key signature
             if keySigAccidentals.contains(currNote) {
                 // If already flatted, make natural
-                if fifth < 0 {
+                if fifth > 0 {
                     notesList.append(currNote + "♮")
                 // If already sharp, make double sharp
-                } else if fifth > 0 {
+                } else if fifth < 0 {
                     notesList.append(currNote + "𝄪")
                 }
             // If not accidental in key signature
