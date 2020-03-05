@@ -56,33 +56,46 @@ struct SignUpPage: View {
                         .frame(width: 500)
                 }
                 HStack {
-                    TextField("Name", text: $name)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(5.0)
-                        .padding(.bottom, 20)
-                        .frame(width: 300)
-                    TextField("Email", text: $email)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(5.0)
-                        .padding(.bottom, 20)
-                        .frame(width: 300)
+                    ZStack(alignment: .leading) {
+                        if name.isEmpty { Text("Name").foregroundColor(.black) }
+                        TextField("", text: $name)
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(5.0)
+                            .padding(.bottom, 20)
+                            .frame(width: 300)
+                    }
+                    ZStack(alignment: .leading) {
+                        if email.isEmpty { Text("Email").foregroundColor(.black) }
+                        TextField("", text: $email)
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(5.0)
+                            .padding(.bottom, 20)
+                            .frame(width: 300)
+                    }
                 }
                 HStack {
-                    TextField("Username (optional)", text: $username)
-                        .autocapitalization(UITextAutocapitalizationType.none)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(5.0)
-                        .padding(.bottom, 20)
-                        .frame(width: 300)
-                    SecureField("Password", text: $password)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(5.0)
-                        .padding(.bottom, 20)
-                        .frame(width: 300)
+                    ZStack(alignment: .leading) {
+                        if username.isEmpty { Text("Username (optional)").foregroundColor(.black) }
+                        TextField("", text: $username)
+                            .autocapitalization(UITextAutocapitalizationType.none)
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(5.0)
+                            .padding(.bottom, 20)
+                            .frame(width: 300)
+                    }
+                    
+                    ZStack(alignment: .leading) {
+                        if password.isEmpty { Text("Password").foregroundColor(.black) }
+                        SecureField("", text: $password)
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(5.0)
+                            .padding(.bottom, 20)
+                            .frame(width: 300)
+                    }
                 }
                 HStack {                    
                     Button(action: {
