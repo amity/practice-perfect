@@ -42,6 +42,7 @@ struct PlayMode: View, TunerDelegate {
     @State var tuner: Tuner
     @State var cents = 0.0
     @State var note = Note(Note.Name.c, Note.Accidental.natural)
+    @State var transposedNote: Note = Note(Note.Name.c, Note.Accidental.natural)
     @State var isOn = false
     
     // Tempo variables
@@ -68,6 +69,8 @@ struct PlayMode: View, TunerDelegate {
     
     // Start with measure data
     @State var measures: [MeasureMetadata]
+    @State var transposedMeasures: [MeasureMetadata] = [MeasureMetadata(notes: [NoteMetadata()])]
+    @State var transposeDict: [String: String] = [:]
 
     @State var beatIndex = 0
     @State var measureBeat = 0
@@ -117,7 +120,7 @@ struct PlayMode: View, TunerDelegate {
                             }
                             
                             
-                            self.drawKey(fifths: self.measures[Int(min(self.currBar, self.measures.count - 1))].fifths)
+                            self.drawKey(fifths: self.transposedMeasures[Int(min(self.currBar, self.transposedMeasures.count - 1))].fifths)
                             
                             ZStack {
                                 Rectangle()
@@ -143,32 +146,32 @@ struct PlayMode: View, TunerDelegate {
                 HStack(spacing: 25) {
                     VStack(spacing: 1) {
                         if (displayNote(note: note) == measures[currBar].notes[beatIndex].step + measures[currBar].notes[beatIndex].accidental) {
-                            Text(displayNote(note: note))
+                            Text(displayNote(note: transposedNote))
                             .foregroundColor(.green)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
                         } else if (displayNote(note: note.halfStepUp) == measures[currBar].notes[beatIndex].step + measures[currBar].notes[beatIndex].accidental) {
-                            Text(displayNote(note: note))
+                            Text(displayNote(note: transposedNote))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
                         } else if (displayNote(note: note.halfStepDown) == measures[currBar].notes[beatIndex].step + measures[currBar].notes[beatIndex].accidental) {
-                            Text(displayNote(note: note))
+                            Text(displayNote(note: transposedNote))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
                         } else if (displayNote(note: note.wholeStepUp) == measures[currBar].notes[beatIndex].step + measures[currBar].notes[beatIndex].accidental) {
-                            Text(displayNote(note: note))
+                            Text(displayNote(note: transposedNote))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
                         } else if (displayNote(note: note.wholeStepDown) == measures[currBar].notes[beatIndex].step + measures[currBar].notes[beatIndex].accidental) {
-                            Text(displayNote(note: note))
+                            Text(displayNote(note: transposedNote))
                             .foregroundColor(.yellow)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
                         } else {
-                            Text(displayNote(note: note))
+                            Text(displayNote(note: transposedNote))
                             .foregroundColor(.red)
                             .modifier(NoteNameStyle())
                             .frame(minWidth: 175, maxWidth: 175, maxHeight: 75)
@@ -296,7 +299,16 @@ struct PlayMode: View, TunerDelegate {
         .onAppear {
             // Adjust for key of instrument if not an exercise
             if self.isSong && self.settings.keyIndex - 6 != 0 {
-                self.measures = transposeSong(originalMeasures: self.measures, halfStepOffset: self.settings.keyIndex - 6)
+                self.transposedMeasures = transposeSong(originalMeasures: self.measures, halfStepOffset: self.settings.keyIndex - 6)
+                
+                // Get dictionary of transpositions for display of current note being played
+                self.transposeDict = [:]
+                for (index, element) in createNotesList(fifth: self.measures[0].fifths).enumerated() {
+                    self.transposeDict[element] = createNotesList(fifth: 0 - (self.settings.keyIndex - 6))[index]
+                }
+            // Otherwise, transposed is the same as original measures
+            } else {
+                self.transposedMeasures = self.measures
             }
         }
         .onDisappear() {
@@ -468,6 +480,15 @@ struct PlayMode: View, TunerDelegate {
             if change {
                 self.note = pitch.note
                 self.cents = calulateCents(userFrequency: frequency, noteFrequency: pitch.frequency)
+                
+                // Update transposed note for display
+                if self.transposeDict.keys.count > 0 {
+                    let fifthsTransList: [Int] = [6, 1, -4, 3, -2, 5, 0, -5, 2, -3, 4, -1, 6]
+                    let indexOfOld: Int = Note.all.firstIndex(of: self.note)!
+                    self.transposedNote = Note.all[(Note.all.count + indexOfOld + fifthsTransList[self.settings.keyIndex]) % Note.all.count]
+                } else {
+                    self.transposedNote = self.note
+                }
             }
         }
     }
@@ -511,7 +532,7 @@ struct PlayMode: View, TunerDelegate {
     
     func calcOpacity(scrollOffset: Float) -> Double {
         let opacityRange = Float(50)
-        let keySigOffset = Float(Double(measures[currBar].fifths) * 20.0)
+        let keySigOffset = Float(Double(transposedMeasures[currBar].fifths) * 20.0)
         let scrollDiff = barLength - scrollLength
         var opacity: Double = 0
         if scrollOffset > scrollLength - opacityRange - keySigOffset {
@@ -570,18 +591,18 @@ struct PlayMode: View, TunerDelegate {
         let offset = self.calcNoteOffset(note: note.step, octave: note.octave)
          
         // Get offset between each pair of notes
-        let index = self.measures[barIndex].notes.firstIndex(of: note)
+        let index = self.transposedMeasures[barIndex].notes.firstIndex(of: note)
         var beatOffset: Float = 0
         if index! > 0 {
             for i in 1...index!{
-                beatOffset += self.measures[barIndex].notes[i - 1].duration
+                beatOffset += self.transposedMeasures[barIndex].notes[i - 1].duration
             }
         }
         
         // If previous is the same, this note will have the beam starting at it
         var isPrevSame: Bool = false
         if index! > 0 {
-            if (self.measures[barIndex].notes[index! - 1].type == note.type) && (!self.measures[barIndex].notes[index! - 1].isRest) {
+            if (self.transposedMeasures[barIndex].notes[index! - 1].type == note.type) && (!self.transposedMeasures[barIndex].notes[index! - 1].isRest) {
                 isPrevSame = true
             }
         }
@@ -594,23 +615,23 @@ struct PlayMode: View, TunerDelegate {
         
         // If eighth note, check whether there is a following eighth note
         if (note.type == "eighth")  {
-            if index! < self.measures[barIndex].notes.count - 1 {
-                if self.measures[barIndex].notes[index! + 1].type == note.type {
-                    if !self.measures[barIndex].notes[index! + 1].isRest {
+            if index! < self.transposedMeasures[barIndex].notes.count - 1 {
+                if self.transposedMeasures[barIndex].notes[index! + 1].type == note.type {
+                    if !self.transposedMeasures[barIndex].notes[index! + 1].isRest {
                         followingSameCount += 1
-                        endNote = self.measures[barIndex].notes[index! + 1]
+                        endNote = self.transposedMeasures[barIndex].notes[index! + 1]
                     }
                 }
             }
         // If 16th note, need to explore previous and following notes to see if matching
         } else if (note.type == "16th") {
-            if index! < self.measures[barIndex].notes.count - 1 {
-                for i in index! + 1 ... self.measures[barIndex].notes.count - 1 {
+            if index! < self.transposedMeasures[barIndex].notes.count - 1 {
+                for i in index! + 1 ... self.transposedMeasures[barIndex].notes.count - 1 {
                     if !breakReached {
-                        if self.measures[barIndex].notes[i].type == note.type {
-                            if !self.measures[barIndex].notes[i].isRest {
+                        if self.transposedMeasures[barIndex].notes[i].type == note.type {
+                            if !self.transposedMeasures[barIndex].notes[i].isRest {
                                 followingSameCount += 1
-                                endNote = self.measures[barIndex].notes[i]
+                                endNote = self.transposedMeasures[barIndex].notes[i]
                                 if followingSameCount == 3 {
                                     breakReached = true
                                 }
@@ -625,7 +646,7 @@ struct PlayMode: View, TunerDelegate {
                 breakReached = false
             }
             if index! > 0 {
-                let revPrevNotes = Array<NoteMetadata>(self.measures[barIndex].notes[0 ... index! - 1].reversed())
+                let revPrevNotes = Array<NoteMetadata>(self.transposedMeasures[barIndex].notes[0 ... index! - 1].reversed())
                 for i in 0 ... revPrevNotes.count - 1 {
                     if !breakReached {
                         if revPrevNotes[i].type == note.type {
@@ -668,7 +689,7 @@ struct PlayMode: View, TunerDelegate {
         }
         
         var keySigAccidentals: [String] = []
-        let fifths = self.measures[self.currBar].fifths
+        let fifths = self.transposedMeasures[self.currBar].fifths
         if fifths > 0 {
             keySigAccidentals = Array<String>(sharpOrder[0 ... fifths - 1])
         } else if fifths < 0 {
@@ -819,33 +840,33 @@ struct PlayMode: View, TunerDelegate {
     
     func drawMeasure(msr: Int) -> some View {
         return Group {
-            if msr < self.measures.count {
-                ForEach(self.measures[msr].notes) { note in
+            if msr < self.transposedMeasures.count {
+                ForEach(self.transposedMeasures[msr].notes) { note in
                     self.drawNote(note: note, barIndex: msr, barNumber: 0, addOffset: 0)
                 }
             }
             
-            if msr + 1 < self.measures.count {
-                self.drawMeasureBar(barIndex: msr + 1, barNumber: 0, end: false, addOffset: 4 - self.measures[msr].timeSig.0)
-                ForEach(self.measures[msr + 1].notes) { note in
-                    self.drawNote(note: note, barIndex: msr + 1, barNumber: 1, addOffset: 4 - self.measures[msr].timeSig.0)
+            if msr + 1 < self.transposedMeasures.count {
+                self.drawMeasureBar(barIndex: msr + 1, barNumber: 0, end: false, addOffset: 4 - self.transposedMeasures[msr].timeSig.0)
+                ForEach(self.transposedMeasures[msr + 1].notes) { note in
+                    self.drawNote(note: note, barIndex: msr + 1, barNumber: 1, addOffset: 4 - self.transposedMeasures[msr].timeSig.0)
                 }
-            } else if msr < self.measures.count{
-                self.drawMeasureBar(barIndex: 0, barNumber: 0, end: true, addOffset: 4 - self.measures[msr].timeSig.0)
+            } else if msr < self.transposedMeasures.count{
+                self.drawMeasureBar(barIndex: 0, barNumber: 0, end: true, addOffset: 4 - self.transposedMeasures[msr].timeSig.0)
             } else {
                 self.drawMeasureBar(barIndex: 0, barNumber: 0, end: true, addOffset: 0)
             }
             
             
-            if msr + 2 < self.measures.count {
-                self.drawMeasureBar(barIndex: msr + 2, barNumber: 1, end: false, addOffset: 4 - self.measures[msr].timeSig.0 - self.measures[msr + 1].timeSig.0 + 4)
-                ForEach(self.measures[msr + 2].notes) { note in
-                    self.drawNote(note: note, barIndex: msr + 2, barNumber: 2, addOffset: 4 - self.measures[msr].timeSig.0 - self.measures[msr + 1].timeSig.0 + 4)
+            if msr + 2 < self.transposedMeasures.count {
+                self.drawMeasureBar(barIndex: msr + 2, barNumber: 1, end: false, addOffset: 4 - self.transposedMeasures[msr].timeSig.0 - self.transposedMeasures[msr + 1].timeSig.0 + 4)
+                ForEach(self.transposedMeasures[msr + 2].notes) { note in
+                    self.drawNote(note: note, barIndex: msr + 2, barNumber: 2, addOffset: 4 - self.transposedMeasures[msr].timeSig.0 - self.transposedMeasures[msr + 1].timeSig.0 + 4)
                 }
-            } else if msr + 1 < self.measures.count {
-                self.drawMeasureBar(barIndex: 0, barNumber: 1, end: true, addOffset: 4 - self.measures[msr].timeSig.0 - self.measures[msr + 1].timeSig.0 + 4)
-            } else if msr < self.measures.count {
-                self.drawMeasureBar(barIndex: 0, barNumber: 1, end: true, addOffset: 4 - self.measures[msr].timeSig.0)
+            } else if msr + 1 < self.transposedMeasures.count {
+                self.drawMeasureBar(barIndex: 0, barNumber: 1, end: true, addOffset: 4 - self.transposedMeasures[msr].timeSig.0 - self.transposedMeasures[msr + 1].timeSig.0 + 4)
+            } else if msr < self.transposedMeasures.count {
+                self.drawMeasureBar(barIndex: 0, barNumber: 1, end: true, addOffset: 4 - self.transposedMeasures[msr].timeSig.0)
             } else {
                 self.drawMeasureBar(barIndex: 0, barNumber: 1, end: true, addOffset: 0)
             }
@@ -877,7 +898,7 @@ struct PlayMode: View, TunerDelegate {
     }
     
     func drawPlayLine() -> some View {
-        let currNote = self.measures[currBar].notes[beatIndex]
+        let currNote = self.transposedMeasures[currBar].notes[beatIndex]
         let offset = self.calcNoteOffset(note: currNote.step, octave: currNote.octave)
         let fullLength: Float = (scrollLength / Float(4)) * currNote.duration
         let remainingRatio: Float = (endOfCurrentNoteBeats - totalElapsedBeats) / currNote.duration
