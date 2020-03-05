@@ -23,6 +23,7 @@ Install and open with XCode 11.1+ (currently optimized for simulation on iPhone 
     * or `pod repo update`, `pod install`
 * `open PracticePerfect.xcworkspace`
 
+The app can be tested through TestFlight using the following link: https://testflight.apple.com/join/z5Oir6TA
 
 
 ## Authors
