@@ -38,21 +38,21 @@ struct SignUpPage: View {
                     Text("Error creating account. Please try again later.")
                         .background(Color.red)
                         .foregroundColor(Color.white)
-                        .font(.system(size: 14))
+                        .font(.body)
                         .frame(width: 500)
                 }
                 if (self.showUnfilledMessage) {
                     Text("Please fill out all fields!")
                         .background(Color.red)
                         .foregroundColor(Color.white)
-                        .font(.system(size: 14))
+                        .font(.body)
                         .frame(width: 500)
                 }
                 if (self.showTakenInfoMessage) {
                     Text("Username or email already taken!")
                         .background(Color.red)
                         .foregroundColor(Color.white)
-                        .font(.system(size: 14))
+                        .font(.body)
                         .frame(width: 500)
                 }
                 HStack {
