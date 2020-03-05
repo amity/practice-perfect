@@ -34,6 +34,7 @@ struct ScalePicker: View {
                 VStack {
                     Text("Tempo")
                         .font(Font.title.weight(.bold))
+                        .frame(height: screenHeight * 0.20)
                     Picker(selection: $selectedTempo, label: EmptyView()) {
                         ForEach(0 ..< tempoValues.count) {
                             Text(String(self.tempoValues[$0]))
@@ -43,8 +44,10 @@ struct ScalePicker: View {
                     .clipped()
                 }
                 VStack {
-                    Text("Key")
+                    Text("Concert Pitch Key")
+                        .multilineTextAlignment(.center)
                         .font(Font.title.weight(.bold))
+                        .frame(height: screenHeight * 0.20)
                     Picker(selection: $selectedKey, label: EmptyView()) {
                         ForEach(0 ..< scales.count) {
                             Text(String(self.scales[$0].name))
@@ -55,7 +58,10 @@ struct ScalePicker: View {
                 }
                 VStack {
                     Text("Mode")
+                        .font(Font.system(size:32).weight(.bold))
+                        .frame(height: screenHeight * 0.20)
                         .font(Font.title.weight(.bold))
+                        .frame(height: screenHeight * 0.20)
                     Picker(selection: $selectedMode, label: EmptyView()) {
                         ForEach(0 ..< modes.count) {
                             Text(self.modes[$0])
@@ -67,6 +73,7 @@ struct ScalePicker: View {
                 VStack {
                     Text("Type")
                         .font(Font.title.weight(.bold))
+                        .frame(height: screenHeight * 0.20)
                     Picker(selection: $selectedType, label: EmptyView()) {
                         ForEach(0 ..< types.count) {
                             Text(self.types[$0])
