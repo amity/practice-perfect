@@ -169,7 +169,7 @@ struct KeyStyle: ViewModifier {
     func body(content: Content) -> some View {
         return content
             .padding(.horizontal, 0)
-            .font(.system(size: 30))
+            .font(.title)
             .frame(width: 20.0, height: 20.0)
             .offset(y: CGFloat(-75 + offset))
     }
