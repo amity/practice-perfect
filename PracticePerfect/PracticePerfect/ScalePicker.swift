@@ -11,10 +11,6 @@ import SwiftUI
 struct ScalePicker: View {
     @Binding var rootIsActive : Bool
     
-    let notes = ["F#", "B", "E", "A", "D", "G", "C", "F", "Bb", "Eb", "Ab", "Db", "Gb"]
-                [0,     1,   2,   3,   4,   5,   6,   7,   8,    9,    10,   11,   12]
-                [6,     1,  -4,   3,  -2,   5,   0,  -5,   2,   -3,     4,   -1,   6]
-    
     let tempoValues = Array(0...200)
     let scales: [ScaleMetadata] = musicData["scales"] ?? []
     let modes = ["Major", "Minor"]
@@ -38,6 +34,7 @@ struct ScalePicker: View {
                 VStack {
                     Text("Tempo")
                         .font(Font.system(size:32).weight(.bold))
+                        .frame(height: screenHeight * 0.20)
                     Picker(selection: $selectedTempo, label: EmptyView()) {
                         ForEach(0 ..< tempoValues.count) {
                             Text(String(self.tempoValues[$0]))
@@ -47,8 +44,10 @@ struct ScalePicker: View {
                     .clipped()
                 }
                 VStack {
-                    Text("Key")
+                    Text("Concert Pitch Key")
+                        .multilineTextAlignment(.center)
                         .font(Font.system(size:32).weight(.bold))
+                        .frame(height: screenHeight * 0.20)
                     Picker(selection: $selectedKey, label: EmptyView()) {
                         ForEach(0 ..< scales.count) {
                             Text(String(self.scales[$0].name))
@@ -60,6 +59,7 @@ struct ScalePicker: View {
                 VStack {
                     Text("Mode")
                         .font(Font.system(size:32).weight(.bold))
+                        .frame(height: screenHeight * 0.20)
                     Picker(selection: $selectedMode, label: EmptyView()) {
                         ForEach(0 ..< modes.count) {
                             Text(self.modes[$0])
@@ -71,6 +71,7 @@ struct ScalePicker: View {
                 VStack {
                     Text("Type")
                         .font(Font.system(size:32).weight(.bold))
+                        .frame(height: screenHeight * 0.20)
                     Picker(selection: $selectedType, label: EmptyView()) {
                         ForEach(0 ..< types.count) {
                             Text(self.types[$0])
