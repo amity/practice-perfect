@@ -34,10 +34,10 @@ func loadXML2String(fileName : String, fileExtension: String) -> String {
 
 //var musicXMLToParseFromFile: String = loadXML2String(fileName: "Happy_Birthday_To_You", fileExtension: "mxl")
 
-//var musicXMLToParseFromFile: String = loadXML2String(fileName: "Pokemon_Center", fileExtension: "mxl")
+var musicXMLToParseFromFile: String = loadXML2String(fileName: "Pokemon_Center", fileExtension: "mxl")
 
 //Some kind of glitch on Measure 18
-var musicXMLToParseFromFile: String = loadXML2String(fileName: "Jingle_Bells", fileExtension: "mxl")
+//var musicXMLToParseFromFile: String = loadXML2String(fileName: "Jingle_Bells", fileExtension: "mxl")
 
 //var musicXMLToParseFromFile: String = loadXML2String(fileName: "My_Way", fileExtension: "mxl")
 
