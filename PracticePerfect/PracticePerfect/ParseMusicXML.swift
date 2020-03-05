@@ -29,11 +29,21 @@ func loadXML2String(fileName : String, fileExtension: String) -> String {
 }
 
 //***TEMPORARILY HOT CODED TO LOCAL TEST FILES***
-var musicXMLToParseFromFile: String = loadXML2String(fileName: "apres", fileExtension: "musicxml")
-//var musicXMLToParseFromFile: String = loadXML2String(fileName: "Happy_Birthday_To_You_C_Major", fileExtension: "mxl")
-//var musicXMLToParseFromFile: String = loadXML2String(fileName: "Pokemon_Center", fileExtension: "mxl") -> replace with new file
-//var musicXMLToParseFromFile: String = loadXML2String(fileName: "Happy_Birthday", fileExtension: "mxl")
+//var musicXMLToParseFromFile: String = loadXML2String(fileName: "apres", fileExtension: "musicxml")
 //var musicXMLToParseFromFile: String = loadXML2String(fileName: "C_Major_Scale", fileExtension: "musicxml")
+
+//var musicXMLToParseFromFile: String = loadXML2String(fileName: "Happy_Birthday_To_You", fileExtension: "mxl")
+
+//var musicXMLToParseFromFile: String = loadXML2String(fileName: "Pokemon_Center", fileExtension: "mxl")
+
+//Some kind of glitch on Measure 18
+var musicXMLToParseFromFile: String = loadXML2String(fileName: "Jingle_Bells", fileExtension: "mxl")
+
+//var musicXMLToParseFromFile: String = loadXML2String(fileName: "My_Way", fileExtension: "mxl")
+
+//var musicXMLToParseFromFile: String = loadXML2String(fileName: "Game_Of_Thrones_Opening_Theme", fileExtension: "mxl")
+
+//var musicXMLToParseFromFile: String = loadXML2String(fileName: "Viva_La_Vida", fileExtension: "mxl")
 
 
 //initialize SWXMLHash object
@@ -226,26 +236,19 @@ func parseKeySignatureFifths() -> Int {
     //0 and "major" are default values which is C major, no sharps or flats
 }
 
+//also has nil key signature
 func parseKeySignatureMode() -> String {
-    return xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["key"]["mode"].element!.text
-}
-
-
-func parseTimeSignatureBeats() -> Int {
-    return Int (xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["time"]["beats"].element!.text ) ?? 4
-}
-
-func parseTimeSignatureBeatType() -> Int {
-    return Int( xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["time"]["beat-type"].element!.text ) ?? 4
-}
-
-func parseKeySignatureFifths() -> Int {
-    return Int(xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["key"]["fifths"].element!.text) ?? 0
-    //0 and "major" are default values which is C major, no sharps or flats
-}
-
-func parseKeySignatureMode() -> String {
-    return xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["key"]["mode"].element!.text
+//    if xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["key"]["mode"].element!.text != nil {
+//        return xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["key"]["mode"].element!.text
+//    }
+//    else {
+        if parseKeySignatureFifths() >= 0 {
+            return "major"
+        }
+        else {
+            return "minor"
+        }
+    //}
 }
 
 func createStartingRests() -> MeasureMetadata {

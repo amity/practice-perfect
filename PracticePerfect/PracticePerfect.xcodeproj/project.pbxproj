@@ -33,6 +33,12 @@
 		729620432373F6ED00706B82 /* PracticePerfect.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 729620412373F6ED00706B82 /* PracticePerfect.xcdatamodeld */; };
 		7296206C237405B400706B82 /* Song+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7296206A237405B300706B82 /* Song+CoreDataProperties.swift */; };
 		7296206D237405B400706B82 /* Song+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7296206B237405B400706B82 /* Song+CoreDataClass.swift */; };
+		7296F4E52410B04500DB073A /* Happy_Birthday_To_You.mxl in Resources */ = {isa = PBXBuildFile; fileRef = 7296F4E42410B04500DB073A /* Happy_Birthday_To_You.mxl */; };
+		7296F4E72410B0A500DB073A /* Jingle_Bells.mxl in Resources */ = {isa = PBXBuildFile; fileRef = 7296F4E62410B0A500DB073A /* Jingle_Bells.mxl */; };
+		7296F4E92410B0F300DB073A /* My_Way.mxl in Resources */ = {isa = PBXBuildFile; fileRef = 7296F4E82410B0F300DB073A /* My_Way.mxl */; };
+		7296F4EB2410B14600DB073A /* Pokemon_Center.mxl in Resources */ = {isa = PBXBuildFile; fileRef = 7296F4EA2410B14600DB073A /* Pokemon_Center.mxl */; };
+		7296F4ED2410B18300DB073A /* Game_Of_Thrones_Opening_Theme.mxl in Resources */ = {isa = PBXBuildFile; fileRef = 7296F4EC2410B18300DB073A /* Game_Of_Thrones_Opening_Theme.mxl */; };
+		7296F4EF2410B1BC00DB073A /* Viva_La_Vida.mxl in Resources */ = {isa = PBXBuildFile; fileRef = 7296F4EE2410B1BC00DB073A /* Viva_La_Vida.mxl */; };
 		72C6698C23F0E675000D33A5 /* TestMXML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C6698B23F0E675000D33A5 /* TestMXML.swift */; };
 		BD3E0B65237A2645003F04A8 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3E0B64237A2645003F04A8 /* Data.swift */; };
 		BD51384E236F7401004F2220 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD51384D236F7401004F2220 /* SettingsView.swift */; };
@@ -78,6 +84,12 @@
 		729620422373F6ED00706B82 /* PracticePerfect.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PracticePerfect.xcdatamodel; sourceTree = "<group>"; };
 		7296206A237405B300706B82 /* Song+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Song+CoreDataProperties.swift"; path = "PracticePerfect/Data/Song+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		7296206B237405B400706B82 /* Song+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Song+CoreDataClass.swift"; path = "PracticePerfect/Data/Song+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		7296F4E42410B04500DB073A /* Happy_Birthday_To_You.mxl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Happy_Birthday_To_You.mxl; sourceTree = "<group>"; };
+		7296F4E62410B0A500DB073A /* Jingle_Bells.mxl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Jingle_Bells.mxl; sourceTree = "<group>"; };
+		7296F4E82410B0F300DB073A /* My_Way.mxl */ = {isa = PBXFileReference; lastKnownFileType = text; path = My_Way.mxl; sourceTree = "<group>"; };
+		7296F4EA2410B14600DB073A /* Pokemon_Center.mxl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Pokemon_Center.mxl; sourceTree = "<group>"; };
+		7296F4EC2410B18300DB073A /* Game_Of_Thrones_Opening_Theme.mxl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Game_Of_Thrones_Opening_Theme.mxl; sourceTree = "<group>"; };
+		7296F4EE2410B1BC00DB073A /* Viva_La_Vida.mxl */ = {isa = PBXFileReference; lastKnownFileType = text; path = Viva_La_Vida.mxl; sourceTree = "<group>"; };
 		72C6698B23F0E675000D33A5 /* TestMXML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestMXML.swift; sourceTree = "<group>"; };
 		AE4CBC2ABD6D6E4986B1F28B /* Pods-PracticePerfect.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PracticePerfect.release.xcconfig"; path = "Target Support Files/Pods-PracticePerfect/Pods-PracticePerfect.release.xcconfig"; sourceTree = "<group>"; };
 		BD3E0B64237A2645003F04A8 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Data.swift; path = PracticePerfect/Data.swift; sourceTree = SOURCE_ROOT; };
@@ -194,6 +206,12 @@
 				728160BA2380919500608307 /* apres.musicxml */,
 				728160BD238091D000608307 /* test.musicxml */,
 				72C6698B23F0E675000D33A5 /* TestMXML.swift */,
+				7296F4E42410B04500DB073A /* Happy_Birthday_To_You.mxl */,
+				7296F4E62410B0A500DB073A /* Jingle_Bells.mxl */,
+				7296F4E82410B0F300DB073A /* My_Way.mxl */,
+				7296F4EA2410B14600DB073A /* Pokemon_Center.mxl */,
+				7296F4EC2410B18300DB073A /* Game_Of_Thrones_Opening_Theme.mxl */,
+				7296F4EE2410B1BC00DB073A /* Viva_La_Vida.mxl */,
 			);
 			path = LocalMusicFiles;
 			sourceTree = "<group>";
@@ -278,11 +296,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				72624E99240DAE490035B281 /* C_Major_Scale.musicxml in Resources */,
+				7296F4E52410B04500DB073A /* Happy_Birthday_To_You.mxl in Resources */,
+				7296F4EB2410B14600DB073A /* Pokemon_Center.mxl in Resources */,
 				BD92FECD2374D8E10074FD59 /* Exercises.json in Resources */,
+				7296F4EF2410B1BC00DB073A /* Viva_La_Vida.mxl in Resources */,
 				722A8951236F643E0030B009 /* LaunchScreen.storyboard in Resources */,
 				722A894E236F643E0030B009 /* Preview Assets.xcassets in Resources */,
 				728160BE238091D000608307 /* test.musicxml in Resources */,
+				7296F4E92410B0F300DB073A /* My_Way.mxl in Resources */,
 				728160BB2380919500608307 /* apres.musicxml in Resources */,
+				7296F4ED2410B18300DB073A /* Game_Of_Thrones_Opening_Theme.mxl in Resources */,
+				7296F4E72410B0A500DB073A /* Jingle_Bells.mxl in Resources */,
 				72624E95240D88CC0035B281 /* Happy_Birthday.mxl in Resources */,
 				722A894B236F643E0030B009 /* Assets.xcassets in Resources */,
 			);
