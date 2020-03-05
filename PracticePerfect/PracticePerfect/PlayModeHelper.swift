@@ -111,15 +111,15 @@ func postScoreUpdate(scoreId: Int, score: Int) -> () {
 // Creates list of notes for transposition
 func createNotesList(fifth: Int) -> Array<String> {
     let notesOrder = ["A", "B", "C", "D", "E", "F", "G"]
-    let key: String = scaleOrder[fifth + 6]
+    let key: String = scaleOrder.reversed()[fifth + 6]
     let index = notesOrder.firstIndex(of: String(key.prefix(1)))!
    
     // Get the list of notes that have accidentals in the key signature itself
     var keySigAccidentals: [String] = []
-    if fifth < 0 {
-        keySigAccidentals = Array<String>(sharpOrder[0 ... -fifth - 1])
-    } else if fifth > 0 {
-        keySigAccidentals = Array<String>(flatOrder[0 ... fifth - 1])
+    if fifth > 0 {
+        keySigAccidentals = Array<String>(sharpOrder[0 ... fifth - 1])
+    } else if fifth < 0 {
+        keySigAccidentals = Array<String>(flatOrder[0 ... -fifth - 1])
     }
     
     var notesList: [String] = []
@@ -131,10 +131,10 @@ func createNotesList(fifth: Int) -> Array<String> {
         // If current note has an accidental in key signature
         if keySigAccidentals.contains(currNote) {
             // If already flatted, make double flat
-            if fifth > 0 {
+            if fifth < 0 {
                 notesList.append(currNote + "𝄫")
             // If already sharp, make natural
-            } else if fifth < 0 {
+            } else if fifth > 0 {
                 notesList.append(currNote + "♮")
             }
         // If not accidental in key signature
@@ -146,9 +146,9 @@ func createNotesList(fifth: Int) -> Array<String> {
         // If current note has accidental in key signature
         if keySigAccidentals.contains(currNote) {
             // If flatted
-            if fifth > 0 {
+            if fifth < 0 {
                 notesList.append(currNote + "♭")
-            } else if fifth < 0 {
+            } else if fifth > 0 {
                 notesList.append(currNote + "♯")
             }
         // If not accidental in key signature
@@ -160,10 +160,10 @@ func createNotesList(fifth: Int) -> Array<String> {
         // If current note has accidental in key signature
         if keySigAccidentals.contains(currNote) {
             // If already flatted, make natural
-            if fifth > 0 {
+            if fifth < 0 {
                 notesList.append(currNote + "♮")
             // If already sharp, make double sharp
-            } else if fifth < 0 {
+            } else if fifth > 0 {
                 notesList.append(currNote + "𝄪")
             }
         // If not accidental in key signature
@@ -179,10 +179,10 @@ func createNotesList(fifth: Int) -> Array<String> {
             // If current note has an accidental in key signature
             if keySigAccidentals.contains(currNote) {
                 // If already flatted, make double flat
-                if fifth > 0 {
+                if fifth < 0 {
                     notesList.append(currNote + "𝄫")
                 // If already sharp, make natural
-                } else if fifth < 0 {
+                } else if fifth > 0 {
                     notesList.append(currNote + "♮")
                 }
             // If not accidental in key signature
@@ -194,9 +194,9 @@ func createNotesList(fifth: Int) -> Array<String> {
             // If current note has accidental in key signature
             if keySigAccidentals.contains(currNote) {
                 // If flatted
-                if fifth > 0 {
+                if fifth < 0 {
                     notesList.append(currNote + "♭")
-                } else if fifth < 0 {
+                } else if fifth > 0 {
                     notesList.append(currNote + "♯")
                 }
             // If not accidental in key signature
@@ -208,10 +208,10 @@ func createNotesList(fifth: Int) -> Array<String> {
             // If current note has accidental in key signature
             if keySigAccidentals.contains(currNote) {
                 // If already flatted, make natural
-                if fifth > 0 {
+                if fifth < 0 {
                     notesList.append(currNote + "♮")
                 // If already sharp, make double sharp
-                } else if fifth < 0 {
+                } else if fifth > 0 {
                     notesList.append(currNote + "𝄪")
                 }
             // If not accidental in key signature
@@ -255,7 +255,7 @@ func transposeSong(originalMeasures: Array<MeasureMetadata>, halfStepOffset: Int
         
         var transposeDict: [String: String] = [:]
         for (index, element) in createNotesList(fifth: oldMeasure.fifths).enumerated() {
-            transposeDict[element] = createNotesList(fifth: oldMeasure.fifths - halfStepOffset)[index]
+            transposeDict[element] = createNotesList(fifth: oldMeasure.fifths + halfStepOffset)[index]
         }
         
         var newNotes: [NoteMetadata] = []
@@ -266,7 +266,25 @@ func transposeSong(originalMeasures: Array<MeasureMetadata>, halfStepOffset: Int
             var oldString: String = oldNote.step
             if oldNote.accidental != "" {
                 oldString += oldNote.accidental
+            } else {
+                // Get the list of notes that have accidentals in the key signature itself
+                var keySigAccidentals: [String] = []
+                if oldMeasure.fifths > 0 {
+                    keySigAccidentals = Array<String>(sharpOrder[0 ... oldMeasure.fifths - 1])
+                } else if oldMeasure.fifths < 0 {
+                    keySigAccidentals = Array<String>(flatOrder[0 ... -oldMeasure.fifths - 1])
+                }
+                
+                // If accidental in key signature, add
+                if keySigAccidentals.contains(oldNote.step) {
+                    if oldMeasure.fifths > 0 {
+                        oldString += "♯"
+                    } else if oldMeasure.fifths < 0 {
+                        oldString += "♭"
+                    }
+                }
             }
+            
             let newString: String = transposeDict[oldString]!
             let newStep: String = String(newString.prefix(1))
             
