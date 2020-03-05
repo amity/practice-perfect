@@ -24,6 +24,7 @@ struct BackgroundFilter: View, TunerDelegate {
     @State var startedCalibrating = false
     @State var backgroundMeanAmplitude: Float = 0.0
     @State var backgroundReadingCount: Int = 0
+    @State var calibrated: Bool = false
     
     var body: some View {
         ZStack {
@@ -40,6 +41,7 @@ struct BackgroundFilter: View, TunerDelegate {
                             Button(action: {
                                 self.settings.tuner.stop()
                                 self.isOn = false
+                                self.calibrated = true
                                 self.settings.tuner.beatCount = 0
                             }) {
                                 Text("Stop")
@@ -78,8 +80,8 @@ struct BackgroundFilter: View, TunerDelegate {
                     .isDetailLink(false)
                     .modifier(MenuButtonStyle())
                     .frame(width: 200)
-                    .disabled(self.isOn)
-                    .opacity(self.isOn ? 0.5 : 1)
+                    .disabled(self.isOn || !self.calibrated)
+                    .opacity((self.isOn || !self.calibrated) ? 0.5 : 1)
                 }
                 .frame(maxWidth: 450)
                 Spacer()
