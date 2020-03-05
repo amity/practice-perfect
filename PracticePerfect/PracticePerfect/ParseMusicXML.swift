@@ -236,7 +236,6 @@ func parseKeySignatureFifths() -> Int {
     //0 and "major" are default values which is C major, no sharps or flats
 }
 
-//also has nil key signature
 func parseKeySignatureMode() -> String {
 //    if xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["key"]["mode"].element!.text != nil {
 //        return xml["score-partwise"]["part"][0]["measure"][0]["attributes"]["key"]["mode"].element!.text
