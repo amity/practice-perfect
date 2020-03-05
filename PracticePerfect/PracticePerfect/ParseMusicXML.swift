@@ -157,14 +157,11 @@ func parseMeasureMusicXML(measureNumber : Int) -> MeasureMetadata {
 //parsing to create SongMetadata object that contains MeasureMetadata objects that contain NoteMetadata objects
 //CURRENTLY HOTCODED FOR PART 1 ONLY
 func parseMusicXML(isSong: Bool, xmlString: String) -> PlaySongMetadata {
-        
-    // TO DO: don't have this
-    if !isSong {
-        xml = SWXMLHash.config {
-                    config in
-                    config.shouldProcessLazily = false
-        }.parse(xmlString)        
-    }
+    // Get xml from xml string
+    xml = SWXMLHash.config {
+                config in
+                config.shouldProcessLazily = false
+    }.parse(xmlString)
     
     //create metadata object
     let songToParse : PlaySongMetadata = PlaySongMetadata()
