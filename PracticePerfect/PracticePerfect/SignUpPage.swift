@@ -57,27 +57,26 @@ struct SignUpPage: View {
                 }
                 HStack {
                     ZStack(alignment: .leading) {
-                        if name.isEmpty { Text("Name").foregroundColor(.black) }
                         TextField("", text: $name)
                             .padding()
                             .background(Color.white)
                             .cornerRadius(5.0)
                             .padding(.bottom, 20)
                             .frame(width: 300)
+                        if name.isEmpty { Text("Name").foregroundColor(Color.gray) }
                     }
                     ZStack(alignment: .leading) {
-                        if email.isEmpty { Text("Email").foregroundColor(.black) }
                         TextField("", text: $email)
                             .padding()
                             .background(Color.white)
                             .cornerRadius(5.0)
                             .padding(.bottom, 20)
                             .frame(width: 300)
+                        if email.isEmpty { Text("Email").foregroundColor(Color.gray) }
                     }
                 }
                 HStack {
                     ZStack(alignment: .leading) {
-                        if username.isEmpty { Text("Username (optional)").foregroundColor(.black) }
                         TextField("", text: $username)
                             .autocapitalization(UITextAutocapitalizationType.none)
                             .padding()
@@ -85,16 +84,17 @@ struct SignUpPage: View {
                             .cornerRadius(5.0)
                             .padding(.bottom, 20)
                             .frame(width: 300)
+                        if username.isEmpty { Text("Username (optional)").foregroundColor(Color.gray) }
                     }
                     
                     ZStack(alignment: .leading) {
-                        if password.isEmpty { Text("Password").foregroundColor(.black) }
                         SecureField("", text: $password)
                             .padding()
                             .background(Color.white)
                             .cornerRadius(5.0)
                             .padding(.bottom, 20)
                             .frame(width: 300)
+                        if password.isEmpty { Text("Password").foregroundColor(Color.gray) }
                     }
                 }
                 HStack {                    

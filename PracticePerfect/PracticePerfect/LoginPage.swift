@@ -60,7 +60,6 @@ struct LoginPage: View {
                         .foregroundColor(Color.white)
                 }
                 ZStack(alignment: .leading) {
-                    if username.isEmpty { Text("Username").foregroundColor(.black) }
                     TextField("", text: $username)
                         .autocapitalization(UITextAutocapitalizationType.none)
                         .padding()
@@ -68,15 +67,16 @@ struct LoginPage: View {
                         .cornerRadius(5.0)
                         .padding(.bottom, 5)
                         .frame(width: 500)
+                    if self.username.isEmpty { Text(" Username").foregroundColor(Color.gray) }
                 }
                 ZStack(alignment: .leading) {
-                    if password.isEmpty { Text("Password").foregroundColor(.black) }
                     SecureField("", text: $password)
                         .padding()
                         .background(Color.white)
                         .cornerRadius(5.0)
                         .padding(.bottom, 5)
                         .frame(width: 500)
+                    if self.password.isEmpty { Text(" Password").foregroundColor(Color.gray) }
                 }
                 HStack {
                     Button(action: {
