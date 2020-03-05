@@ -26,15 +26,16 @@ struct ScalePicker: View {
     @State var trying = false
     @State var canProceed: Bool = false
     
+    let sectionWidth = screenWidth / 6.0
+    
     var body: some View {
         ZStack {
             mainGradient
             HStack {
-                Spacer()
                 VStack {
                     Text("Tempo")
                         .font(Font.title.weight(.bold))
-                        .frame(height: screenHeight * 0.20)
+                        .frame(width: sectionWidth, height: screenHeight * 0.20)
                     Picker(selection: $selectedTempo, label: EmptyView()) {
                         ForEach(0 ..< tempoValues.count) {
                             Text(String(self.tempoValues[$0]))
@@ -47,13 +48,13 @@ struct ScalePicker: View {
                     Text("Concert Pitch Key")
                         .multilineTextAlignment(.center)
                         .font(Font.title.weight(.bold))
-                        .frame(height: screenHeight * 0.20)
+                        .frame(width: sectionWidth, height: screenHeight * 0.20)
                     Picker(selection: $selectedKey, label: EmptyView()) {
                         ForEach(0 ..< scales.count) {
                             Text(String(self.scales[$0].name))
                         }
                     }.labelsHidden()
-                    .frame(maxWidth: 150)
+                    .frame(maxWidth: sectionWidth)
                     .clipped()
                 }
                 VStack {
@@ -61,28 +62,27 @@ struct ScalePicker: View {
                         .font(Font.system(size:32).weight(.bold))
                         .frame(height: screenHeight * 0.20)
                         .font(Font.title.weight(.bold))
-                        .frame(height: screenHeight * 0.20)
+                        .frame(width: sectionWidth, height: screenHeight * 0.20)
                     Picker(selection: $selectedMode, label: EmptyView()) {
                         ForEach(0 ..< modes.count) {
                             Text(self.modes[$0])
                         }
                     }.labelsHidden()
-                    .frame(maxWidth: 150)
+                    .frame(maxWidth: sectionWidth)
                     .clipped()
                 }
                 VStack {
                     Text("Type")
                         .font(Font.title.weight(.bold))
-                        .frame(height: screenHeight * 0.20)
+                        .frame(width: sectionWidth, height: screenHeight * 0.20)
                     Picker(selection: $selectedType, label: EmptyView()) {
                         ForEach(0 ..< types.count) {
                             Text(self.types[$0])
                         }
                     }.labelsHidden()
-                    .frame(maxWidth: 150)
+                    .frame(maxWidth: sectionWidth)
                     .clipped()
                 }
-                Spacer()
                 if self.selectedType == 0 {
                     NavigationLink(destination: BackgroundFilter(rootIsActive: self.$rootIsActive, songMetadata: SongMetadata(songId: -1, name: scales[self.selectedKey].name + " " + modes[self.selectedMode] + " " + types[self.selectedType], artist: "", resourceUrl: scales[self.selectedKey].urls[self.selectedMode], year: -1, level: -1, topScore: -1, highScore: -1, highScoreId: -1, deleted: false, rank: ""), tempo: self.tempoValues[self.selectedTempo], timeSig: (4,4), showPrevious: false, measures: self.measures), isActive: $canProceed) {
 
@@ -128,8 +128,10 @@ struct ScalePicker: View {
                     }
                     .modifier(MenuButtonStyle())
                 }
-                Spacer()
             }
+        }
+        .onAppear() {
+            print(screenWidth)
         }
     }
 }
