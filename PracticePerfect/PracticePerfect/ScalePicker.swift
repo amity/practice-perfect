@@ -11,6 +11,10 @@ import SwiftUI
 struct ScalePicker: View {
     @Binding var rootIsActive : Bool
     
+    let notes = ["F#", "B", "E", "A", "D", "G", "C", "F", "Bb", "Eb", "Ab", "Db", "Gb"]
+                [0,     1,   2,   3,   4,   5,   6,   7,   8,    9,    10,   11,   12]
+                [6,     1,  -4,   3,  -2,   5,   0,  -5,   2,   -3,     4,   -1,   6]
+    
     let tempoValues = Array(0...200)
     let scales: [ScaleMetadata] = musicData["scales"] ?? []
     let modes = ["Major", "Minor"]

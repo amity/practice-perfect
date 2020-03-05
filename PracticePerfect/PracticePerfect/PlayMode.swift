@@ -298,7 +298,7 @@ struct PlayMode: View, TunerDelegate {
         .navigationBarTitle("You are playing: " + songMetadata.name)
         .onAppear {
             // Adjust for key of instrument if not an exercise
-            if self.isSong && self.settings.keyIndex - 6 != 0 {
+            if self.settings.keyIndex - 6 != 0 {
                 self.transposedMeasures = transposeSong(originalMeasures: self.measures, halfStepOffset: self.settings.keyIndex - 6)
                 
                 // Get dictionary of transpositions for display of current note being played
