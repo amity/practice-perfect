@@ -59,25 +59,19 @@ struct LoginPage: View {
                         .background(Color.red)
                         .foregroundColor(Color.white)
                 }
-                ZStack(alignment: .leading) {
-                    TextField("", text: $username)
-                        .autocapitalization(UITextAutocapitalizationType.none)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(5.0)
-                        .padding(.bottom, 5)
-                        .frame(width: 500)
-                    if self.username.isEmpty { Text(" Username").foregroundColor(Color.gray) }
-                }
-                ZStack(alignment: .leading) {
-                    SecureField("", text: $password)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(5.0)
-                        .padding(.bottom, 5)
-                        .frame(width: 500)
-                    if self.password.isEmpty { Text(" Password").foregroundColor(Color.gray) }
-                }
+                TextField("Username", text: $username)
+                    .autocapitalization(UITextAutocapitalizationType.none)
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(5.0)
+                    .padding(.bottom, 5)
+                    .frame(width: 500)
+               SecureField("Password", text: $password)
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(5.0)
+                    .padding(.bottom, 5)
+                    .frame(width: 500)
                 HStack {
                     Button(action: {
                         // Retrieve login data and parse
