@@ -67,6 +67,7 @@ struct SignUpPage: View {
                     }
                     ZStack(alignment: .leading) {
                         TextField("", text: $email)
+                            .autocapitalization(UITextAutocapitalizationType.none)
                             .padding()
                             .background(Color.white)
                             .cornerRadius(5.0)
