@@ -63,6 +63,7 @@ struct SignUpPage: View {
                         .padding(.bottom, 20)
                         .frame(width: 300)
                     TextField("Email", text: $email)
+                        .autocapitalization(UITextAutocapitalizationType.none)
                         .padding()
                         .background(Color.white)
                         .cornerRadius(5.0)
