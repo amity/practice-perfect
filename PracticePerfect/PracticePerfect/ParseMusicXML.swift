@@ -93,6 +93,24 @@ func parseNoteMusicXML(measureNumber : Int, noteNumber : Int) -> NoteMetadata {
 
         noteToParse.type = xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["type"].element!.text
     
+        
+        //currently doesn't support double sharps or double flats because not sure what they are referred to as inside <accidental> musicxml tags; very easy to add once they are seen at least once
+        if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["accidental"].element != nil {
+            if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["accidental"].element!.text == "sharp" {
+                noteToParse.accidental = "♯"
+            }
+            if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["accidental"].element!.text == "flat" {
+                noteToParse.accidental = "♭"
+            }
+            if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["accidental"].element!.text == "natural" {
+                noteToParse.accidental = "♮"
+            }
+        }
+        else {
+            noteToParse.accidental = ""
+        }
+        
+        
 //        noteToParse.isStemFacingUp = isStemFacingUp(measureNumber: measureNumber, noteNumber: noteNumber)
         
         //if position matches previous note's position then it is a chord
