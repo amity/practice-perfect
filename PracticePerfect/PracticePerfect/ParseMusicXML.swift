@@ -93,6 +93,8 @@ func parseNoteMusicXML(measureNumber : Int, noteNumber : Int) -> NoteMetadata {
 
         noteToParse.type = xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["type"].element!.text
     
+//        noteToParse.isStemFacingUp = isStemFacingUp(measureNumber: measureNumber, noteNumber: noteNumber)
+        
         //if position matches previous note's position then it is a chord
         //not currently used
         noteToParse.position = Int( xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1].element!.attribute(by: "default-x")!.text ) ?? 0
@@ -291,6 +293,15 @@ func getNumNotesWithoutRests(songToParse: PlaySongMetadata) -> Int {
     return numNotesWithoutRests
 }
 
+//handle stems of notes that wouldn't point in the same direction if placed separately
+//func isStemFacingUp(measureNumber : Int, noteNumber : Int) -> Bool {
+//    if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["stem"].element!.text == "down" {
+//        return false
+//    }
+//    else {
+//        return true
+//    }
+//}
 
 struct ParseMusicXML: View {
     var body: some View {

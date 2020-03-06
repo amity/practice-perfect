@@ -676,6 +676,7 @@ struct PlayMode: View, TunerDelegate {
         let opacity = calcOpacity(scrollOffset: scrollOffset)
         
         let facingUp = offset > Int(self.barDist + 10) * 2
+        //let facingUp = isStemFacingUp()
         
         let aboveStaff = [Int(self.barDist + 10) * -1, Int(self.barDist + 10) * -2, Int(self.barDist + 10) * -3, Int(self.barDist + 10) * -4, Int(self.barDist + 10) * -5]
         let belowStaff = [Int(self.barDist + 10) * 5, Int(self.barDist + 10) * 6, Int(self.barDist + 10) * 7, Int(self.barDist + 10) * 8, Int(self.barDist + 10) * 9]
