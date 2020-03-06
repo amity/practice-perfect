@@ -65,7 +65,9 @@ func parseNoteMusicXML(measureNumber : Int, noteNumber : Int) -> NoteMetadata {
     
     noteToParse.duration = duration / Float(divisions)
     
-    //noteToParse.duration = Float( xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["duration"].element!.text ) ?? 0
+    if noteToParse.duration == 3 || noteToParse.duration == 1.5 || noteToParse.duration == 6 || noteToParse.duration == 0.75 || noteToParse.duration == 0.375 {
+        noteToParse.dot = true
+    }
     
     //<voice> tag currently ignored so we can only support one pitch/hand/instrument at a time
     
@@ -267,7 +269,6 @@ func createStartingRests() -> MeasureMetadata {
             restMeasure.notes.append( NoteMetadata(duration: 1, type: "quarter", isRest: true) )
         }
     }
-    
     
     return restMeasure
 }
