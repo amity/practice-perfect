@@ -65,10 +65,6 @@ func parseNoteMusicXML(measureNumber : Int, noteNumber : Int) -> NoteMetadata {
     
     noteToParse.duration = duration / Float(divisions)
     
-    if noteToParse.duration == 3 || noteToParse.duration == 1.5 || noteToParse.duration == 6 || noteToParse.duration == 0.75 || noteToParse.duration == 0.375 {
-        noteToParse.dot = true
-    }
-    
     //<voice> tag currently ignored so we can only support one pitch/hand/instrument at a time
     
     //if rest and not note, set isRest to true and set type based on duration
@@ -90,9 +86,10 @@ func parseNoteMusicXML(measureNumber : Int, noteNumber : Int) -> NoteMetadata {
         //noteToParse.alter might be coming in future
 
         noteToParse.octave = Int( xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["pitch"]["octave"].element!.text ) ?? 0
-
-        noteToParse.type = xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["type"].element!.text
     
+        if noteToParse.duration == 3 || noteToParse.duration == 1.5 || noteToParse.duration == 6 || noteToParse.duration == 0.75 || noteToParse.duration == 0.375 {
+            noteToParse.dot = true
+        }
         
         //currently doesn't support double sharps or double flats because not sure what they are referred to as inside <accidental> musicxml tags; very easy to add once they are seen at least once
         if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["accidental"].element != nil {
@@ -106,10 +103,6 @@ func parseNoteMusicXML(measureNumber : Int, noteNumber : Int) -> NoteMetadata {
                 noteToParse.accidental = "♮"
             }
         }
-        else {
-            noteToParse.accidental = ""
-        }
-        
         
 //        noteToParse.isStemFacingUp = isStemFacingUp(measureNumber: measureNumber, noteNumber: noteNumber)
         
@@ -117,6 +110,9 @@ func parseNoteMusicXML(measureNumber : Int, noteNumber : Int) -> NoteMetadata {
         //not currently used
         noteToParse.position = Int( xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1].element!.attribute(by: "default-x")!.text ) ?? 0
     }
+    
+    //I believe will currently glitch on sixteenth notes because our code calls those notes 16th notes - can't be sure until we see 16th or 32nd notes in more mxml files
+    noteToParse.type = xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["type"].element!.text
     
     return noteToParse
 }
