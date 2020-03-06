@@ -251,8 +251,23 @@ func createStartingRests() -> MeasureMetadata {
     let restMeasure = MeasureMetadata(measureNumber: 0, notes: [], clef: "G", fifths: parseKeySignatureFifths(), mode: "major", timeSig: (parseTimeSignatureBeats(), parseTimeSignatureBeatType()))
     
     for _ in 0..<parseTimeSignatureBeats() {
-        restMeasure.notes.append( NoteMetadata(duration: 1, type: "quarter", isRest: true) )
+        if parseTimeSignatureBeatType() == 4 {
+            restMeasure.notes.append( NoteMetadata(duration: 1, type: "quarter", isRest: true) )
+        }
+        else if parseTimeSignatureBeatType() == 2 {
+            restMeasure.notes.append( NoteMetadata(duration: 2, type: "half", isRest: true) )
+        }
+        else if parseTimeSignatureBeatType() == 8 {
+            restMeasure.notes.append( NoteMetadata(duration: 0.5, type: "eighth", isRest: true) )
+        }
+        else if parseTimeSignatureBeatType() == 16 {
+            restMeasure.notes.append( NoteMetadata(duration: 0.25, type: "16th", isRest: true) )
+        }
+        else { //all other cases just put quarter notes for now
+            restMeasure.notes.append( NoteMetadata(duration: 1, type: "quarter", isRest: true) )
+        }
     }
+    
     
     return restMeasure
 }
