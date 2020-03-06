@@ -111,8 +111,13 @@ func parseNoteMusicXML(measureNumber : Int, noteNumber : Int) -> NoteMetadata {
         noteToParse.position = Int( xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1].element!.attribute(by: "default-x")!.text ) ?? 0
     }
     
-    //I believe will currently glitch on sixteenth notes because our code calls those notes 16th notes - can't be sure until we see 16th or 32nd notes in more mxml files
+    //Doesn't handle 32nd notes yet because I'd have to see what they're actually called under <type> attributes in the file
+    if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["type"].element!.text == "sixteenth" {
+        noteToParse.type = "16th"
+    }
+    else {
     noteToParse.type = xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["type"].element!.text
+    }
     
     return noteToParse
 }
