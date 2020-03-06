@@ -70,14 +70,17 @@ class NoteMetadata: Identifiable, Equatable {
     var accidental: String // sharp, flat, natural
     var dot: Bool //If the note is dotted or note
     
+    var isStemFacingUp : Bool //If the note has a stem, is it pointing up or down
+    
     var position: Int = 0 //if same position as last note, it's a chord
     
-    init(step: String = "C", duration: Float = 1.0, type: String = "quarter", accidental: String = "", dot: Bool = false, octave: Int = 4, isRest: Bool = false) {
+    init(step: String = "C", duration: Float = 1.0, type: String = "quarter", accidental: String = "", dot: Bool = false, isStemFacingUp: Bool = true, octave: Int = 4, isRest: Bool = false) {
         self.step = step
         self.duration = duration
         self.type = type
         self.accidental = accidental
         self.dot = dot
+        self.isStemFacingUp = isStemFacingUp
         self.octave = octave
         self.isRest = isRest
     }

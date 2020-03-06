@@ -65,8 +65,6 @@ func parseNoteMusicXML(measureNumber : Int, noteNumber : Int) -> NoteMetadata {
     
     noteToParse.duration = duration / Float(divisions)
     
-    //noteToParse.duration = Float( xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["duration"].element!.text ) ?? 0
-    
     //<voice> tag currently ignored so we can only support one pitch/hand/instrument at a time
     
     //if rest and not note, set isRest to true and set type based on duration
@@ -88,12 +86,37 @@ func parseNoteMusicXML(measureNumber : Int, noteNumber : Int) -> NoteMetadata {
         //noteToParse.alter might be coming in future
 
         noteToParse.octave = Int( xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["pitch"]["octave"].element!.text ) ?? 0
-
-        noteToParse.type = xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["type"].element!.text
     
+        if noteToParse.duration == 3 || noteToParse.duration == 1.5 || noteToParse.duration == 6 || noteToParse.duration == 0.75 || noteToParse.duration == 0.375 {
+            noteToParse.dot = true
+        }
+        
+        //currently doesn't support double sharps or double flats because not sure what they are referred to as inside <accidental> musicxml tags; very easy to add once they are seen at least once
+        if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["accidental"].element != nil {
+            if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["accidental"].element!.text == "sharp" {
+                noteToParse.accidental = "♯"
+            }
+            if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["accidental"].element!.text == "flat" {
+                noteToParse.accidental = "♭"
+            }
+            if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["accidental"].element!.text == "natural" {
+                noteToParse.accidental = "♮"
+            }
+        }
+        
+//        noteToParse.isStemFacingUp = isStemFacingUp(measureNumber: measureNumber, noteNumber: noteNumber)
+        
         //if position matches previous note's position then it is a chord
         //not currently used
         noteToParse.position = Int( xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1].element!.attribute(by: "default-x")!.text ) ?? 0
+    }
+    
+    //Doesn't handle 32nd notes yet because I'd have to see what they're actually called under <type> attributes in the file
+    if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["type"].element!.text == "sixteenth" {
+        noteToParse.type = "16th"
+    }
+    else {
+    noteToParse.type = xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["type"].element!.text
     }
     
     return noteToParse
@@ -251,7 +274,21 @@ func createStartingRests() -> MeasureMetadata {
     let restMeasure = MeasureMetadata(measureNumber: 0, notes: [], clef: "G", fifths: parseKeySignatureFifths(), mode: "major", timeSig: (parseTimeSignatureBeats(), parseTimeSignatureBeatType()))
     
     for _ in 0..<parseTimeSignatureBeats() {
-        restMeasure.notes.append( NoteMetadata(duration: 1, type: "quarter", isRest: true) )
+        if parseTimeSignatureBeatType() == 4 {
+            restMeasure.notes.append( NoteMetadata(duration: 1, type: "quarter", isRest: true) )
+        }
+        else if parseTimeSignatureBeatType() == 2 {
+            restMeasure.notes.append( NoteMetadata(duration: 2, type: "half", isRest: true) )
+        }
+        else if parseTimeSignatureBeatType() == 8 {
+            restMeasure.notes.append( NoteMetadata(duration: 0.5, type: "eighth", isRest: true) )
+        }
+        else if parseTimeSignatureBeatType() == 16 {
+            restMeasure.notes.append( NoteMetadata(duration: 0.25, type: "16th", isRest: true) )
+        }
+        else { //all other cases just put quarter notes for now
+            restMeasure.notes.append( NoteMetadata(duration: 1, type: "quarter", isRest: true) )
+        }
     }
     
     return restMeasure
@@ -275,6 +312,15 @@ func getNumNotesWithoutRests(songToParse: PlaySongMetadata) -> Int {
     return numNotesWithoutRests
 }
 
+//handle stems of notes that wouldn't point in the same direction if placed separately
+//func isStemFacingUp(measureNumber : Int, noteNumber : Int) -> Bool {
+//    if xml["score-partwise"]["part"][0]["measure"][measureNumber-1]["note"][noteNumber-1]["stem"].element!.text == "down" {
+//        return false
+//    }
+//    else {
+//        return true
+//    }
+//}
 
 struct ParseMusicXML: View {
     var body: some View {
