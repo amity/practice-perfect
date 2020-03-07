@@ -379,6 +379,7 @@ struct PlayMode: View, TunerDelegate {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
     
     // If correct note, then 10 points; if one half step away, then 5 points; if one whole step away, then 3 points; increase streak count for target, neutral for half step off, reset for whole note or worse
